@@ -34,3 +34,36 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## GitHub, Vercel and Supabase Setup
+
+This repository is ready to push to GitHub and deploy on Vercel. The project also includes a Supabase integration scaffold in `src/lib/supabaseClient.ts` and a database schema in `supabase/schema.sql`.
+
+### What is ready
+
+- Local git repository initialized in `app/`
+- `npm run build` works
+- Supabase client scaffolding added
+- `.env.example` created with Supabase env vars
+- Dashboard pages and mobile menu fixed
+
+### What still needs to happen
+
+1. Create a GitHub repo for this project, for example `allan272/cucu-mutugi`.
+2. Add the remote and push from `app/`:
+
+```bash
+cd "C:\Users\HP\Documents\CUCU MUTUGI\app"
+git remote add origin https://github.com/allan272/cucu-mutugi.git
+git push -u origin main
+```
+
+3. Create a Vercel project and connect it to the GitHub repo.
+4. Add these environment variables to Vercel:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+5. Create Supabase tables using `supabase/schema.sql`.
+
+If you want, I can continue and use a GitHub token to create the repository automatically from here.
