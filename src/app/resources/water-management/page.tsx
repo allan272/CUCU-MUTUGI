@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Thermometer, Droplet, Shield, Check, ArrowLeft } from 'lucide-react';
 
 export default function WaterManagementPage() {
   const waterSpaceRequirements = [
@@ -84,17 +85,17 @@ export default function WaterManagementPage() {
           
           <div className="space-y-6">
             <div className="bg-light-gold p-8 rounded-xl border-l-4 border-accent">
-              <h3 className="font-bold text-lg text-accent mb-3">🌡️ Temperature Management:</h3>
+              <h3 className="font-bold text-lg text-accent mb-3 flex items-center gap-2"><Thermometer className="h-5 w-5" /> Temperature Management:</h3>
               <p className="text-gray-700">During hot weather, provide cool drinking water to help maintain feed intake, bird comfort, and overall productivity. Water storage tanks should be protected from direct sunlight and, where possible, have reflective surfaces to minimize water heating.</p>
             </div>
 
             <div className="bg-green-50 p-8 rounded-xl border-l-4 border-green-500">
-              <h3 className="font-bold text-lg text-green-700 mb-3">💧 Water Quality:</h3>
+              <h3 className="font-bold text-lg text-green-700 mb-3 flex items-center gap-2"><Droplet className="h-5 w-5" /> Water Quality:</h3>
               <p className="text-gray-700">To maintain water quality and reduce disease risk, use a reliable water sanitiser such as <strong>chlorine</strong> to control harmful microorganisms in the drinking water system.</p>
             </div>
 
             <div className="bg-blue-50 p-8 rounded-xl border-l-4 border-blue-500">
-              <h3 className="font-bold text-lg text-blue-700 mb-3">🚰 Hygiene Practice:</h3>
+              <h3 className="font-bold text-lg text-blue-700 mb-3 flex items-center gap-2"><Shield className="h-5 w-5" /> Hygiene Practice:</h3>
               <p className="text-gray-700">Maintain clean drinkers by washing and disinfecting daily. Never allow drinkers to run dry, and always provide fresh water throughout the production cycle.</p>
             </div>
           </div>
@@ -135,7 +136,7 @@ export default function WaterManagementPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white border-2 border-primary rounded-xl p-6">
               <h3 className="font-bold text-primary text-lg mb-4 flex items-center gap-2">
-                <span>✓</span> Daily Maintenance
+                <Check className="h-5 w-5 text-primary flex-shrink-0" /> Daily Maintenance
               </h3>
               <ul className="space-y-2 text-gray-700">
                 <li>• Clean and disinfect drinkers daily</li>
@@ -147,7 +148,7 @@ export default function WaterManagementPage() {
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
               <h3 className="font-bold text-primary text-lg mb-4 flex items-center gap-2">
-                <span>✓</span> Monitoring & Adjustment
+                <Check className="h-5 w-5 text-primary flex-shrink-0" /> Monitoring & Adjustment
               </h3>
               <ul className="space-y-2 text-gray-700">
                 <li>• Observe water consumption patterns</li>
@@ -159,7 +160,7 @@ export default function WaterManagementPage() {
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
               <h3 className="font-bold text-primary text-lg mb-4 flex items-center gap-2">
-                <span>✓</span> Equipment Management
+                <Check className="h-5 w-5 text-primary flex-shrink-0" /> Equipment Management
               </h3>
               <ul className="space-y-2 text-gray-700">
                 <li>• Distribute drinkers evenly</li>
@@ -171,7 +172,7 @@ export default function WaterManagementPage() {
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
               <h3 className="font-bold text-primary text-lg mb-4 flex items-center gap-2">
-                <span>✓</span> Quality Control
+                <Check className="h-5 w-5 text-primary flex-shrink-0" /> Quality Control
               </h3>
               <ul className="space-y-2 text-gray-700">
                 <li>• Use water sanitiser regularly</li>
@@ -190,12 +191,12 @@ export default function WaterManagementPage() {
           <div className="bg-primary text-white p-8 rounded-xl space-y-4 border-l-4 border-accent">
             <p className="text-lg">Proper water management contributes significantly to:</p>
             <ul className="space-y-3 text-light-green">
-              <li>✓ Improved bird health and welfare</li>
-              <li>✓ Optimal growth and development</li>
-              <li>✓ Enhanced feed efficiency and conversion</li>
-              <li>✓ Better uniformity across the flock</li>
-              <li>✓ Increased productivity and profitability</li>
-              <li>✓ Reduced stress and mortality rates</li>
+              <li className="flex items-center gap-1.5"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /> Improved bird health and welfare</li>
+              <li className="flex items-center gap-1.5"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /> Optimal growth and development</li>
+              <li className="flex items-center gap-1.5"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /> Enhanced feed efficiency and conversion</li>
+              <li className="flex items-center gap-1.5"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /> Better uniformity across the flock</li>
+              <li className="flex items-center gap-1.5"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /> Increased productivity and profitability</li>
+              <li className="flex items-center gap-1.5"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /> Reduced stress and mortality rates</li>
             </ul>
           </div>
         </div>
@@ -203,7 +204,7 @@ export default function WaterManagementPage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

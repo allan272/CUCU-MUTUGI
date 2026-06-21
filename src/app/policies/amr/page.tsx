@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check, ArrowLeft } from 'lucide-react';
 
 export default function AMRPolicyPage() {
   return (
@@ -26,7 +27,7 @@ export default function AMRPolicyPage() {
 
           <div className="bg-light-gold p-8 rounded-xl space-y-4 border-l-4 border-accent">
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Using antimicrobials only when necessary</h3>
                 <p className="text-sm mt-1">Under the guidance of qualified veterinary professionals</p>
@@ -34,7 +35,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Avoiding routine or indiscriminate use</h3>
                 <p className="text-sm mt-1">Adhering to prescribed treatment protocols</p>
@@ -42,7 +43,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Implementing robust biosecurity</h3>
                 <p className="text-sm mt-1">Sanitation, and disease prevention measures across all operations</p>
@@ -50,7 +51,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Maintaining accurate records</h3>
                 <p className="text-sm mt-1">Of antimicrobial use and monitoring treatment outcomes</p>
@@ -58,7 +59,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Observing withdrawal periods</h3>
                 <p className="text-sm mt-1">To ensure the safety of poultry products</p>
@@ -66,7 +67,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Training employees</h3>
                 <p className="text-sm mt-1">On responsible antimicrobial use and AMR awareness</p>
@@ -74,7 +75,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Supporting continuous improvement</h3>
                 <p className="text-sm mt-1">Of antimicrobial stewardship practices</p>
@@ -82,7 +83,7 @@ export default function AMRPolicyPage() {
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <div>
                 <h3 className="font-bold text-primary">Collaborating with stakeholders</h3>
                 <p className="text-sm mt-1">Veterinarians, suppliers, regulators, and others to promote responsible antimicrobial use</p>
@@ -96,7 +97,7 @@ export default function AMRPolicyPage() {
 
           <div className="text-center mt-12">
             <Link href="/policies" className="text-primary font-semibold hover:text-accent transition-colors">
-              ← Back to Policies
+              <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Policies</span>
             </Link>
           </div>
         </div>

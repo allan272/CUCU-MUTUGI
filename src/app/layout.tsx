@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ServiceWorkerRegister from "./sw-register";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "CUCU MUTUGI POULTRY | Growing Farmers, Building Prosperity",
@@ -39,7 +36,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Cucu Mutugi Poultry" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={`${inter.className} min-h-screen flex flex-col`}>
+      <body className="min-h-screen flex flex-col">
         <ServiceWorkerRegister />
         <Navbar />
         <main className="flex-grow">

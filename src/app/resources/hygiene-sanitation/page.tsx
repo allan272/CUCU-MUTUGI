@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 
 export default function HygieneSanitationPage() {
   const disinfectants = [
@@ -138,11 +139,11 @@ export default function HygieneSanitationPage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-green-50 p-4 rounded">
-                    <p className="text-sm font-bold text-green-700 mb-2">✓ Advantages</p>
+                    <p className="text-sm font-bold text-green-700 mb-2 flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-green-700" /> Advantages</p>
                     <p className="text-sm text-gray-700">{item.advantages}</p>
                   </div>
                   <div className="bg-red-50 p-4 rounded">
-                    <p className="text-sm font-bold text-red-700 mb-2">✗ Disadvantages</p>
+                    <p className="text-sm font-bold text-red-700 mb-2 flex items-center gap-1.5"><XCircle className="h-4 w-4 text-red-700" /> Disadvantages</p>
                     <p className="text-sm text-gray-700">{item.disadvantages}</p>
                   </div>
                 </div>
@@ -265,7 +266,7 @@ export default function HygieneSanitationPage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

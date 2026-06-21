@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Bird, Shield, Lock, ArrowRight } from 'lucide-react';
 
 export default function PoliciesPage() {
   return (
@@ -17,36 +18,36 @@ export default function PoliciesPage() {
           {/* Animal Welfare Policy */}
           <Link href="/policies/animal-welfare">
             <div className="bg-light-green hover:shadow-lg transition-all p-8 rounded-xl border-2 border-primary hover:border-accent cursor-pointer h-full">
-              <div className="text-5xl mb-4">🐔</div>
+              <div className="text-primary mb-4"><Bird className="h-12 w-12" /></div>
               <h2 className="text-2xl font-bold text-primary mb-4">Animal Welfare Policy</h2>
               <p className="text-gray-700 mb-6">
                 Our commitment to the highest standards of animal care, guided by the Five Freedoms and Kenya's Prevention of Cruelty to Animals Act.
               </p>
-              <span className="text-primary font-semibold hover:text-accent">Read More →</span>
+              <span className="text-primary font-semibold hover:text-accent flex items-center gap-1">Read More <ArrowRight className="h-4 w-4" /></span>
             </div>
           </Link>
 
           {/* AMR Policy */}
           <Link href="/policies/amr">
             <div className="bg-light-gold hover:shadow-lg transition-all p-8 rounded-xl border-2 border-accent hover:border-primary cursor-pointer h-full">
-              <div className="text-5xl mb-4">🛡️</div>
+              <div className="text-accent mb-4"><Shield className="h-12 w-12" /></div>
               <h2 className="text-2xl font-bold text-accent mb-4">Antimicrobial Resistance (AMR) Policy</h2>
               <p className="text-gray-700 mb-6">
                 Our responsible use of antimicrobials to preserve their effectiveness and support sustainable poultry production.
               </p>
-              <span className="text-accent font-semibold hover:text-primary">Read More →</span>
+              <span className="text-accent font-semibold hover:text-primary flex items-center gap-1">Read More <ArrowRight className="h-4 w-4" /></span>
             </div>
           </Link>
 
           {/* Food Safety Policy */}
           <Link href="/policies/food-safety">
             <div className="bg-green-100 hover:shadow-lg transition-all p-8 rounded-xl border-2 border-green-400 hover:border-accent cursor-pointer h-full">
-              <div className="text-5xl mb-4">🔒</div>
+              <div className="text-primary mb-4"><Lock className="h-12 w-12" /></div>
               <h2 className="text-2xl font-bold text-primary mb-4">Food Safety Policy</h2>
               <p className="text-gray-700 mb-6">
                 Our commitment to providing safe, high-quality poultry products through preventive controls and continuous improvement.
               </p>
-              <span className="text-primary font-semibold hover:text-accent">Read More →</span>
+              <span className="text-primary font-semibold hover:text-accent flex items-center gap-1">Read More <ArrowRight className="h-4 w-4" /></span>
             </div>
           </Link>
         </div>

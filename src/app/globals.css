@@ -35,6 +35,7 @@ body {
 .animated-bg {
   position: relative;
   overflow: hidden;
+  background-color: #0D47A1; /* fallback solid colour */
   background: linear-gradient(135deg, #0D47A1 0%, #1565C0 30%, #0097A7 65%, #00BCD4 100%);
 }
 

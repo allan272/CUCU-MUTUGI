@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,8 +41,8 @@ export default function Navbar() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-aqua transition-all duration-300 group-hover:w-full rounded" />
               </Link>
             ))}
-            <Link href="/products" className="btn-primary text-sm !py-2 !px-5">
-              🐣 Order Chicks
+            <Link href="/products" className="btn-primary text-sm !py-2 !px-5 flex items-center gap-1.5">
+              <ShoppingBag className="h-4 w-4" /> Order Chicks
             </Link>
             <Link href="/admin" className="text-xs font-bold text-white bg-primary-dark px-3 py-1.5 rounded-full hover:bg-primary transition-colors">
               Admin
@@ -56,7 +57,7 @@ export default function Navbar() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? '✕' : '☰'}
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
@@ -76,8 +77,8 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/products" className="btn-primary inline-block text-sm !py-2 !px-5">
-              🐣 Order Chicks
+            <Link href="/products" className="btn-primary inline-flex items-center gap-1.5 text-sm !py-2 !px-5">
+              <ShoppingBag className="h-4 w-4" /> Order Chicks
             </Link>
           </div>
         )}

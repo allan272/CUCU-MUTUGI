@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check, ArrowLeft } from 'lucide-react';
 
 export default function FoodSafetyPolicyPage() {
   return (
@@ -29,42 +30,42 @@ export default function FoodSafetyPolicyPage() {
           <h2 className="text-3xl font-bold text-primary">Our Commitments</h2>
           <div className="bg-light-green p-8 rounded-xl space-y-4 border-l-4 border-primary">
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Regulatory Compliance:</strong> Compliance with all relevant food safety regulations and statutory requirements</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Best Practices:</strong> Implementation and maintenance of Good Agricultural Practices (GAP), Good Hygiene Practices (GHP), and Good Manufacturing Practices (GMP)</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Hazard Prevention:</strong> Prevention, monitoring, and control of food safety hazards throughout the production process</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Biosecurity & Sanitation:</strong> Maintaining effective biosecurity and sanitation measures to protect flock health and product integrity</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Product Traceability:</strong> Ensuring traceability of products across the entire value chain</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Employee Training:</strong> Providing continuous food safety training and awareness for all employees</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Continuous Monitoring:</strong> Regular monitoring, auditing, and review of food safety performance to drive continuous improvement</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Incident Management:</strong> Prompt investigation and resolution of food safety incidents, complaints, and non-conformities</p>
             </div>
           </div>
@@ -83,7 +84,7 @@ export default function FoodSafetyPolicyPage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/policies" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Policies
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Policies</span>
           </Link>
         </div>
       </section>

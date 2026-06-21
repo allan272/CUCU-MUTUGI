@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
@@ -36,7 +37,7 @@ export default function DashboardLayout({
               aria-expanded={mobileOpen}
               className="p-3 rounded-full border border-gray-200 bg-white text-primary shadow-sm hover:bg-gray-50"
             >
-              {mobileOpen ? '✕' : '☰'}
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
 

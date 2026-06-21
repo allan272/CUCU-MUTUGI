@@ -1,11 +1,26 @@
 import Link from 'next/link';
+import {
+  MessageSquare,
+  Smartphone,
+  FolderOpen,
+  GraduationCap,
+  Megaphone,
+  Users,
+  Lightbulb,
+  Video,
+  Gift,
+  Sprout,
+  Bird,
+  ArrowLeft,
+  Share2
+} from 'lucide-react';
 
 export default function FollowUsPage() {
   const socialLinks = [
     {
       platform: "Threads",
       url: "https://www.threads.com/@cucu.mutugi.poultry",
-      icon: "🧵",
+      icon: Share2,
       color: "bg-gray-800",
       hoverColor: "hover:bg-gray-900",
       description: "Follow us on Threads for latest updates"
@@ -13,7 +28,7 @@ export default function FollowUsPage() {
     {
       platform: "X (Twitter)",
       url: "https://x.com/KelvinM60040495",
-      icon: "𝕏",
+      icon: Share2,
       color: "bg-black",
       hoverColor: "hover:bg-gray-900",
       description: "Connect with us on X for real-time updates"
@@ -21,7 +36,7 @@ export default function FollowUsPage() {
     {
       platform: "Facebook",
       url: "https://www.facebook.com/cucumutugipoultry",
-      icon: "f",
+      icon: Share2,
       color: "bg-blue-600",
       hoverColor: "hover:bg-blue-700",
       description: "Like our Facebook page for community engagement"
@@ -29,7 +44,7 @@ export default function FollowUsPage() {
     {
       platform: "Instagram",
       url: "https://www.instagram.com/cucumutugipoultry/",
-      icon: "📸",
+      icon: Share2,
       color: "bg-pink-500",
       hoverColor: "hover:bg-pink-600",
       description: "Follow our Instagram for farm updates and photos"
@@ -37,7 +52,7 @@ export default function FollowUsPage() {
     {
       platform: "TikTok",
       url: "https://www.tiktok.com/@cucumutugipoultry",
-      icon: "🎵",
+      icon: Share2,
       color: "bg-gray-900",
       hoverColor: "hover:bg-black",
       description: "Watch our videos and poultry farming tips on TikTok"
@@ -60,27 +75,32 @@ export default function FollowUsPage() {
         <div className="space-y-4">
           <h2 className="text-3xl font-bold text-primary text-center mb-10">Social Media Platforms</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {socialLinks.map((social) => (
-              <a
-                key={social.platform}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${social.color} ${social.hoverColor} text-white p-8 rounded-xl transition-all transform hover:scale-105 shadow-lg`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-5xl">{social.icon}</div>
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{social.platform}</h3>
-                    <p className="text-sm opacity-90">{social.description}</p>
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+              return (
+                <a
+                  key={social.platform}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${social.color} ${social.hoverColor} text-white p-8 rounded-xl transition-all transform hover:scale-105 shadow-lg`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/10 p-3 rounded-lg">
+                      <Icon className="h-8 w-8" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">{social.platform}</h3>
+                      <p className="text-sm opacity-90">{social.description}</p>
+                    </div>
                   </div>
-                </div>
-              </a>
-            ))}
+                </a>
+              );
+            })}
           </div>
         </div>
 
-        {/* WhatsApp Group */}
+        {/* WhatsApp Community */}
         <div className="space-y-4">
           <h2 className="text-3xl font-bold text-primary text-center mb-10">WhatsApp Community</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -89,9 +109,9 @@ export default function FollowUsPage() {
               href="https://chat.whatsapp.com/HCBJw4Dp5iV2CoAPS4MXaW"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-green-500 hover:bg-green-600 text-white p-12 rounded-xl transition-all transform hover:scale-105 shadow-lg text-center"
+              className="bg-green-500 hover:bg-green-600 text-white p-12 rounded-xl transition-all transform hover:scale-105 shadow-lg text-center flex flex-col items-center justify-center"
             >
-              <div className="text-6xl mb-4">💬</div>
+              <MessageSquare className="h-16 w-16 mb-4 text-white" />
               <h3 className="text-3xl font-bold mb-3">Join WhatsApp Group</h3>
               <p className="text-lg mb-4 opacity-90">
                 Connect with other farmers, get instant support, and share experiences
@@ -102,13 +122,13 @@ export default function FollowUsPage() {
             </a>
 
             {/* WhatsApp Support */}
-            <div className="bg-light-green p-12 rounded-xl border-2 border-green-500">
-              <div className="text-6xl mb-4 text-center">📱</div>
+            <div className="bg-light-green p-12 rounded-xl border-2 border-green-500 flex flex-col items-center justify-center">
+              <Smartphone className="h-16 w-16 mb-4 text-primary" />
               <h3 className="text-2xl font-bold text-primary mb-4 text-center">WhatsApp Support</h3>
               <p className="text-gray-700 mb-6 text-center">
                 Send us a message on WhatsApp for quick responses and technical support
               </p>
-              <div className="space-y-3 text-center">
+              <div className="space-y-3 text-center w-full">
                 <a
                   href="https://wa.me/254706972161"
                   target="_blank"
@@ -140,7 +160,7 @@ export default function FollowUsPage() {
             className="bg-blue-600 hover:bg-blue-700 text-white p-12 rounded-xl transition-all transform hover:scale-105 shadow-lg block"
           >
             <div className="flex items-center gap-6">
-              <div className="text-6xl">📂</div>
+              <FolderOpen className="h-16 w-16 text-white flex-shrink-0" />
               <div>
                 <h3 className="text-3xl font-bold mb-3">Google Drive Resources</h3>
                 <p className="text-lg opacity-90 mb-4">
@@ -159,32 +179,32 @@ export default function FollowUsPage() {
           <h2 className="text-3xl font-bold text-primary text-center mb-8">Why Follow CUCU MUTUGI POULTRY?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-light-green p-6 rounded-xl border-l-4 border-primary">
-              <div className="text-4xl mb-3">🎓</div>
+              <GraduationCap className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-bold text-primary mb-2">Educational Content</h3>
               <p className="text-gray-700">Learn poultry farming best practices and techniques</p>
             </div>
             <div className="bg-light-green p-6 rounded-xl border-l-4 border-primary">
-              <div className="text-4xl mb-3">📢</div>
+              <Megaphone className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-bold text-primary mb-2">Latest Updates</h3>
               <p className="text-gray-700">Get real-time news and product announcements</p>
             </div>
             <div className="bg-light-green p-6 rounded-xl border-l-4 border-primary">
-              <div className="text-4xl mb-3">🤝</div>
+              <Users className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-bold text-primary mb-2">Community Support</h3>
               <p className="text-gray-700">Connect with other farmers and share experiences</p>
             </div>
             <div className="bg-light-green p-6 rounded-xl border-l-4 border-primary">
-              <div className="text-4xl mb-3">💡</div>
+              <Lightbulb className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-bold text-primary mb-2">Expert Advice</h3>
               <p className="text-gray-700">Get answers to your poultry farming questions</p>
             </div>
             <div className="bg-light-green p-6 rounded-xl border-l-4 border-primary">
-              <div className="text-4xl mb-3">🎥</div>
+              <Video className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-bold text-primary mb-2">Video Tutorials</h3>
               <p className="text-gray-700">Watch how-to videos and farm demonstrations</p>
             </div>
             <div className="bg-light-green p-6 rounded-xl border-l-4 border-primary">
-              <div className="text-4xl mb-3">🎁</div>
+              <Gift className="h-10 w-10 text-primary mb-3" />
               <h3 className="font-bold text-primary mb-2">Exclusive Offers</h3>
               <p className="text-gray-700">Get special deals and promotions for followers</p>
             </div>
@@ -197,15 +217,15 @@ export default function FollowUsPage() {
           <p className="text-lg mb-6">
             Follow us on all platforms to stay connected with CUCU MUTUGI POULTRY and never miss important updates
           </p>
-          <p className="text-light-green font-semibold">
-            Growing Farmers, Building Prosperity 🌱🐔
+          <p className="text-light-green font-semibold flex items-center justify-center gap-1.5">
+            Growing Farmers, Building Prosperity <Sprout className="h-4 w-4 text-green-300" /> <Bird className="h-4 w-4 text-accent" />
           </p>
         </div>
 
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
-          <Link href="/contact" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Contact
+          <Link href="/contact" className="text-primary font-semibold hover:text-accent transition-colors flex items-center gap-1">
+            <ArrowLeft className="h-4 w-4" /> Back to Contact
           </Link>
         </div>
       </section>

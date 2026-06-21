@@ -22,7 +22,26 @@ function formatDoc<T>(doc: any): T | null {
   return { id: _id?.toString() || rest.id, ...rest } as unknown as T;
 }
 
-export async function GET() {
+function isAuthorized(request: Request): boolean {
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) return false;
+  
+  let password = request.headers.get('x-admin-password');
+  
+  if (!password && request.url) {
+    try {
+      const { searchParams } = new URL(request.url);
+      password = searchParams.get('auth');
+    } catch (e) {}
+  }
+  
+  return password === adminPassword;
+}
+
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
@@ -89,6 +108,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);

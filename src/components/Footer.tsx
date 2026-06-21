@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Sprout, Phone, Mail, MapPin, Calendar, Bird } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -24,8 +25,9 @@ export default function Footer() {
                 <span className="text-aqua-light text-sm font-semibold tracking-widest uppercase">Poultry</span>
               </div>
             </div>
-            <p className="text-blue-100 mb-4 max-w-md leading-relaxed">
-              🌱 Growing Farmers, Building Prosperity. Your trusted partner in poultry farming — providing healthy, pre-vaccinated chicks across Kenya and beyond.
+            <p className="text-blue-100 mb-4 max-w-md leading-relaxed flex items-start gap-2">
+              <Sprout className="h-5 w-5 text-green-300 flex-shrink-0 mt-0.5" />
+              <span>Growing Farmers, Building Prosperity. Your trusted partner in poultry farming — providing healthy, pre-vaccinated chicks across Kenya and beyond.</span>
             </p>
             <div className="flex gap-3">
               <a href="#" className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">f</a>
@@ -60,22 +62,22 @@ export default function Footer() {
             <h3 className="text-white font-bold text-lg mb-4">Contact Us</h3>
             <ul className="space-y-3 text-blue-100">
               <li className="flex items-start gap-2">
-                <span className="text-aqua-light mt-0.5">📞</span>
+                <Phone className="text-aqua-light h-4 w-4 mt-1 flex-shrink-0" />
                 <div>
                   <p>0706 972 161</p>
                   <p>0740 662 799</p>
                 </div>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-aqua-light mt-0.5">📧</span>
+                <Mail className="text-aqua-light h-4 w-4 mt-1 flex-shrink-0" />
                 <span>cucumutugipoultry@gmail.com</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-aqua-light mt-0.5">📍</span>
+                <MapPin className="text-aqua-light h-4 w-4 mt-1 flex-shrink-0" />
                 <span>Embu · Nairobi · Nakuru · Eldoret & more</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-aqua-light mt-0.5">📅</span>
+                <Calendar className="text-aqua-light h-4 w-4 mt-1 flex-shrink-0" />
                 <span>Marketing Days: Wed & Thu</span>
               </li>
             </ul>
@@ -83,7 +85,11 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/20 pt-6 text-center text-blue-200 text-sm">
-          <p>&copy; {new Date().getFullYear()} CUCU MUTUGI POULTRY. All rights reserved. 🐔 Growing Farmers, Building Prosperity.</p>
+          <p className="flex items-center justify-center gap-1.5 flex-wrap">
+            <span>&copy; {new Date().getFullYear()} CUCU MUTUGI POULTRY. All rights reserved.</span>
+            <Bird className="h-4 w-4 text-aqua-light inline" />
+            <span>Growing Farmers, Building Prosperity.</span>
+          </p>
         </div>
       </div>
     </footer>

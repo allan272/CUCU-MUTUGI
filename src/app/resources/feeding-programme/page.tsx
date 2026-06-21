@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check, AlertTriangle, XCircle, Eye, LineChart, Activity, ClipboardList, ArrowLeft } from 'lucide-react';
 
 export default function FeedingProgrammePage() {
   const feedingProgrammes = [
@@ -49,19 +50,19 @@ export default function FeedingProgrammePage() {
           </p>
           <div className="bg-light-green p-8 rounded-xl space-y-4 border-l-4 border-primary">
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>House temperature is at the recommended level</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Adequate fresh air available through proper ventilation</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Feed and clean drinking water readily accessible</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Sufficient lighting provided to encourage feeding and drinking</p>
             </div>
           </div>
@@ -74,11 +75,11 @@ export default function FeedingProgrammePage() {
             Feed represents the largest cost in commercial poultry production. It is therefore essential to purchase feed from a reputable manufacturer who can guarantee consistent quality and performance.
           </p>
           <div className="bg-yellow-50 border-l-4 border-yellow-500 p-8 rounded-xl mt-6 space-y-4">
-            <h3 className="font-bold text-yellow-700 text-lg">⚠️ Important Guidelines:</h3>
+            <h3 className="font-bold text-yellow-700 text-lg flex items-center gap-2"><AlertTriangle className="h-5 w-5" /> Important Guidelines:</h3>
             <div className="space-y-3 text-gray-700">
-              <p><strong>❌ Do NOT:</strong> Mix feeds from different manufacturers</p>
-              <p><strong>❌ Do NOT:</strong> Add unauthorized protein sources like fish meal</p>
-              <p><strong>❌ Do NOT:</strong> Add mineral supplements like dicalcium phosphate (DCP)</p>
+              <p className="flex items-center gap-1.5"><XCircle className="h-4 w-4 text-red-500 flex-shrink-0" /> <strong>Do NOT:</strong> Mix feeds from different manufacturers</p>
+              <p className="flex items-center gap-1.5"><XCircle className="h-4 w-4 text-red-500 flex-shrink-0" /> <strong>Do NOT:</strong> Add unauthorized protein sources like fish meal</p>
+              <p className="flex items-center gap-1.5"><XCircle className="h-4 w-4 text-red-500 flex-shrink-0" /> <strong>Do NOT:</strong> Add mineral supplements like dicalcium phosphate (DCP)</p>
               <p className="text-sm">Such practices can alter nutrient balance and negatively affect bird performance. For example, fish meal above 5% can result in fishy taste in eggs and meat.</p>
             </div>
           </div>
@@ -148,19 +149,19 @@ export default function FeedingProgrammePage() {
           
           <div className="bg-light-green p-8 rounded-xl space-y-4 border-l-4 border-primary mt-6">
             <div className="flex gap-4">
-              <span className="text-2xl">👀</span>
+              <Eye className="h-6 w-6 text-primary" />
               <p>Observe feed consumption patterns and adjust as needed</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">📊</span>
+              <LineChart className="h-6 w-6 text-primary" />
               <p>Monitor bird weight and uniformity regularly</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">🏥</span>
+              <Activity className="h-6 w-6 text-primary" />
               <p>Assess overall health and productivity indicators</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">📋</span>
+              <ClipboardList className="h-6 w-6 text-primary" />
               <p>Keep detailed records of feed usage and performance</p>
             </div>
           </div>
@@ -169,7 +170,7 @@ export default function FeedingProgrammePage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

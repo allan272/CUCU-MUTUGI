@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Check, XCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 
 export default function BroodingManagementPage() {
   const temperatureGuide = [
@@ -42,27 +43,27 @@ export default function BroodingManagementPage() {
           </p>
           <div className="bg-light-green p-8 rounded-xl space-y-4 border-l-4 border-primary">
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Brooding house is thoroughly cleaned, disinfected, and maintained under strict biosecurity protocols.</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Feeders and drinkers arranged for easy access to feed and water immediately upon arrival.</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Supplementary feeders and drinkers positioned close to primary systems.</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Chicks do not need to travel more than one metre to access feed or water during first 24 hours.</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Brooding area pre-heated and temperature/humidity stabilized before chick placement.</p>
             </div>
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p>Floor temperature maintained at approximately 28°C–30°C for optimal comfort.</p>
             </div>
           </div>
@@ -98,7 +99,7 @@ export default function BroodingManagementPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded">
-              <h3 className="font-bold text-red-700 mb-3">❌ When Temperatures Are Too Low:</h3>
+              <h3 className="font-bold text-red-700 mb-3 flex items-center gap-2"><XCircle className="h-5 w-5" /> When Temperatures Are Too Low:</h3>
               <ul className="space-y-2 text-gray-700">
                 <li>• Chicks huddle closely together beneath heat source</li>
                 <li>• Increased chirping or distress calls</li>
@@ -107,7 +108,7 @@ export default function BroodingManagementPage() {
               </ul>
             </div>
             <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded">
-              <h3 className="font-bold text-yellow-700 mb-3">⚠️ When Temperatures Are Too High:</h3>
+              <h3 className="font-bold text-yellow-700 mb-3 flex items-center gap-2"><AlertTriangle className="h-5 w-5" /> When Temperatures Are Too High:</h3>
               <ul className="space-y-2 text-gray-700">
                 <li>• Chicks move away from heat, gather at edges</li>
                 <li>• Birds pant and show heat stress</li>
@@ -176,7 +177,7 @@ export default function BroodingManagementPage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

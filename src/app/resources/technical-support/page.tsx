@@ -1,36 +1,37 @@
 import Link from 'next/link';
+import { Home, Users, Wheat, Shield, Activity, TrendingUp, Check, Mail, Smartphone, Clock, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function TechnicalSupportPage() {
   const supportAreas = [
     {
       title: "Poultry Housing",
       description: "Design and construction guidance for poultry houses and facilities",
-      icon: "🏠"
+      icon: Home
     },
     {
       title: "Husbandry Practices",
       description: "Best practices for caring for and managing poultry flocks",
-      icon: "👨‍🌾"
+      icon: Users
     },
     {
       title: "Nutrition",
       description: "Feeding programs and nutritional requirements for optimal growth",
-      icon: "🌾"
+      icon: Wheat
     },
     {
       title: "Biosecurity",
       description: "Disease prevention and biosecurity protocols",
-      icon: "🛡️"
+      icon: Shield
     },
     {
       title: "Flock Health Management",
       description: "Vaccination programs and health monitoring strategies",
-      icon: "🏥"
+      icon: Activity
     },
     {
       title: "Production Optimization",
       description: "Strategies to achieve optimal productivity and profitability",
-      icon: "📈"
+      icon: TrendingUp
     }
   ];
 
@@ -62,27 +63,27 @@ export default function TechnicalSupportPage() {
           </p>
           <div className="bg-light-green p-8 rounded-xl space-y-4 border-l-4 border-primary">
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Proven Performance Results:</strong> Real-world data from successful flock management</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Sound Management Practices:</strong> Industry-recognized best practices in poultry production</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Current Scientific Knowledge:</strong> Latest research relevant to poultry production in East Africa and beyond</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Practical Industry Experience:</strong> Decades of field experience and expertise</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Ongoing Advancements:</strong> Latest technologies and innovations in poultry production</p>
             </div>
           </div>
@@ -92,13 +93,18 @@ export default function TechnicalSupportPage() {
         <div className="space-y-4">
           <h2 className="text-3xl font-bold text-primary">Areas of Technical Support</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {supportAreas.map((area, idx) => (
-              <div key={idx} className="bg-white border-2 border-primary rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3">{area.icon}</div>
-                <h3 className="text-xl font-bold text-primary mb-2">{area.title}</h3>
-                <p className="text-gray-700">{area.description}</p>
-              </div>
-            ))}
+            {supportAreas.map((area, idx) => {
+              const Icon = area.icon;
+              return (
+                <div key={idx} className="bg-white border-2 border-primary rounded-xl p-6 hover:shadow-lg transition-shadow flex flex-col items-center text-center md:items-start md:text-left">
+                  <div className="text-primary mb-3 bg-blue-50 p-2.5 rounded-lg">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-primary mb-2">{area.title}</h3>
+                  <p className="text-gray-700">{area.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -123,9 +129,9 @@ export default function TechnicalSupportPage() {
               Our technical team remains available to assist farmers in developing and implementing poultry management programs tailored to their unique operational needs, ensuring sustainable and successful poultry production.
             </p>
             <div className="bg-primary/80 p-6 rounded mt-6 space-y-3">
-              <p className="text-lg"><strong>📧 Email:</strong> cucumutugipoultry@gmail.com</p>
-              <p className="text-lg"><strong>📱 Call:</strong> 0706972161 / 0740662799</p>
-              <p className="text-lg"><strong>⏰ Marketing Days:</strong> Wednesday & Thursday</p>
+              <p className="text-lg"><Mail className="h-4 w-4 inline mr-1 text-accent" /> <strong>Email:</strong> cucumutugipoultry@gmail.com</p>
+              <p className="text-lg"><Smartphone className="h-4 w-4 inline mr-1 text-accent" /> <strong>Call:</strong> 0706972161 / 0740662799</p>
+              <p className="text-lg"><Clock className="h-4 w-4 inline mr-1 text-accent" /> <strong>Marketing Days:</strong> Wednesday & Thursday</p>
             </div>
           </div>
         </div>
@@ -137,14 +143,14 @@ export default function TechnicalSupportPage() {
             Visit our comprehensive farmer resources section for detailed guides on brooding, feeding, water management, health management, sanitation, and record keeping.
           </p>
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors text-lg">
-            View All Farmer Guides →
+            View All Farmer Guides
           </Link>
         </div>
 
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

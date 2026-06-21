@@ -1,5 +1,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import {
+  Sprout,
+  ShoppingBag,
+  LayoutDashboard,
+  Bird,
+  Truck,
+  Syringe,
+  BookOpen,
+  Smartphone,
+  Award,
+  Sparkles,
+  Phone,
+  MapPin,
+  MessageCircle,
+} from 'lucide-react';
 
 export default function Home() {
   return (
@@ -43,19 +58,19 @@ export default function Home() {
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-blue-100 mb-4 font-light max-w-2xl mx-auto">
-            Growing Farmers, Building Prosperity 🌱
+          <p className="text-xl md:text-2xl text-blue-100 mb-4 font-light max-w-2xl mx-auto flex items-center justify-center gap-2">
+            Growing Farmers, Building Prosperity <Sprout className="h-6 w-6 text-green-300 inline" />
           </p>
           <p className="text-blue-200 mb-10 max-w-xl mx-auto">
             Your Trusted Partner for Pre-Vaccinated Kienyeji, Broilers & Layers — Delivered Free Across Kenya
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/products" className="btn-primary text-lg">
-              🐣 Order Chicks Now
+            <Link href="/products" className="btn-primary text-lg flex items-center justify-center gap-2">
+              <ShoppingBag className="h-5 w-5" /> Order Chicks Now
             </Link>
-            <Link href="/dashboard" className="btn-outline text-lg">
-              🌾 Farmer Dashboard
+            <Link href="/dashboard" className="btn-outline text-lg flex items-center justify-center gap-2">
+              <LayoutDashboard className="h-5 w-5" /> Farmer Dashboard
             </Link>
           </div>
 
@@ -92,21 +107,24 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: '🐥', title: 'Improved Kienyeji Chicks', desc: 'Kuroiler, KARI, Sasso, Rainbow Rooster & Kenbro — pre-vaccinated and healthy.', color: 'from-blue-500 to-aqua' },
-              { icon: '🐔', title: 'Broilers & Layers', desc: 'Day-old to 1-month-old broilers and layers, ready for your farm.', color: 'from-aqua to-teal' },
-              { icon: '🚚', title: 'Free Countrywide Delivery', desc: 'We deliver to all major counties across Kenya — at no extra cost to you.', color: 'from-teal to-primary' },
-              { icon: '💉', title: 'Fully Pre-Vaccinated', desc: 'Every chick is vaccinated before delivery, giving your flock the healthiest start.', color: 'from-primary to-blue-500' },
-              { icon: '📚', title: 'Farmer Support', desc: 'Expert guidance on brooding, feeding, disease management and farm records.', color: 'from-blue-600 to-aqua-dark' },
-              { icon: '📱', title: 'Farmer Dashboard', desc: 'Manage your flocks, track profit, log feed and mortality — all in one place.', color: 'from-aqua-dark to-primary-dark' },
-            ].map((item) => (
-              <div key={item.title} className="glass-white rounded-2xl p-8 card-hover border border-blue-100">
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-2xl mb-5 shadow-lg`}>
-                  {item.icon}
+              { icon: Bird, title: 'Improved Kienyeji Chicks', desc: 'Kuroiler, KARI, Sasso, Rainbow Rooster & Kenbro — pre-vaccinated and healthy.', color: 'from-blue-500 to-aqua' },
+              { icon: Bird, title: 'Broilers & Layers', desc: 'Day-old to 1-month-old broilers and layers, ready for your farm.', color: 'from-aqua to-teal' },
+              { icon: Truck, title: 'Free Countrywide Delivery', desc: 'We deliver to all major counties across Kenya — at no extra cost to you.', color: 'from-teal to-primary' },
+              { icon: Syringe, title: 'Fully Pre-Vaccinated', desc: 'Every chick is vaccinated before delivery, giving your flock the healthiest start.', color: 'from-primary to-blue-500' },
+              { icon: BookOpen, title: 'Farmer Support', desc: 'Expert guidance on brooding, feeding, disease management and farm records.', color: 'from-blue-600 to-aqua-dark' },
+              { icon: Smartphone, title: 'Farmer Dashboard', desc: 'Manage your flocks, track profit, log feed and mortality — all in one place.', color: 'from-aqua-dark to-primary-dark' },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="glass-white rounded-2xl p-8 card-hover border border-blue-100">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-5 shadow-lg`}>
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-primary mb-3">{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-3">{item.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -120,18 +138,23 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { name: 'Kuroiler', icon: '🐓', tag: 'Dual Purpose' },
-              { name: 'KARI', icon: '🐔', tag: 'Indigenous' },
-              { name: 'Sasso', icon: '🐣', tag: 'Fast Growing' },
-              { name: 'Rainbow Rooster', icon: '🌈', tag: 'Colorful' },
-              { name: 'Kenbro', icon: '🏆', tag: 'Hardy' },
-            ].map((breed) => (
-              <div key={breed.name} className="text-center p-6 rounded-2xl card-hover cursor-pointer border-2 border-blue-50 hover:border-aqua bg-gradient-to-b from-white to-blue-50">
-                <div className="text-4xl mb-3">{breed.icon}</div>
-                <h3 className="font-bold text-primary">{breed.name}</h3>
-                <span className="text-xs text-aqua font-semibold bg-blue-50 px-2 py-0.5 rounded-full mt-1 inline-block">{breed.tag}</span>
-              </div>
-            ))}
+              { name: 'Kuroiler', icon: Bird, tag: 'Dual Purpose' },
+              { name: 'KARI', icon: Bird, tag: 'Indigenous' },
+              { name: 'Sasso', icon: Bird, tag: 'Fast Growing' },
+              { name: 'Rainbow Rooster', icon: Sparkles, tag: 'Colorful' },
+              { name: 'Kenbro', icon: Award, tag: 'Hardy' },
+            ].map((breed) => {
+              const Icon = breed.icon;
+              return (
+                <div key={breed.name} className="text-center p-6 rounded-2xl card-hover cursor-pointer border-2 border-blue-50 hover:border-aqua bg-gradient-to-b from-white to-blue-50 flex flex-col items-center justify-center">
+                  <div className="text-blue-500 mb-3 bg-blue-50 p-3 rounded-full">
+                    <Icon className="h-7 w-7" />
+                  </div>
+                  <h3 className="font-bold text-primary">{breed.name}</h3>
+                  <span className="text-xs text-aqua font-semibold bg-blue-50 px-2 py-0.5 rounded-full mt-1 inline-block">{breed.tag}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -145,8 +168,12 @@ export default function Home() {
           <h2 className="text-4xl font-extrabold mb-4">Ready to Start Your Poultry Journey?</h2>
           <p className="text-blue-100 text-xl mb-8">Join thousands of successful Kenyan farmers who trust CUCU MUTUGI POULTRY.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact" className="btn-primary text-lg">📞 Contact Us Today</Link>
-            <Link href="/resources" className="btn-outline text-lg">📖 Read Farmer Guides</Link>
+            <Link href="/contact" className="btn-primary text-lg flex items-center justify-center gap-2">
+              <Phone className="h-5 w-5" /> Contact Us Today
+            </Link>
+            <Link href="/resources" className="btn-outline text-lg flex items-center justify-center gap-2">
+              <BookOpen className="h-5 w-5" /> Read Farmer Guides
+            </Link>
           </div>
         </div>
       </section>
@@ -160,8 +187,8 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap gap-3 justify-center">
             {['Embu', 'Kirinyaga', 'Meru', 'Nyeri', 'Tharaka Nithi', 'Kitale', 'Kitui', 'Machakos', 'Eldoret', 'Rongo', 'Bungoma', 'Nairobi', 'Naivasha', 'Nakuru'].map((county) => (
-              <span key={county} className="px-4 py-2 bg-white rounded-full text-primary font-semibold text-sm border border-blue-200 shadow-sm hover:shadow-md hover:border-aqua card-hover cursor-default">
-                📍 {county}
+              <span key={county} className="px-4 py-2 bg-white rounded-full text-primary font-semibold text-sm border border-blue-200 shadow-sm hover:shadow-md hover:border-aqua card-hover cursor-default flex items-center gap-1.5">
+                <MapPin className="h-4 w-4 text-aqua" /> {county}
               </span>
             ))}
           </div>
@@ -173,11 +200,11 @@ export default function Home() {
         href="https://wa.me/254706972161?text=Hello%2C+I+want+to+order+chicks"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 text-white"
         title="WhatsApp Us"
         style={{ boxShadow: '0 0 0 0 rgba(37,211,102,0.7)', animation: 'pulse-green 2s infinite' }}
       >
-        <span className="text-2xl">💬</span>
+        <MessageCircle className="h-6 w-6" />
       </a>
     </div>
   );

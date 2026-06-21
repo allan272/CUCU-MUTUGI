@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Mail, Smartphone, Calendar, Check, Truck, MapPin, Award, Users, Sparkles, Sprout, Bird } from 'lucide-react';
 
 export default function ContactPage() {
   return (
@@ -19,14 +20,14 @@ export default function ContactPage() {
           
           <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-bold text-accent mb-3">📧 Email</h3>
+              <h3 className="text-2xl font-bold text-accent mb-3 flex items-center justify-center gap-2"><Mail className="h-6 w-6" /> Email</h3>
               <a href="mailto:cucumutugipoultry@gmail.com" className="text-xl hover:text-accent transition-colors">
                 cucumutugipoultry@gmail.com
               </a>
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold text-accent mb-3">📱 Phone</h3>
+              <h3 className="text-2xl font-bold text-accent mb-3 flex items-center justify-center gap-2"><Smartphone className="h-6 w-6" /> Phone</h3>
               <div className="space-y-2">
                 <a href="tel:0706972161" className="block text-xl hover:text-accent transition-colors">
                   0706972161
@@ -42,16 +43,16 @@ export default function ContactPage() {
         {/* Marketing Days & Service Areas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="bg-light-green p-8 rounded-xl border-2 border-primary">
-            <h3 className="text-2xl font-bold text-primary mb-4">📅 Marketing Days</h3>
+            <h3 className="text-2xl font-bold text-primary mb-4 flex items-center gap-2"><Calendar className="h-6 w-6" /> Marketing Days</h3>
             <p className="text-lg text-gray-700 mb-4">We operate on:</p>
             <div className="space-y-2 text-lg text-gray-800 font-semibold">
-              <p>✓ Wednesday</p>
-              <p>✓ Thursday</p>
+              <p className="flex items-center gap-2 justify-center"><Check className="h-5 w-5 text-primary" /> Wednesday</p>
+              <p className="flex items-center gap-2 justify-center"><Check className="h-5 w-5 text-primary" /> Thursday</p>
             </div>
           </div>
 
           <div className="bg-light-gold p-8 rounded-xl border-2 border-accent">
-            <h3 className="text-2xl font-bold text-accent mb-4">🚚 Delivery</h3>
+            <h3 className="text-2xl font-bold text-accent mb-4 flex items-center gap-2"><Truck className="h-6 w-6" /> Delivery</h3>
             <p className="text-lg text-gray-700">
               <strong>FREE COUNTRYWIDE DELIVERY</strong> on all orders to ensure your chicks arrive safely and on time.
             </p>
@@ -60,7 +61,7 @@ export default function ContactPage() {
 
         {/* Service Locations */}
         <div className="bg-white p-8 rounded-xl border-2 border-primary mb-12">
-          <h2 className="text-2xl font-bold text-primary mb-6">📍 Service Locations</h2>
+          <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2"><MapPin className="h-6 w-6" /> Service Locations</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-gray-700">Embu</div>
             <div className="text-gray-700">Kirinyaga</div>
@@ -111,19 +112,19 @@ export default function ContactPage() {
         {/* Why Choose Us */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="bg-white border-2 border-primary rounded-xl p-6 text-center">
-            <div className="text-4xl mb-3">💪</div>
+            <Award className="h-8 w-8 text-primary mx-auto mb-3" />
             <h3 className="font-bold text-primary mb-2">Quality Chicks</h3>
             <p className="text-gray-700 text-sm">Healthy, strong, and fully vaccinated chicks</p>
           </div>
 
           <div className="bg-white border-2 border-primary rounded-xl p-6 text-center">
-            <div className="text-4xl mb-3">🤝</div>
+            <Users className="h-8 w-8 text-primary mx-auto mb-3" />
             <h3 className="font-bold text-primary mb-2">Expert Support</h3>
             <p className="text-gray-700 text-sm">Technical expertise and reliable customer service</p>
           </div>
 
           <div className="bg-white border-2 border-primary rounded-xl p-6 text-center">
-            <div className="text-4xl mb-3">✨</div>
+            <Sparkles className="h-8 w-8 text-primary mx-auto mb-3" />
             <h3 className="font-bold text-primary mb-2">Trusted Partner</h3>
             <p className="text-gray-700 text-sm">Your partner in building profitable poultry businesses</p>
           </div>
@@ -133,7 +134,7 @@ export default function ContactPage() {
         <div className="bg-accent text-charcoal p-12 rounded-xl text-center">
           <h2 className="text-3xl font-bold mb-4">CUCU MUTUGI POULTRY</h2>
           <p className="text-xl italic">
-            "Growing Farmers, Building Prosperity" 🌱🐔
+            "Growing Farmers, Building Prosperity" <Sprout className="h-5 w-5 inline text-green-700" /> <Bird className="h-5 w-5 inline text-primary" />
           </p>
         </div>
 
@@ -149,7 +150,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="bg-gray-800 hover:bg-gray-900 text-white p-6 rounded-lg text-center font-bold transition-colors"
             >
-              🧵 Threads
+              Threads
             </a>
             <a
               href="https://x.com/KelvinM60040495"
@@ -165,7 +166,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-lg text-center font-bold transition-colors"
             >
-              f Facebook
+              Facebook
             </a>
             <a
               href="https://www.instagram.com/cucumutugipoultry/"
@@ -173,7 +174,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="bg-pink-500 hover:bg-pink-600 text-white p-6 rounded-lg text-center font-bold transition-colors"
             >
-              📸 Instagram
+              Instagram
             </a>
             <a
               href="https://www.tiktok.com/@cucumutugipoultry"
@@ -181,7 +182,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="bg-gray-900 hover:bg-black text-white p-6 rounded-lg text-center font-bold transition-colors"
             >
-              🎵 TikTok
+              TikTok
             </a>
             <a
               href="https://chat.whatsapp.com/HCBJw4Dp5iV2CoAPS4MXaW"
@@ -189,7 +190,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="bg-green-500 hover:bg-green-600 text-white p-6 rounded-lg text-center font-bold transition-colors"
             >
-              💬 WhatsApp
+              WhatsApp
             </a>
             <a
               href="https://drive.google.com/drive/folders/12XyA9r8y7Uu6Xs8ZBPN-llwOS-wkpUgw?usp=drive_link"
@@ -197,7 +198,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-lg text-center font-bold transition-colors"
             >
-              📂 Resources
+              Resources
             </a>
           </div>
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Wheat, AlertTriangle, DollarSign, Egg } from 'lucide-react';
 
 export default function DashboardOverview() {
   return (
@@ -29,19 +30,19 @@ export default function DashboardOverview() {
         <h2 className="text-xl font-bold text-primary mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Link href="/dashboard/feed" className="flex flex-col items-center p-4 bg-light-green rounded-lg hover:bg-green-100 transition-colors">
-            <span className="text-2xl mb-2">🌾</span>
+            <Wheat className="h-7 w-7 text-green-600 mb-2" />
             <span className="font-medium text-charcoal">Log Feed</span>
           </Link>
           <Link href="/dashboard/mortality" className="flex flex-col items-center p-4 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
-            <span className="text-2xl mb-2">⚠️</span>
+            <AlertTriangle className="h-7 w-7 text-red-500 mb-2" />
             <span className="font-medium text-charcoal">Log Mortality</span>
           </Link>
           <Link href="/dashboard/profit" className="flex flex-col items-center p-4 bg-light-gold rounded-lg hover:bg-yellow-100 transition-colors">
-            <span className="text-2xl mb-2">💰</span>
+            <DollarSign className="h-7 w-7 text-yellow-600 mb-2" />
             <span className="font-medium text-charcoal">Estimate Profit</span>
           </Link>
           <Link href="/dashboard/flocks" className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-            <span className="text-2xl mb-2">🐣</span>
+            <Egg className="h-7 w-7 text-blue-600 mb-2" />
             <span className="font-medium text-charcoal">Manage Flocks</span>
           </Link>
         </div>

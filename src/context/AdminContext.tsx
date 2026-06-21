@@ -18,54 +18,71 @@ import {
 export type { Product, Order, Farmer, BlogPost, SiteSettings, DBTable };
 
 // ─── Loader ───────────────────────────────────────────────────────────────────
-async function loadDB(): Promise<DBTable> {
+async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongodb' | 'local' }> {
   if (typeof window === 'undefined') {
     return {
-      products: DEFAULT_PRODUCTS,
-      orders: DEFAULT_ORDERS,
-      farmers: DEFAULT_FARMERS,
-      blogPosts: DEFAULT_BLOGS,
-      settings: DEFAULT_SETTINGS
+      data: {
+        products: DEFAULT_PRODUCTS,
+        orders: DEFAULT_ORDERS,
+        farmers: DEFAULT_FARMERS,
+        blogPosts: DEFAULT_BLOGS,
+        settings: DEFAULT_SETTINGS
+      },
+      source: 'local'
     };
   }
 
   // Attempt to load from MongoDB Atlas backend API
-  try {
-    const res = await fetch('/api/db');
-    if (res.ok) {
-      const data = await res.json();
-      if (data && !data.error) {
-        return data as DBTable;
+  if (password) {
+    try {
+      const res = await fetch('/api/db', {
+        headers: {
+          'x-admin-password': password
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && !data.error) {
+          return { data: data as DBTable, source: 'mongodb' };
+        } else {
+          console.warn('MongoDB API returned error or empty data. Using local storage fallback.');
+        }
       } else {
-        console.warn('MongoDB API returned error or empty data. Using local storage fallback.');
+        console.warn(`MongoDB API returned status ${res.status}. Using local storage fallback.`);
       }
-    } else {
-      console.warn(`MongoDB API returned status ${res.status}. Using local storage fallback.`);
+    } catch (error) {
+      console.error('Failed to connect to MongoDB API. Using local storage fallback:', error);
     }
-  } catch (error) {
-    console.error('Failed to connect to MongoDB API. Using local storage fallback:', error);
   }
 
   // Fallback to Local Storage
   try {
     const raw = localStorage.getItem('cucu_mutugi_db');
-    if (raw) return JSON.parse(raw);
+    if (raw) return { data: JSON.parse(raw), source: 'local' };
   } catch (error) {
     console.error('Local storage load failed:', error);
   }
 
   return {
-    products: DEFAULT_PRODUCTS,
-    orders: DEFAULT_ORDERS,
-    farmers: DEFAULT_FARMERS,
-    blogPosts: DEFAULT_BLOGS,
-    settings: DEFAULT_SETTINGS
+    data: {
+      products: DEFAULT_PRODUCTS,
+      orders: DEFAULT_ORDERS,
+      farmers: DEFAULT_FARMERS,
+      blogPosts: DEFAULT_BLOGS,
+      settings: DEFAULT_SETTINGS
+    },
+    source: 'local'
   };
 }
 
 // ─── Context ─────────────────────────────────────────────────────────────────
 interface AdminContextValue {
   db: DBTable;
+  dbSource: 'mongodb' | 'local';
+  isAuthenticated: boolean;
+  login: (password: string) => Promise<boolean>;
+  logout: () => void;
+  authError: string | null;
   setProducts: (p: Product[]) => void;
   setOrders: (o: Order[]) => void;
   setFarmers: (f: Farmer[]) => void;
@@ -100,17 +117,88 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     blogPosts: DEFAULT_BLOGS,
     settings: DEFAULT_SETTINGS
   });
+  const [dbSource, setDBSource] = useState<'mongodb' | 'local'>('local');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [adminPassword, setAdminPassword] = useState<string>('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     async function initialize() {
-      const initialDB = await loadDB();
-      setDB(initialDB);
+      if (typeof window !== 'undefined') {
+        const savedPwd = sessionStorage.getItem('cucu_mutugi_admin_pwd') || '';
+        if (savedPwd) {
+          try {
+            // Fast auth check — this returns in ~37ms, no MongoDB wait
+            const res = await fetch('/api/auth', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ password: savedPwd }),
+              signal: AbortSignal.timeout(4000),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success) {
+                setAdminPassword(savedPwd);
+                setIsAuthenticated(true);
+                setLoaded(true); // ← show dashboard immediately
+                // Load MongoDB data in the background — don't block UI
+                loadDB(savedPwd).then(result => {
+                  setDB(result.data);
+                  setDBSource(result.source);
+                });
+                return;
+              }
+            }
+          } catch {
+            // Timeout or network error — clear stale session
+            sessionStorage.removeItem('cucu_mutugi_admin_pwd');
+          }
+        }
+      }
+      // No valid saved session — show login form immediately (no MongoDB needed)
+      setIsAuthenticated(false);
       setLoaded(true);
     }
     initialize();
   }, []);
+
+
+  const login = async (password: string): Promise<boolean> => {
+    setAuthError(null);
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          sessionStorage.setItem('cucu_mutugi_admin_pwd', password);
+          setAdminPassword(password);
+          setIsAuthenticated(true);
+          const result = await loadDB(password);
+          setDB(result.data);
+          setDBSource(result.source);
+          return true;
+        }
+      }
+      setAuthError('Invalid admin password.');
+      return false;
+    } catch (e) {
+      setAuthError('Authentication error occurred.');
+      return false;
+    }
+  };
+
+  const logout = () => {
+    sessionStorage.removeItem('cucu_mutugi_admin_pwd');
+    setAdminPassword('');
+    setIsAuthenticated(false);
+    setDBSource('local');
+  };
 
   // Update client state and localStorage copy
   const persistLocal = useCallback((newDB: DBTable) => {
@@ -124,11 +212,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
   // Send update to MongoDB API route
   const syncToMongoDB = async (action: string, payload: any) => {
+    if (!adminPassword) return;
     try {
       const res = await fetch('/api/db', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-admin-password': adminPassword
         },
         body: JSON.stringify({ action, payload }),
       });
@@ -248,12 +338,26 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     await syncToMongoDB('reset', null);
   };
 
-  if (!loaded) return null;
+  if (!loaded) return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-center gap-4"
+      style={{ background: 'linear-gradient(135deg, #0A192F 0%, #172A45 50%, #1A365D 100%)' }}
+    >
+      <div className="w-16 h-16 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
+      <p className="text-cyan-300 text-sm font-semibold tracking-widest uppercase">Loading Admin Panel…</p>
+    </div>
+  );
+
 
   return (
     <AdminContext.Provider
       value={{
         db,
+        dbSource,
+        isAuthenticated,
+        login,
+        logout,
+        authError,
         setProducts,
         setOrders,
         setFarmers,

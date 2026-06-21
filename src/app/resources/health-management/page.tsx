@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Home, LineChart, Wrench, Shield, Check, ArrowLeft } from 'lucide-react';
 
 export default function HealthManagementPage() {
   const benefits = [
@@ -42,19 +43,19 @@ export default function HealthManagementPage() {
           </p>
           <div className="bg-light-gold p-8 rounded-xl space-y-3 border-l-4 border-accent">
             <div className="flex gap-3">
-              <span className="text-xl">🏠</span>
+              <Home className="h-5 w-5 text-primary" />
               <p className="text-gray-700">Improved housing and facilities</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">📊</span>
+              <LineChart className="h-5 w-5 text-primary" />
               <p className="text-gray-700">Appropriate stocking densities</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">🔧</span>
+              <Wrench className="h-5 w-5 text-primary" />
               <p className="text-gray-700">Enhanced farm management practices</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">🛡️</span>
+              <Shield className="h-5 w-5 text-primary" />
               <p className="text-gray-700">Comprehensive disease prevention measures</p>
             </div>
           </div>
@@ -72,7 +73,7 @@ export default function HealthManagementPage() {
             <ul className="space-y-3">
               {benefits.map((benefit, idx) => (
                 <li key={idx} className="flex gap-3 text-gray-700">
-                  <span className="text-accent text-xl">✓</span>
+                  <Check className="text-accent h-5 w-5 flex-shrink-0" />
                   {benefit}
                 </li>
               ))}
@@ -119,31 +120,31 @@ export default function HealthManagementPage() {
           <div className="bg-light-green p-8 rounded-xl space-y-3 border-l-4 border-primary mt-6">
             <h3 className="font-bold text-primary text-lg mb-4">Benefits of Hatchery-Based Vaccination:</h3>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Improved vaccine coverage and consistency across all chicks</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Enhanced early immunity and disease resistance</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Reduced disease-related mortality and production losses</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Lower stress on birds compared to repeated field vaccinations</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Improved flock health, growth performance, and productivity</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Reduced risk of disease outbreaks and carcass condemnations</p>
             </div>
             <div className="flex gap-3">
-              <span className="text-xl">✓</span>
+              <Check className="text-primary h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700">Enhanced food safety and animal welfare outcomes</p>
             </div>
           </div>
@@ -166,7 +167,7 @@ export default function HealthManagementPage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

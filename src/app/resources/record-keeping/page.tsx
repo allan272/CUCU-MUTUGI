@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LineChart, DollarSign, TrendingUp, AlertTriangle, Activity, Bird, Syringe, Home, Briefcase, ClipboardList, Check, ArrowLeft } from 'lucide-react';
 
 export default function RecordKeepingPage() {
   return (
@@ -28,7 +29,7 @@ export default function RecordKeepingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-light-green p-8 rounded-xl border-l-4 border-primary">
               <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2">
-                <span>📊</span> Performance Monitoring
+                <LineChart className="h-6 w-6 text-primary flex-shrink-0" /> Performance Monitoring
               </h3>
               <p className="text-gray-700">
                 Track flock growth, feed conversion, mortality rates, and production metrics to identify trends and improvements.
@@ -37,7 +38,7 @@ export default function RecordKeepingPage() {
 
             <div className="bg-light-green p-8 rounded-xl border-l-4 border-primary">
               <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2">
-                <span>💰</span> Profitability Analysis
+                <DollarSign className="h-6 w-6 text-primary flex-shrink-0" /> Profitability Analysis
               </h3>
               <p className="text-gray-700">
                 Calculate costs, revenues, and profit margins to understand farm economics and optimize operations.
@@ -46,7 +47,7 @@ export default function RecordKeepingPage() {
 
             <div className="bg-light-green p-8 rounded-xl border-l-4 border-primary">
               <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2">
-                <span>🔮</span> Forecasting & Planning
+                <TrendingUp className="h-6 w-6 text-primary flex-shrink-0" /> Forecasting & Planning
               </h3>
               <p className="text-gray-700">
                 Use historical data to predict future performance and plan production strategies accordingly.
@@ -55,7 +56,7 @@ export default function RecordKeepingPage() {
 
             <div className="bg-light-green p-8 rounded-xl border-l-4 border-primary">
               <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2">
-                <span>💵</span> Cash Flow Management
+                <DollarSign className="h-6 w-6 text-primary flex-shrink-0" /> Cash Flow Management
               </h3>
               <p className="text-gray-700">
                 Project income and expenses to ensure adequate liquidity and financial stability.
@@ -64,7 +65,7 @@ export default function RecordKeepingPage() {
 
             <div className="bg-light-green p-8 rounded-xl border-l-4 border-primary">
               <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2">
-                <span>⚠️</span> Early Warning System
+                <AlertTriangle className="h-6 w-6 text-primary flex-shrink-0" /> Early Warning System
               </h3>
               <p className="text-gray-700">
                 Identify potential problems early through trend analysis and anomalies in production data.
@@ -73,7 +74,7 @@ export default function RecordKeepingPage() {
 
             <div className="bg-light-green p-8 rounded-xl border-l-4 border-primary">
               <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2">
-                <span>🏥</span> Health Tracking
+                <Activity className="h-6 w-6 text-primary flex-shrink-0" /> Health Tracking
               </h3>
               <p className="text-gray-700">
                 Monitor disease outbreaks, vaccination schedules, treatments, and bird health status.
@@ -103,7 +104,7 @@ export default function RecordKeepingPage() {
           
           <div className="space-y-4">
             <div className="bg-white border-2 border-primary rounded-xl p-6">
-              <h3 className="font-bold text-primary text-lg mb-3">🐔 Flock Information</h3>
+              <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2"><Bird className="h-5 w-5" /> Flock Information</h3>
               <ul className="space-y-2 text-gray-700 ml-4">
                 <li>• Flock number and starting date</li>
                 <li>• Breed and strain information</li>
@@ -113,7 +114,7 @@ export default function RecordKeepingPage() {
             </div>
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
-              <h3 className="font-bold text-primary text-lg mb-3">📈 Production Data</h3>
+              <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2"><TrendingUp className="h-5 w-5" /> Production Data</h3>
               <ul className="space-y-2 text-gray-700 ml-4">
                 <li>• Daily feed consumption</li>
                 <li>• Daily water consumption</li>
@@ -124,7 +125,7 @@ export default function RecordKeepingPage() {
             </div>
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
-              <h3 className="font-bold text-primary text-lg mb-3">💉 Health & Vaccination Records</h3>
+              <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2"><Syringe className="h-5 w-5" /> Health & Vaccination Records</h3>
               <ul className="space-y-2 text-gray-700 ml-4">
                 <li>• Vaccination dates and types</li>
                 <li>• Disease outbreaks or health issues</li>
@@ -135,7 +136,7 @@ export default function RecordKeepingPage() {
             </div>
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
-              <h3 className="font-bold text-primary text-lg mb-3">🏠 Management Activities</h3>
+              <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2"><Home className="h-5 w-5" /> Management Activities</h3>
               <ul className="space-y-2 text-gray-700 ml-4">
                 <li>• Equipment maintenance and repairs</li>
                 <li>• Cleaning and disinfection activities</li>
@@ -146,7 +147,7 @@ export default function RecordKeepingPage() {
             </div>
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
-              <h3 className="font-bold text-primary text-lg mb-3">💼 Financial Records</h3>
+              <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2"><Briefcase className="h-5 w-5" /> Financial Records</h3>
               <ul className="space-y-2 text-gray-700 ml-4">
                 <li>• Feed purchases and costs</li>
                 <li>• Chick purchases and costs</li>
@@ -157,7 +158,7 @@ export default function RecordKeepingPage() {
             </div>
 
             <div className="bg-white border-2 border-primary rounded-xl p-6">
-              <h3 className="font-bold text-primary text-lg mb-3">📋 Compliance & Traceability</h3>
+              <h3 className="font-bold text-primary text-lg mb-3 flex items-center gap-2"><ClipboardList className="h-5 w-5" /> Compliance & Traceability</h3>
               <ul className="space-y-2 text-gray-700 ml-4">
                 <li>• Feed supplier and batch numbers</li>
                 <li>• Medication lot numbers and expiry dates</li>
@@ -174,42 +175,42 @@ export default function RecordKeepingPage() {
           
           <div className="bg-light-green p-8 rounded-xl space-y-4 border-l-4 border-primary">
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Document Daily:</strong> Record information each day while it's accurate and fresh</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Use Clear Format:</strong> Use standardized forms to ensure consistency and easy reading</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Include Details:</strong> Record specific information (dates, times, quantities, person responsible)</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Maintain Legibility:</strong> Write clearly or use digital records that are easy to read</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Store Safely:</strong> Keep records in a protected location to prevent damage or loss</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Review Regularly:</strong> Analyze records periodically to track trends and identify issues</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Sign & Date:</strong> Ensure records are signed by responsible person for accountability</p>
             </div>
 
             <div className="flex gap-4">
-              <span className="text-2xl">✓</span>
+              <Check className="text-accent h-5 w-5 flex-shrink-0" />
               <p className="text-gray-700"><strong>Retain Long-term:</strong> Keep records for at least 2-3 years for historical comparison</p>
             </div>
           </div>
@@ -228,7 +229,7 @@ export default function RecordKeepingPage() {
         {/* Navigation */}
         <div className="flex gap-4 justify-center pt-12">
           <Link href="/resources" className="text-primary font-semibold hover:text-accent transition-colors">
-            ← Back to Resources
+            <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Resources</span>
           </Link>
         </div>
       </section>

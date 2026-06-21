@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Target, Eye, Check, ArrowRight } from 'lucide-react';
 
 export default function AboutPage() {
   return (
@@ -34,7 +35,7 @@ export default function AboutPage() {
       <section className="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
         <div className="bg-light-green p-8 rounded-xl shadow-sm border border-green-100">
           <h2 className="text-3xl font-bold text-primary mb-4 flex items-center gap-3">
-            <span>🎯</span> Our Mission
+            <Target className="h-7 w-7 text-primary flex-shrink-0" /> Our Mission
           </h2>
           <p className="text-lg leading-relaxed text-gray-800">
             To provide farmers with healthy, high-quality, pre-vaccinated chicks and reliable poultry support services that promote profitable, sustainable, and successful poultry farming across Kenya and Globally.
@@ -43,7 +44,7 @@ export default function AboutPage() {
         
         <div className="bg-light-gold p-8 rounded-xl shadow-sm border border-yellow-100">
           <h2 className="text-3xl font-bold text-accent mb-4 flex items-center gap-3">
-            <span>👁️</span> Our Vision
+            <Eye className="h-7 w-7 text-accent flex-shrink-0" /> Our Vision
           </h2>
           <p className="text-lg leading-relaxed text-gray-800">
             To become Kenya's most trusted and leading poultry supplier, empowering farmers through quality poultry breeds, excellent customer service, and innovative farming solutions.
@@ -55,28 +56,28 @@ export default function AboutPage() {
       <section className="max-w-4xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold text-center text-primary mb-10">Our Plan</h2>
         <ul className="space-y-6">
-          <li className="flex gap-4">
-            <span className="text-accent text-2xl">✓</span>
+          <li className="flex gap-4 items-start">
+            <Check className="text-accent h-6 w-6 flex-shrink-0 mt-0.5" />
             <span className="text-lg">Supply healthy and fully vaccinated chicks to farmers nationwide.</span>
           </li>
-          <li className="flex gap-4">
-            <span className="text-accent text-2xl">✓</span>
+          <li className="flex gap-4 items-start">
+            <Check className="text-accent h-6 w-6 flex-shrink-0 mt-0.5" />
             <span className="text-lg">Expand our distribution network to reach every county in Kenya.</span>
           </li>
-          <li className="flex gap-4">
-            <span className="text-accent text-2xl">✓</span>
+          <li className="flex gap-4 items-start">
+            <Check className="text-accent h-6 w-6 flex-shrink-0 mt-0.5" />
             <span className="text-lg">Offer timely and reliable delivery services.</span>
           </li>
-          <li className="flex gap-4">
-            <span className="text-accent text-2xl">✓</span>
+          <li className="flex gap-4 items-start">
+            <Check className="text-accent h-6 w-6 flex-shrink-0 mt-0.5" />
             <span className="text-lg">Educate and support farmers with poultry management best practices.</span>
           </li>
-          <li className="flex gap-4">
-            <span className="text-accent text-2xl">✓</span>
+          <li className="flex gap-4 items-start">
+            <Check className="text-accent h-6 w-6 flex-shrink-0 mt-0.5" />
             <span className="text-lg">Build long-term relationships with customers through trust, consistency, and quality products.</span>
           </li>
-          <li className="flex gap-4">
-            <span className="text-accent text-2xl">✓</span>
+          <li className="flex gap-4 items-start">
+            <Check className="text-accent h-6 w-6 flex-shrink-0 mt-0.5" />
             <span className="text-lg">Continuously improve our breeding and sourcing standards to meet farmers' needs.</span>
           </li>
         </ul>
@@ -88,7 +89,7 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold text-center text-accent mb-12">Our Core Values</h2>
           <p className="text-center text-light-green text-lg mb-12">
             <Link href="/values" className="hover:text-accent transition-colors font-semibold">
-              View all 10 core values →
+              View all 10 core values <ArrowRight className="h-4 w-4 inline-block ml-1" />
             </Link>
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

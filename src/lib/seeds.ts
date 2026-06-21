@@ -104,7 +104,7 @@ export const DEFAULT_BLOGS: BlogPost[] = [
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   heroTitle: 'CUCU MUTUGI POULTRY',
-  heroSubtitle: 'Growing Farmers, Building Prosperity 🌱',
+  heroSubtitle: 'Growing Farmers, Building Prosperity',
   heroCoverImage: '/logo.png',
   primaryColor: '#1565C0',
   accentColor: '#00BCD4',

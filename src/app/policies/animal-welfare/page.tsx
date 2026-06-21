@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Coffee, Smile, Home, Activity, Heart, ArrowLeft } from 'lucide-react';
 
 export default function AnimalWelfarePage() {
   return (
@@ -24,27 +25,27 @@ export default function AnimalWelfarePage() {
 
           <div className="bg-light-green p-8 rounded-xl space-y-6 border-l-4 border-primary">
             <div>
-              <h3 className="text-xl font-bold text-primary mb-2">🥤 Free from Hunger and Thirst</h3>
+              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2"><Coffee className="h-5 w-5" /> Free from Hunger and Thirst</h3>
               <p>Access to adequate feed and clean water</p>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-primary mb-2">😌 Free from Fear and Distress</h3>
+              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2"><Smile className="h-5 w-5" /> Free from Fear and Distress</h3>
               <p>Minimizing stress and ensuring appropriate handling practices</p>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-primary mb-2">🏠 Free from Physical and Thermal Discomfort</h3>
+              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2"><Home className="h-5 w-5" /> Free from Physical and Thermal Discomfort</h3>
               <p>Suitable housing, ventilation, and environmental conditions</p>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-primary mb-2">💪 Free from Pain, Injury, and Disease</h3>
+              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2"><Activity className="h-5 w-5" /> Free from Pain, Injury, and Disease</h3>
               <p>Preventive healthcare, biosecurity measures, and timely veterinary care</p>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-primary mb-2">🦗 Free to Express Normal Behavior</h3>
+              <h3 className="text-xl font-bold text-primary mb-2 flex items-center gap-2"><Heart className="h-5 w-5" /> Free to Express Normal Behavior</h3>
               <p>Appropriate stocking densities and management practices</p>
             </div>
           </div>
@@ -55,7 +56,7 @@ export default function AnimalWelfarePage() {
 
           <div className="text-center mt-12">
             <Link href="/policies" className="text-primary font-semibold hover:text-accent transition-colors">
-              ← Back to Policies
+              <span className="flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Back to Policies</span>
             </Link>
           </div>
         </div>

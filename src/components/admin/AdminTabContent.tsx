@@ -1,6 +1,74 @@
 'use client';
 import React, { useState } from 'react';
 import { Order, useAdmin } from '@/context/AdminContext';
+import {
+  Egg,
+  Package,
+  Users,
+  DollarSign,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Globe,
+  RotateCcw,
+  Database,
+  FileCode,
+  Plus,
+  Save,
+  Edit2,
+  Trash2,
+  Image as ImageIcon,
+  Upload,
+  Check,
+  Camera,
+  Layout,
+  Phone,
+  Palette,
+  Wrench,
+  AlertTriangle
+} from 'lucide-react';
+
+// Image compression helper to support large uploads and restrict size stored in DB
+const compressImage = (base64Str: string, maxWidth = 1200, maxHeight = 1200, quality = 0.8): Promise<string> => {
+  return new Promise((resolve) => {
+    if (!base64Str || !base64Str.startsWith('data:image/')) {
+      resolve(base64Str);
+      return;
+    }
+    if (base64Str.startsWith('data:image/svg+xml')) {
+      resolve(base64Str);
+      return;
+    }
+    const img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+      if (width > maxWidth || height > maxHeight) {
+        if (width > height) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        } else {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(base64Str);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => {
+      resolve(base64Str);
+    };
+  });
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TAB: Dashboard
@@ -12,14 +80,14 @@ function DashboardTab() {
   const pending = db.orders.filter(o => o.status === 'Pending').length;
 
   const stats = [
-    { label: 'Total Products', value: db.products.length, icon: '🐣', color: 'from-blue-500 to-cyan-400' },
-    { label: 'Total Orders', value: db.orders.length, icon: '📦', color: 'from-cyan-500 to-teal-400' },
-    { label: 'Registered Farmers', value: db.farmers.length, icon: '👨‍🌾', color: 'from-teal-500 to-blue-500' },
-    { label: 'Revenue (KES)', value: `${(totalRevenue / 1000).toFixed(1)}K`, icon: '💰', color: 'from-blue-600 to-indigo-500' },
-    { label: 'Delivered Orders', value: delivered, icon: '✅', color: 'from-green-500 to-teal-500' },
-    { label: 'Pending Orders', value: pending, icon: '⏳', color: 'from-yellow-500 to-orange-400' },
-    { label: 'Blog Posts', value: db.blogPosts.length, icon: '📝', color: 'from-purple-500 to-blue-500' },
-    { label: 'Published Posts', value: db.blogPosts.filter(b => b.published).length, icon: '🌐', color: 'from-indigo-500 to-cyan-500' },
+    { label: 'Total Products', value: db.products.length, icon: Egg, color: 'from-blue-500 to-cyan-400' },
+    { label: 'Total Orders', value: db.orders.length, icon: Package, color: 'from-cyan-500 to-teal-400' },
+    { label: 'Registered Farmers', value: db.farmers.length, icon: Users, color: 'from-teal-500 to-blue-500' },
+    { label: 'Revenue (KES)', value: `${(totalRevenue / 1000).toFixed(1)}K`, icon: DollarSign, color: 'from-blue-600 to-indigo-500' },
+    { label: 'Delivered Orders', value: delivered, icon: CheckCircle2, color: 'from-green-500 to-teal-500' },
+    { label: 'Pending Orders', value: pending, icon: Clock, color: 'from-yellow-500 to-orange-400' },
+    { label: 'Blog Posts', value: db.blogPosts.length, icon: FileText, color: 'from-purple-500 to-blue-500' },
+    { label: 'Published Posts', value: db.blogPosts.filter(b => b.published).length, icon: Globe, color: 'from-indigo-500 to-cyan-500' },
   ];
 
   const recentOrders = [...db.orders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
@@ -41,7 +109,7 @@ function DashboardTab() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
         {stats.map(s => (
           <div key={s.label} className="glass-white rounded-2xl p-5 card-hover border border-blue-100">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-lg mb-3`}>{s.icon}</div>
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white mb-3`}>{React.createElement(s.icon, { className: "h-5 w-5" })}</div>
             <div className="text-2xl font-extrabold text-primary">{s.value}</div>
             <div className="text-xs text-gray-500 mt-1">{s.label}</div>
           </div>
@@ -116,7 +184,7 @@ function DatabaseTab() {
           <p className="text-gray-500 text-sm">Inspect all data stored in your application</p>
         </div>
         <button onClick={resetDB} className="text-xs bg-red-100 text-red-600 hover:bg-red-200 px-3 py-2 rounded-lg font-semibold transition-colors">
-          🔄 Reset to Defaults
+          <RotateCcw className="h-3.5 w-3.5 inline mr-1" /> Reset to Defaults
         </button>
       </div>
 
@@ -124,8 +192,8 @@ function DatabaseTab() {
       <div className="flex gap-3 flex-wrap">
         {tableNames.map(t => (
           <button key={t} onClick={() => setSelectedTable(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${selectedTable === t ? 'bg-primary text-white shadow-md' : 'bg-blue-50 text-primary hover:bg-blue-100'}`}>
-            🗄️ {t}
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 ${selectedTable === t ? 'bg-primary text-white shadow-md' : 'bg-blue-50 text-primary hover:bg-blue-100'}`}><Database className="h-4 w-4" />
+            {t}
           </button>
         ))}
       </div>
@@ -173,7 +241,7 @@ function DatabaseTab() {
       {/* Raw JSON */}
       <details className="glass-white rounded-2xl border border-blue-100 overflow-hidden">
         <summary className="px-5 py-3 cursor-pointer text-sm font-semibold text-primary hover:bg-blue-50">
-          📋 View Raw JSON — {selectedTable}
+          <FileCode className="h-4 w-4 inline mr-1" /> View Raw JSON — {selectedTable}
         </summary>
         <pre className="p-5 text-xs text-gray-600 overflow-x-auto bg-gray-50 max-h-64 overflow-y-auto font-mono leading-relaxed">
           {JSON.stringify(current.rows, null, 2)}
@@ -214,7 +282,11 @@ function ProductsTab() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => setForm(f => ({ ...f, image: ev.target?.result as string }));
+    reader.onload = async (ev) => {
+      const rawBase64 = ev.target?.result as string;
+      const compressed = await compressImage(rawBase64);
+      setForm(f => ({ ...f, image: compressed }));
+    };
     reader.readAsDataURL(file);
   };
 
@@ -226,7 +298,7 @@ function ProductsTab() {
           <p className="text-gray-500 text-sm">{db.products.length} products in store</p>
         </div>
         <button onClick={() => { setShowForm(true); setEditing(null); }} className="btn-primary !py-2 !px-5 !text-sm">
-          ➕ Add Product
+          <Plus className="h-4 w-4 inline mr-1" /> Add Product
         </button>
       </div>
 
@@ -267,7 +339,7 @@ function ProductsTab() {
             </div>
             <div>
               <label className="text-xs font-semibold text-gray-500 block mb-1">Product Image</label>
-              <input type="file" accept="image/*" className="w-full text-sm" onChange={handleImageUpload} />
+              <input type="file" accept="image/*,image/heic,image/heif,image/jfif,image/webp,image/png,image/jpeg,image/svg+xml,.heic,.heif,.jfif,.svg,.png,.jpg,.jpeg,.webp,.gif" className="w-full text-sm" onChange={handleImageUpload} />
               {form.image && <img src={form.image} alt="preview" className="mt-2 h-16 w-16 object-cover rounded-lg border border-blue-100" />}
             </div>
             <div className="flex gap-4 items-center mt-4">
@@ -282,7 +354,7 @@ function ProductsTab() {
             </div>
           </div>
           <div className="flex gap-3 mt-6">
-            <button onClick={handleSubmit} className="btn-primary !py-2 !px-6 !text-sm">{editing ? '💾 Save Changes' : '➕ Add Product'}</button>
+            <button onClick={handleSubmit} className="btn-primary !py-2 !px-6 !text-sm flex items-center gap-1.5">{editing ? <><Save className="h-4 w-4" /> Save Changes</> : <><Plus className="h-4 w-4" /> Add Product</>}</button>
             <button onClick={() => { setShowForm(false); setEditing(null); }} className="px-5 py-2 rounded-full border border-blue-200 text-sm text-gray-600 hover:bg-blue-50">Cancel</button>
           </div>
         </div>
@@ -307,12 +379,12 @@ function ProductsTab() {
                   <td className="py-3 px-4"><span className={`font-semibold ${p.stock < 100 ? 'text-red-500' : 'text-green-600'}`}>{p.stock}</span></td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${p.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                      {p.active ? '● Active' : '○ Hidden'}
+                      {p.active ? 'Active' : 'Hidden'}
                     </span>
                   </td>
                   <td className="py-3 px-4 flex gap-2">
-                    <button onClick={() => startEdit(p)} className="text-blue-500 hover:text-blue-700 text-xs font-semibold px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 transition-colors">✏️ Edit</button>
-                    <button onClick={() => deleteProduct(p.id)} className="text-red-400 hover:text-red-600 text-xs font-semibold px-2 py-1 rounded bg-red-50 hover:bg-red-100 transition-colors">🗑️</button>
+                    <button onClick={() => startEdit(p)} className="text-blue-500 hover:text-blue-700 text-xs font-semibold px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 transition-colors flex items-center gap-1 inline-flex">Edit</button>
+                    <button onClick={() => deleteProduct(p.id)} className="text-red-400 hover:text-red-600 text-xs font-semibold px-2 py-1.5 rounded bg-red-50 hover:bg-red-100 transition-colors flex items-center justify-center inline-flex" title="Delete"><Trash2 className="h-3.5 w-3.5" /></button>
                   </td>
                 </tr>
               ))}
@@ -414,7 +486,7 @@ function FarmersTab() {
                   <td className="py-3 px-4 font-bold text-cyan-600">{f.totalOrders}</td>
                   <td className="py-3 px-4 text-gray-400 text-xs">{f.joinedAt}</td>
                   <td className="py-3 px-4">
-                    <button onClick={() => deleteFarmer(f.id)} className="text-red-400 hover:text-red-600 text-xs px-2 py-1 rounded bg-red-50 hover:bg-red-100 transition-colors">🗑️ Remove</button>
+                    <button onClick={() => deleteFarmer(f.id)} className="text-red-400 hover:text-red-600 text-xs px-2 py-1 rounded bg-red-50 hover:bg-red-100 transition-colors flex items-center gap-1 inline-flex"><Trash2 className="h-3.5 w-3.5" /> Remove</button>
                   </td>
                 </tr>
               ))}
@@ -438,8 +510,10 @@ function MediaTab() {
     const files = Array.from(e.target.files || []);
     files.forEach(file => {
       const reader = new FileReader();
-      reader.onload = ev => {
-        setUploads(prev => [...prev, { name: file.name, url: ev.target?.result as string, size: `${(file.size / 1024).toFixed(1)} KB` }]);
+      reader.onload = async ev => {
+        const rawBase64 = ev.target?.result as string;
+        const compressed = await compressImage(rawBase64);
+        setUploads(prev => [...prev, { name: file.name, url: compressed, size: `${(file.size / 1024).toFixed(1)} KB` }]);
       };
       reader.readAsDataURL(file);
     });
@@ -459,7 +533,7 @@ function MediaTab() {
 
       {/* Cover Photo Manager */}
       <div className="glass-white rounded-2xl p-6 border-2 border-aqua">
-        <h3 className="text-lg font-bold text-primary mb-4">🖼️ Hero Cover / Logo Image</h3>
+        <h3 className="text-lg font-bold text-primary mb-4"><ImageIcon className="h-5 w-5 inline mr-1.5" /> Hero Cover / Logo Image</h3>
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <div className="w-48 h-48 rounded-2xl border-2 border-dashed border-aqua bg-blue-50 flex items-center justify-center overflow-hidden">
             <img src={coverPreview} alt="cover" className="w-full h-full object-contain p-2" />
@@ -467,19 +541,23 @@ function MediaTab() {
           <div className="flex-1 space-y-3">
             <p className="text-sm text-gray-600">This image is shown as the hero/opener on the home page and in the Navbar logo.</p>
             <label className="btn-primary !py-2 !px-5 !text-sm cursor-pointer inline-block">
-              📁 Upload New Cover Image
-              <input type="file" accept="image/*" className="hidden" onChange={e => {
+              <Upload className="h-4 w-4 inline mr-1.5" /> Upload New Cover Image
+              <input type="file" accept="image/*,image/heic,image/heif,image/jfif,image/webp,image/png,image/jpeg,image/svg+xml,.heic,.heif,.jfif,.svg,.png,.jpg,.jpeg,.webp,.gif" className="hidden" onChange={e => {
                 const file = e.target.files?.[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = ev => setCoverImage(ev.target?.result as string);
+                reader.onload = async ev => {
+                  const rawBase64 = ev.target?.result as string;
+                  const compressed = await compressImage(rawBase64);
+                  setCoverImage(compressed);
+                };
                 reader.readAsDataURL(file);
               }} />
             </label>
             <input className="block w-full border border-blue-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-aqua"
               value={coverPreview} onChange={e => setCoverPreview(e.target.value)} placeholder="Or paste image URL" />
             <button onClick={() => updateSettings({ heroCoverImage: coverPreview, logoUrl: coverPreview })} className="text-sm bg-green-100 text-green-700 px-4 py-2 rounded-lg font-semibold hover:bg-green-200 transition-colors">
-              ✅ Apply to Website
+              <Check className="h-4 w-4 inline mr-1.5" /> Apply to Website
             </button>
           </div>
         </div>
@@ -487,12 +565,12 @@ function MediaTab() {
 
       {/* Multi Upload */}
       <div className="glass-white rounded-2xl p-6 border border-blue-100">
-        <h3 className="text-lg font-bold text-primary mb-4">📤 Upload Images</h3>
+        <h3 className="text-lg font-bold text-primary mb-4"><Upload className="h-5 w-5 inline mr-1.5" /> Upload Images</h3>
         <label className="flex flex-col items-center justify-center border-2 border-dashed border-blue-200 rounded-2xl p-10 cursor-pointer hover:bg-blue-50 transition-colors">
-          <span className="text-4xl mb-3">📷</span>
+          <Camera className="h-10 w-10 text-blue-400 mb-3" />
           <span className="text-sm text-gray-500">Click to upload or drag & drop images</span>
           <span className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP up to 10MB each</span>
-          <input type="file" multiple accept="image/*" className="hidden" onChange={handleUpload} />
+          <input type="file" multiple accept="image/*,image/heic,image/heif,image/jfif,image/webp,image/png,image/jpeg,image/svg+xml,.heic,.heif,.jfif,.svg,.png,.jpg,.jpeg,.webp,.gif" className="hidden" onChange={handleUpload} />
         </label>
         {uploads.length > 0 && (
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -533,7 +611,7 @@ function ContentTab() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Hero Content */}
         <div className="glass-white rounded-2xl p-6 border border-blue-100">
-          <h3 className="font-bold text-primary mb-4">🦸 Hero Section</h3>
+          <h3 className="font-bold text-primary mb-4"><Layout className="h-5 w-5 inline mr-1.5" /> Hero Section</h3>
           <div className="space-y-3">
             <div>
               <label className="text-xs font-semibold text-gray-500 block mb-1">Hero Title</label>
@@ -552,7 +630,7 @@ function ContentTab() {
 
         {/* Contact Info */}
         <div className="glass-white rounded-2xl p-6 border border-blue-100">
-          <h3 className="font-bold text-primary mb-4">📞 Contact Information</h3>
+          <h3 className="font-bold text-primary mb-4"><Phone className="h-5 w-5 inline mr-1.5" /> Contact Information</h3>
           <div className="space-y-3">
             <div>
               <label className="text-xs font-semibold text-gray-500 block mb-1">WhatsApp Number</label>
@@ -579,7 +657,7 @@ function ContentTab() {
 
         {/* Theme Colors */}
         <div className="glass-white rounded-2xl p-6 border border-blue-100">
-          <h3 className="font-bold text-primary mb-4">🎨 Brand Colors</h3>
+          <h3 className="font-bold text-primary mb-4"><Palette className="h-5 w-5 inline mr-1.5" /> Brand Colors</h3>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <div>
@@ -606,7 +684,7 @@ function ContentTab() {
 
         {/* Display Toggles */}
         <div className="glass-white rounded-2xl p-6 border border-blue-100">
-          <h3 className="font-bold text-primary mb-4">🔧 Display Settings</h3>
+          <h3 className="font-bold text-primary mb-4"><Wrench className="h-5 w-5 inline mr-1.5" /> Display Settings</h3>
           <div className="space-y-4">
             <label className="flex items-center justify-between cursor-pointer">
               <span className="text-sm font-medium text-gray-700">Show WhatsApp Floating Button</span>
@@ -620,7 +698,7 @@ function ContentTab() {
       </div>
 
       <button onClick={save} className="btn-primary !py-3 !px-8 text-base">
-        💾 Save All Changes to Website
+        <Save className="h-5 w-5 inline mr-1.5" /> Save All Changes to Website
       </button>
     </div>
   );
@@ -648,7 +726,7 @@ function BlogTab() {
           <h2 className="text-2xl font-extrabold text-primary">Blog Posts</h2>
           <p className="text-gray-500 text-sm">{db.blogPosts.length} posts · {db.blogPosts.filter(b => b.published).length} published</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="btn-primary !py-2 !px-5 !text-sm">✏️ New Post</button>
+        <button onClick={() => setShowForm(true)} className="btn-primary !py-2 !px-5 !text-sm"><Plus className="h-4 w-4 inline mr-1" /> New Post</button>
       </div>
 
       {showForm && (
@@ -667,7 +745,7 @@ function BlogTab() {
             </label>
           </div>
           <div className="flex gap-3 mt-4">
-            <button onClick={handleSubmit} className="btn-primary !py-2 !px-5 !text-sm">📤 Publish Post</button>
+            <button onClick={handleSubmit} className="btn-primary !py-2 !px-5 !text-sm"><Upload className="h-4 w-4 inline mr-1" /> Publish Post</button>
             <button onClick={() => setShowForm(false)} className="px-4 py-2 rounded-full border border-blue-200 text-sm text-gray-600 hover:bg-blue-50">Cancel</button>
           </div>
         </div>
@@ -680,7 +758,7 @@ function BlogTab() {
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs bg-blue-100 text-primary px-2 py-0.5 rounded-full font-semibold">{b.category}</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${b.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                  {b.published ? '🌐 Published' : '📝 Draft'}
+                  {b.published ? 'Published' : 'Draft'}
                 </span>
               </div>
               <h4 className="font-bold text-gray-800">{b.title}</h4>
@@ -688,9 +766,9 @@ function BlogTab() {
             </div>
             <div className="flex gap-2 flex-shrink-0">
               <button onClick={() => updateBlogPost(b.id, { published: !b.published })} className="text-xs px-3 py-1 rounded-lg bg-blue-50 text-primary hover:bg-blue-100 font-semibold transition-colors">
-                {b.published ? '⬇️ Unpublish' : '🌐 Publish'}
+                {b.published ? 'Unpublish' : 'Publish'}
               </button>
-              <button onClick={() => deleteBlogPost(b.id)} className="text-xs px-3 py-1 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 font-semibold transition-colors">🗑️</button>
+              <button onClick={() => deleteBlogPost(b.id)} className="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 font-semibold transition-colors flex items-center justify-center inline-flex" title="Delete"><Trash2 className="h-3.5 w-3.5" /></button>
             </div>
           </div>
         ))}
@@ -708,10 +786,10 @@ function SettingsTab() {
     <div className="space-y-6">
       <h2 className="text-2xl font-extrabold text-primary">Settings</h2>
       <div className="glass-white rounded-2xl p-6 border border-red-100">
-        <h3 className="font-bold text-red-500 mb-2">⚠️ Danger Zone</h3>
+        <h3 className="font-bold text-red-500 mb-2"><AlertTriangle className="h-5 w-5 inline mr-1.5" /> Danger Zone</h3>
         <p className="text-sm text-gray-600 mb-4">This will reset all database entries to the default sample data. This action cannot be undone.</p>
         <button onClick={() => { if (confirm('Are you sure you want to reset all data to defaults?')) resetDB(); }} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-colors">
-          🔄 Reset All Data to Defaults
+          <RotateCcw className="h-4 w-4 inline mr-1.5" /> Reset All Data to Defaults
         </button>
       </div>
     </div>
