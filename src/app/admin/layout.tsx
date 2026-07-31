@@ -1,5 +1,5 @@
 'use client';
-import { AdminProvider, useAdmin } from '@/context/AdminContext';
+import { useAdmin } from '@/context/AdminContext';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTabContent from '@/components/admin/AdminTabContent';
 import Image from 'next/image';
@@ -7,11 +7,7 @@ import { useState } from 'react';
 import { Lock, Eye, EyeOff, Loader2, LogOut } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AdminProvider>
-      <AdminUI />
-    </AdminProvider>
-  );
+  return <AdminUI />;
 }
 
 function AdminUI() {
@@ -28,35 +24,31 @@ function AdminUI() {
     setSubmitting(false);
   };
 
+  // Show login form if not authenticated
   if (!isAuthenticated) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center relative px-4 overflow-hidden" 
-        style={{
-          background: 'linear-gradient(135deg, #0A192F 0%, #172A45 50%, #1A365D 100%)'
-        }}
+      <div
+        className="min-h-screen flex items-center justify-center relative px-4 overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0A192F 0%, #172A45 50%, #1A365D 100%)' }}
       >
         {/* Decorative blur elements */}
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-blue-500/10 blur-[80px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-cyan-500/10 blur-[100px]" />
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-amber-500/10 blur-[80px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-amber-400/10 blur-[100px]" />
 
         {/* glass container */}
-        <div 
+        <div
           className="w-full max-w-md p-8 rounded-3xl border border-white/10 relative z-10 shadow-2xl"
-          style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            backdropFilter: 'blur(16px)',
-          }}
+          style={{ background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(16px)' }}
         >
           {/* Brand header */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-20 h-20 relative overflow-hidden rounded-full ring-4 ring-cyan-400/20 bg-white/10 mb-4 flex items-center justify-center">
+            <div className="w-20 h-20 relative overflow-hidden rounded-full ring-4 ring-amber-400/30 bg-white/10 mb-4 flex items-center justify-center">
               <Image src="/logo.png" alt="Logo" fill className="object-contain p-1.5" />
             </div>
             <h1 className="text-xl font-extrabold text-white text-center tracking-wider">
               CUCU MUTUGI POULTRY
             </h1>
-            <p className="text-cyan-400 text-xs font-semibold uppercase tracking-widest mt-1">
+            <p className="text-amber-400 text-xs font-semibold uppercase tracking-widest mt-1">
               Admin Portal
             </p>
           </div>
@@ -64,7 +56,7 @@ function AdminUI() {
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-white/60 text-xs font-bold uppercase tracking-wider mb-2" htmlFor="password">
+              <label className="block text-white/60 text-xs font-bold uppercase tracking-wider mb-2" htmlFor="admin-password">
                 Administrative Password
               </label>
               <div className="relative">
@@ -72,12 +64,12 @@ function AdminUI() {
                   <Lock className="h-4 w-4" />
                 </span>
                 <input
-                  id="password"
+                  id="admin-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full text-white bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400/50 transition-all placeholder:text-white/20"
+                  className="w-full text-white bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-400/50 transition-all placeholder:text-white/20"
                   required
                 />
                 <button
@@ -99,7 +91,7 @@ function AdminUI() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold text-sm uppercase tracking-wider shadow-lg active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-900 font-bold text-sm uppercase tracking-wider shadow-lg active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
             >
               {submitting ? (
                 <>
@@ -116,17 +108,18 @@ function AdminUI() {
     );
   }
 
+  // Authenticated — show full admin panel
   return (
     <div className="flex min-h-screen" style={{ background: '#F0F8FF' }}>
       <AdminSidebar />
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
         <div className="glass-white border-b border-blue-100 px-6 py-3 flex items-center gap-4 shadow-sm">
-          <div className="w-8 h-8 relative overflow-hidden rounded-full ring-2 ring-blue-200">
+          <div className="w-8 h-8 relative overflow-hidden rounded-full ring-2 ring-amber-300">
             <Image src="/logo.png" alt="Logo" fill className="object-contain" />
           </div>
           <div>
-            <span className="font-extrabold text-primary text-sm">CUCU MUTUGI POULTRY</span>
+            <span className="font-extrabold text-slate-900 text-sm">CUCU MUTUGI POULTRY</span>
             <span className="text-gray-400 text-xs ml-2">— Admin Control Panel</span>
           </div>
           <div className="ml-auto flex items-center gap-4">
@@ -159,4 +152,3 @@ function AdminUI() {
     </div>
   );
 }
-

@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ServiceWorkerRegister from "./sw-register";
+import ClientAdminProvider from "@/components/ClientAdminProvider";
 
 export const metadata: Metadata = {
   title: "CUCU MUTUGI POULTRY | Growing Farmers, Building Prosperity",
@@ -37,12 +38,14 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <ServiceWorkerRegister />
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <ClientAdminProvider>
+          <ServiceWorkerRegister />
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </ClientAdminProvider>
       </body>
     </html>
   );

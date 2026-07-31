@@ -48,6 +48,48 @@ export interface BlogPost {
   category: string;
 }
 
+export interface StoryPollOption {
+  text: string;
+  votes: number;
+}
+
+export interface StoryPoll {
+  question: string;
+  options: StoryPollOption[];
+  userVotedIndex?: number;
+}
+
+export interface Story {
+  id: string;
+  title: string;
+  mediaUrl: string;
+  mediaType: 'image' | 'video';
+  category: string;
+  description?: string;
+  actionText?: string;
+  actionUrl?: string;
+  poll?: StoryPoll;
+  likes: number;
+  views: number;
+  createdAt: string;
+  expiresAt: string;
+  featured: boolean;
+}
+
+export interface Video {
+  id: string;
+  title: string;
+  description: string;
+  videoUrl: string;
+  thumbnailUrl?: string;
+  category: string;
+  views: number;
+  likes: number;
+  duration?: string;
+  createdAt: string;
+  featured?: boolean;
+}
+
 export interface SiteSettings {
   heroTitle: string;
   heroSubtitle: string;
@@ -70,6 +112,8 @@ export interface DBTable {
   orders: Order[];
   farmers: Farmer[];
   blogPosts: BlogPost[];
+  stories: Story[];
+  videos: Video[];
   settings: SiteSettings;
 }
 
@@ -102,6 +146,134 @@ export const DEFAULT_BLOGS: BlogPost[] = [
   { id: 'b2', title: 'Best Breeds for Kenyan Farmers', slug: 'best-breeds-kenya', content: 'Choosing the right breed is the foundation of successful poultry farming...', author: 'Cucu Mutugi', published: true, createdAt: '2026-05-25', category: 'Breeds' },
 ];
 
+export const DEFAULT_STORIES: Story[] = [
+  {
+    id: 's1',
+    title: '🐣 New Chicks — Ready for Dispatch!',
+    mediaUrl: '/media/owner-with-chicks-2.jpg',
+    mediaType: 'image',
+    category: 'New Chicks',
+    description: '5,000 ISA Brown Layer Chicks are ready for dispatch this week. Fully vaccinated!',
+    actionText: 'Order Now',
+    actionUrl: '/products',
+    poll: {
+      question: 'Are you stocking layers or broilers this month?',
+      options: [
+        { text: 'ISA Brown Layers 🥚', votes: 42 },
+        { text: 'Cobb 500 Broilers 🍗', votes: 28 },
+        { text: 'Kuroiler Kienyeji 🐔', votes: 35 }
+      ]
+    },
+    likes: 124,
+    views: 450,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    featured: true,
+  },
+  {
+    id: 's2',
+    title: '💉 Pre-Vaccinated Chicks — Team at Work',
+    mediaUrl: '/media/team-delivery-1.jpg',
+    mediaType: 'image',
+    category: 'Vaccination',
+    description: 'Every chick from Cucu Mutugi Poultry undergoes strict veterinary vaccination protocol.',
+    actionText: 'Vaccination Schedule',
+    actionUrl: '/resources',
+    likes: 89,
+    views: 310,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    featured: true,
+  },
+  {
+    id: 's3',
+    title: '🚚 Kitui Delivery — Chicks on the Road!',
+    mediaUrl: '/media/team-delivery-2.jpg',
+    mediaType: 'image',
+    category: 'Egg Collection',
+    description: 'High fertility hatchable eggs ready for incubation. Order yours today!',
+    actionText: 'Contact Sales',
+    actionUrl: '/contact',
+    likes: 67,
+    views: 285,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    featured: false,
+  },
+  {
+    id: 's4',
+    title: '🏡 Meet the Cucu Mutugi Team',
+    mediaUrl: '/media/team-farm-2.jpg',
+    mediaType: 'image',
+    category: 'Farm Tour',
+    description: 'Take a virtual walk inside our climate-controlled brooding units.',
+    actionText: 'Watch Videos',
+    actionUrl: '/videos',
+    likes: 156,
+    views: 520,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    featured: true,
+  },
+  {
+    id: 's5',
+    title: '🐥 Baby Chicks Lineup — 5 Breeds',
+    mediaUrl: '/media/chicks-lineup.jpg',
+    mediaType: 'image',
+    category: 'Delivery',
+    description: 'Free delivery dispatch leaves Embu HQ on Wednesday morning at 5:00 AM.',
+    actionText: 'Book Delivery',
+    actionUrl: '/products',
+    likes: 98,
+    views: 390,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    featured: true,
+  }
+];
+
+export const DEFAULT_VIDEOS: Video[] = [
+  {
+    id: 'v1',
+    title: 'Cucu Mutugi — Chick Brooding at the Farm',
+    description: 'A real look inside Cucu Mutugi Poultry brooding unit. Watch how we care for chicks from day one to ensure healthy, thriving flocks.',
+    videoUrl: '/media/chick-video-2.mp4',
+    thumbnailUrl: '/media/owner-with-chicks-1.jpg',
+    category: 'Farm Tours',
+    views: 1250,
+    likes: 230,
+    duration: '00:30',
+    createdAt: '2026-06-10',
+    featured: true,
+  },
+  {
+    id: 'v2',
+    title: 'Kitui Delivery — Chicks on the Road!',
+    description: 'Watch our team delivering healthy pre-vaccinated chicks to farmers in Kitui County. Free countrywide delivery every Wednesday and Thursday.',
+    videoUrl: '/media/kitui-delivery.mp4',
+    thumbnailUrl: '/media/team-delivery-1.jpg',
+    category: 'Customer Visits',
+    views: 890,
+    likes: 175,
+    duration: '00:28',
+    createdAt: '2026-06-12',
+    featured: true,
+  },
+  {
+    id: 'v3',
+    title: 'Cucu Mutugi Poultry — Brand Introduction',
+    description: 'Meet the team behind Cucu Mutugi Poultry. See why thousands of Kenyan farmers trust us for quality pre-vaccinated chicks and free delivery.',
+    videoUrl: '/media/fly-logo.mp4',
+    thumbnailUrl: '/media/owner-flag.jpg',
+    category: 'Farm Tours',
+    views: 2100,
+    likes: 410,
+    duration: '00:25',
+    createdAt: '2026-06-15',
+    featured: true,
+  },
+];
+
 export const DEFAULT_SETTINGS: SiteSettings = {
   heroTitle: 'CUCU MUTUGI POULTRY',
   heroSubtitle: 'Growing Farmers, Building Prosperity',
@@ -122,3 +294,4 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   ],
   showWhatsappButton: true,
 };
+

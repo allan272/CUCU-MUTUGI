@@ -5,11 +5,15 @@ import {
   DEFAULT_ORDERS,
   DEFAULT_FARMERS,
   DEFAULT_BLOGS,
+  DEFAULT_STORIES,
+  DEFAULT_VIDEOS,
   DEFAULT_SETTINGS,
   Product,
   Order,
   Farmer,
   BlogPost,
+  Story,
+  Video,
   SiteSettings
 } from '@/lib/seeds';
 
@@ -50,6 +54,8 @@ export async function GET(request: Request) {
     const ordersColl = db.collection('orders');
     const farmersColl = db.collection('farmers');
     const blogColl = db.collection('blog_posts');
+    const storiesColl = db.collection('stories');
+    const videosColl = db.collection('videos');
     const settingsColl = db.collection('settings');
 
     // 1. Load products (and seed if empty)
@@ -84,7 +90,23 @@ export async function GET(request: Request) {
       blogs = await blogColl.find({}).toArray();
     }
 
-    // 5. Load settings (and seed if empty)
+    // 5. Load stories (and seed if empty)
+    let stories = await storiesColl.find({}).toArray();
+    if (stories.length === 0) {
+      const seedDocs = DEFAULT_STORIES.map(s => ({ ...s, _id: s.id as any }));
+      await storiesColl.insertMany(seedDocs);
+      stories = await storiesColl.find({}).toArray();
+    }
+
+    // 6. Load videos (and seed if empty)
+    let videos = await videosColl.find({}).toArray();
+    if (videos.length === 0) {
+      const seedDocs = DEFAULT_VIDEOS.map(v => ({ ...v, _id: v.id as any }));
+      await videosColl.insertMany(seedDocs);
+      videos = await videosColl.find({}).toArray();
+    }
+
+    // 7. Load settings (and seed if empty)
     let settingsDoc = await settingsColl.findOne({ _id: 'site_settings' as any });
     if (!settingsDoc) {
       await settingsColl.insertOne({ ...DEFAULT_SETTINGS, _id: 'site_settings' as any });
@@ -96,6 +118,8 @@ export async function GET(request: Request) {
       orders: orders.map(o => formatDoc<Order>(o)),
       farmers: farmers.map(f => formatDoc<Farmer>(f)),
       blogPosts: blogs.map(b => formatDoc<BlogPost>(b)),
+      stories: stories.map(s => formatDoc<Story>(s)),
+      videos: videos.map(v => formatDoc<Video>(v)),
       settings: formatDoc<SiteSettings>(settingsDoc),
     });
   } catch (error: any) {
@@ -120,6 +144,8 @@ export async function POST(request: Request) {
     const ordersColl = db.collection('orders');
     const farmersColl = db.collection('farmers');
     const blogColl = db.collection('blog_posts');
+    const storiesColl = db.collection('stories');
+    const videosColl = db.collection('videos');
     const settingsColl = db.collection('settings');
 
     switch (action) {
@@ -130,6 +156,8 @@ export async function POST(request: Request) {
           ordersColl.deleteMany({}),
           farmersColl.deleteMany({}),
           blogColl.deleteMany({}),
+          storiesColl.deleteMany({}),
+          videosColl.deleteMany({}),
           settingsColl.deleteMany({})
         ]);
         
@@ -139,6 +167,8 @@ export async function POST(request: Request) {
           ordersColl.insertMany(DEFAULT_ORDERS.map(o => ({ ...o, _id: o.id as any }))),
           farmersColl.insertMany(DEFAULT_FARMERS.map(f => ({ ...f, _id: f.id as any }))),
           blogColl.insertMany(DEFAULT_BLOGS.map(b => ({ ...b, _id: b.id as any }))),
+          storiesColl.insertMany(DEFAULT_STORIES.map(s => ({ ...s, _id: s.id as any }))),
+          videosColl.insertMany(DEFAULT_VIDEOS.map(v => ({ ...v, _id: v.id as any }))),
           settingsColl.insertOne({ ...DEFAULT_SETTINGS, _id: 'site_settings' as any })
         ]);
         break;
@@ -171,13 +201,26 @@ export async function POST(request: Request) {
         }
         break;
 
+      case 'setStories':
+        await storiesColl.deleteMany({});
+        if (payload && payload.length > 0) {
+          await storiesColl.insertMany(payload.map((s: Story) => ({ ...s, _id: s.id as any })));
+        }
+        break;
+
+      case 'setVideos':
+        await videosColl.deleteMany({});
+        if (payload && payload.length > 0) {
+          await videosColl.insertMany(payload.map((v: Video) => ({ ...v, _id: v.id as any })));
+        }
+        break;
+
       case 'addProduct':
         await productsColl.insertOne({ ...payload, _id: payload.id as any });
         break;
 
       case 'updateProduct': {
         const { id, updates } = payload;
-        // Strip _id or id from updates if present to prevent MongoDB modification errors
         const { id: _ignoredId, _id: _ignoredMongoId, ...fieldsToUpdate } = updates;
         await productsColl.updateOne(
           { _id: id as any },
@@ -188,6 +231,42 @@ export async function POST(request: Request) {
 
       case 'deleteProduct':
         await productsColl.deleteOne({ _id: payload.id as any });
+        break;
+
+      case 'addStory':
+        await storiesColl.insertOne({ ...payload, _id: payload.id as any });
+        break;
+
+      case 'updateStory': {
+        const { id, updates } = payload;
+        const { id: _ignoredId, _id: _ignoredMongoId, ...fieldsToUpdate } = updates;
+        await storiesColl.updateOne(
+          { _id: id as any },
+          { $set: fieldsToUpdate }
+        );
+        break;
+      }
+
+      case 'deleteStory':
+        await storiesColl.deleteOne({ _id: payload.id as any });
+        break;
+
+      case 'addVideo':
+        await videosColl.insertOne({ ...payload, _id: payload.id as any });
+        break;
+
+      case 'updateVideo': {
+        const { id, updates } = payload;
+        const { id: _ignoredId, _id: _ignoredMongoId, ...fieldsToUpdate } = updates;
+        await videosColl.updateOne(
+          { _id: id as any },
+          { $set: fieldsToUpdate }
+        );
+        break;
+      }
+
+      case 'deleteVideo':
+        await videosColl.deleteOne({ _id: payload.id as any });
         break;
 
       case 'updateOrder': {
@@ -223,10 +302,8 @@ export async function POST(request: Request) {
         break;
 
       case 'updateSettings': {
-        // Strip _id/id if passed
         const { id: _ignoredId, _id: _ignoredMongoId, ...settingsUpdates } = payload;
         
-        // Use $set to allow merging partial settings
         const flattenedUpdates: Record<string, any> = {};
         for (const [key, value] of Object.entries(settingsUpdates)) {
           flattenedUpdates[key] = value;
@@ -253,3 +330,4 @@ export async function POST(request: Request) {
     }, { status: 500 });
   }
 }
+

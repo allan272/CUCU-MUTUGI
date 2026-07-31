@@ -14,11 +14,15 @@ import {
   Settings,
   ChevronRight,
   ChevronLeft,
-  ArrowLeft
+  ArrowLeft,
+  Sparkles,
+  Video
 } from 'lucide-react';
 
 const TABS = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { id: 'stories', icon: Sparkles, label: 'Poultry Stories' },
+  { id: 'videos', icon: Video, label: 'Videos & Shorts' },
   { id: 'database', icon: Database, label: 'Database Viewer' },
   { id: 'products', icon: Egg, label: 'Products' },
   { id: 'orders', icon: Package, label: 'Orders' },

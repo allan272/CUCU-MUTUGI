@@ -25,7 +25,12 @@ import {
   Phone,
   Palette,
   Wrench,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles,
+  Video as VideoIcon,
+  Heart,
+  Eye,
+  Play
 } from 'lucide-react';
 
 // Image compression helper to support large uploads and restrict size stored in DB
@@ -79,6 +84,10 @@ function DashboardTab() {
   const delivered = db.orders.filter(o => o.status === 'Delivered').length;
   const pending = db.orders.filter(o => o.status === 'Pending').length;
 
+  const totalStoryViews = (db.stories || []).reduce((s, x) => s + (x.views || 0), 0);
+  const totalStoryLikes = (db.stories || []).reduce((s, x) => s + (x.likes || 0), 0);
+  const totalVideoViews = (db.videos || []).reduce((s, x) => s + (x.views || 0), 0);
+
   const stats = [
     { label: 'Total Products', value: db.products.length, icon: Egg, color: 'from-blue-500 to-cyan-400' },
     { label: 'Total Orders', value: db.orders.length, icon: Package, color: 'from-cyan-500 to-teal-400' },
@@ -86,8 +95,10 @@ function DashboardTab() {
     { label: 'Revenue (KES)', value: `${(totalRevenue / 1000).toFixed(1)}K`, icon: DollarSign, color: 'from-blue-600 to-indigo-500' },
     { label: 'Delivered Orders', value: delivered, icon: CheckCircle2, color: 'from-green-500 to-teal-500' },
     { label: 'Pending Orders', value: pending, icon: Clock, color: 'from-yellow-500 to-orange-400' },
-    { label: 'Blog Posts', value: db.blogPosts.length, icon: FileText, color: 'from-purple-500 to-blue-500' },
-    { label: 'Published Posts', value: db.blogPosts.filter(b => b.published).length, icon: Globe, color: 'from-indigo-500 to-cyan-500' },
+    { label: 'Active Stories', value: (db.stories || []).length, icon: Sparkles, color: 'from-pink-500 to-purple-500' },
+    { label: 'Story Views / Likes', value: `${totalStoryViews} / ${totalStoryLikes}`, icon: Eye, color: 'from-purple-500 to-indigo-500' },
+    { label: 'Total Videos', value: (db.videos || []).length, icon: VideoIcon, color: 'from-cyan-600 to-blue-600' },
+    { label: 'Video Views', value: totalVideoViews, icon: Play, color: 'from-blue-500 to-cyan-500' },
   ];
 
   const recentOrders = [...db.orders].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
@@ -778,6 +789,533 @@ function BlogTab() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// TAB: Poultry Stories
+// ─────────────────────────────────────────────────────────────────────────────
+function StoriesTab() {
+  const { db, addStory, updateStory, deleteStory } = useAdmin();
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('New Chicks');
+  const [mediaType, setMediaType] = useState<'image' | 'video'>('image');
+  const [mediaUrl, setMediaUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [actionText, setActionText] = useState('Order Now');
+  const [actionUrl, setActionUrl] = useState('/products');
+  const [featured, setFeatured] = useState(true);
+  const [pollQuestion, setPollQuestion] = useState('');
+  const [pollOptionsStr, setPollOptionsStr] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  const stories = db.stories || [];
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const adminPwd = sessionStorage.getItem('cucu_mutugi_admin_pwd') || '';
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': adminPwd },
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          setMediaUrl(data.url);
+          if (file.type.includes('video')) setMediaType('video');
+        }
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCreateStory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !mediaUrl) return;
+
+    let pollObj = undefined;
+    if (pollQuestion.trim() && pollOptionsStr.trim()) {
+      const options = pollOptionsStr.split(',').map(s => ({ text: s.trim(), votes: 0 })).filter(o => o.text);
+      if (options.length >= 2) {
+        pollObj = { question: pollQuestion.trim(), options };
+      }
+    }
+
+    addStory({
+      title,
+      category,
+      mediaType,
+      mediaUrl,
+      description: description.trim() || undefined,
+      actionText: actionText.trim() || undefined,
+      actionUrl: actionUrl.trim() || undefined,
+      poll: pollObj,
+      featured,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    });
+
+    setTitle('');
+    setMediaUrl('');
+    setDescription('');
+    setPollQuestion('');
+    setPollOptionsStr('');
+    setShowAddForm(false);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-primary flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-amber-500" /> Poultry Updates (Stories)
+          </h2>
+          <p className="text-sm text-gray-500">Manage WhatsApp / Instagram style updates displayed at top of site</p>
+        </div>
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="btn-primary text-sm !py-2.5 !px-4 flex items-center gap-1.5 cursor-pointer"
+        >
+          <Plus className="h-4 w-4" /> {showAddForm ? 'Cancel' : 'Create New Story'}
+        </button>
+      </div>
+
+      {showAddForm && (
+        <form onSubmit={handleCreateStory} className="glass-white rounded-2xl p-6 border border-blue-200 space-y-4 shadow-md">
+          <h3 className="font-bold text-lg text-primary border-b border-blue-100 pb-2">Create Story Update</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Story Title *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. 🐣 New Batch Arrived"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+              >
+                {['New Chicks', 'Vaccination', 'Egg Collection', 'Farm Tour', 'New Feed', 'Delivery', 'Incubation'].map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Media Type</label>
+              <select
+                value={mediaType}
+                onChange={(e) => setMediaType(e.target.value as any)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+              >
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Upload Media File or Enter URL *</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  placeholder="https://... or upload file"
+                  value={mediaUrl}
+                  onChange={(e) => setMediaUrl(e.target.value)}
+                  className="flex-1 p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                />
+                <label className="bg-blue-100 hover:bg-blue-200 text-primary font-bold text-xs px-3 py-2.5 rounded-lg cursor-pointer flex items-center gap-1">
+                  <Upload className="w-4 h-4" />
+                  <span>{uploading ? 'Uploading...' : 'Browse'}</span>
+                  <input type="file" accept="image/*,video/*" onChange={handleFileUpload} className="hidden" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-1">Description / Announcement</label>
+            <textarea
+              rows={2}
+              placeholder="e.g. 5000 Layer Chicks available this week. Delivered free across Kenya."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Action Button Text</label>
+              <input
+                type="text"
+                placeholder="e.g. Order Now"
+                value={actionText}
+                onChange={(e) => setActionText(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Action Button Target Link</label>
+              <input
+                type="text"
+                placeholder="e.g. /products or /contact"
+                value={actionUrl}
+                onChange={(e) => setActionUrl(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-3">
+            <label className="block text-xs font-bold text-primary uppercase tracking-wider">Optional Interactive Poll</label>
+            <input
+              type="text"
+              placeholder="Poll Question e.g. Are you stocking layers or broilers?"
+              value={pollQuestion}
+              onChange={(e) => setPollQuestion(e.target.value)}
+              className="w-full p-2 text-xs border rounded-lg bg-white"
+            />
+            <input
+              type="text"
+              placeholder="Options separated by commas e.g. Layers 🥚, Broilers 🍗, Kienyeji 🐔"
+              value={pollOptionsStr}
+              onChange={(e) => setPollOptionsStr(e.target.value)}
+              className="w-full p-2 text-xs border rounded-lg bg-white"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 pt-2">
+            <input
+              type="checkbox"
+              id="featuredStory"
+              checked={featured}
+              onChange={(e) => setFeatured(e.target.checked)}
+              className="w-4 h-4 text-cyan-600 rounded cursor-pointer"
+            />
+            <label htmlFor="featuredStory" className="text-xs font-bold text-gray-700 cursor-pointer">
+              Featured Story Highlight (Never expires after 24 hours)
+            </label>
+          </div>
+
+          <button type="submit" className="btn-primary w-full text-sm font-bold !py-3 flex items-center justify-center gap-2 cursor-pointer">
+            <Save className="h-4 w-4" /> Publish Story
+          </button>
+        </form>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {stories.map(s => (
+          <div key={s.id} className="glass-white rounded-xl overflow-hidden border border-blue-100 shadow-sm flex flex-col justify-between">
+            <div className="relative aspect-video bg-slate-900">
+              <img src={s.mediaUrl} alt={s.title} className="w-full h-full object-cover" />
+              <span className="absolute top-2 left-2 bg-black/70 text-cyan-300 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">
+                {s.category}
+              </span>
+              {s.featured && (
+                <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> Featured
+                </span>
+              )}
+            </div>
+
+            <div className="p-4 flex-1 space-y-2">
+              <h4 className="font-bold text-gray-900 text-sm leading-snug">{s.title}</h4>
+              {s.description && <p className="text-xs text-gray-500 line-clamp-2">{s.description}</p>}
+              
+              <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-100">
+                <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-blue-500" /> {s.views} views</span>
+                <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5 text-rose-500" /> {s.likes} likes</span>
+              </div>
+            </div>
+
+            <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+              <button
+                onClick={() => updateStory(s.id, { featured: !s.featured })}
+                className={`text-xs px-2.5 py-1 rounded font-bold cursor-pointer ${
+                  s.featured ? 'bg-amber-100 text-amber-800' : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {s.featured ? 'Featured' : 'Make Featured'}
+              </button>
+              <button
+                onClick={() => deleteStory(s.id)}
+                className="text-xs px-2.5 py-1 rounded bg-red-100 text-red-600 hover:bg-red-200 font-bold cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TAB: Videos & Shorts
+// ─────────────────────────────────────────────────────────────────────────────
+function VideosTab() {
+  const { db, addVideo, updateVideo, deleteVideo } = useAdmin();
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Farm Tours');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [duration, setDuration] = useState('03:30');
+  const [featured, setFeatured] = useState(true);
+  const [uploading, setUploading] = useState(false);
+
+  const videos = db.videos || [];
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'video' | 'thumbnail') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const adminPwd = sessionStorage.getItem('cucu_mutugi_admin_pwd') || '';
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': adminPwd },
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.url) {
+          if (field === 'video') setVideoUrl(data.url);
+          else setThumbnailUrl(data.url);
+        }
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCreateVideo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !videoUrl) return;
+
+    addVideo({
+      title,
+      category,
+      videoUrl,
+      thumbnailUrl: thumbnailUrl || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80',
+      description,
+      duration,
+      featured,
+    });
+
+    setTitle('');
+    setVideoUrl('');
+    setThumbnailUrl('');
+    setDescription('');
+    setShowAddForm(false);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-primary flex items-center gap-2">
+            <VideoIcon className="h-6 w-6 text-cyan-600" /> Videos & Tutorials
+          </h2>
+          <p className="text-sm text-gray-500">Manage video guides, farm walkthroughs, and YouTube Shorts style media</p>
+        </div>
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="btn-primary text-sm !py-2.5 !px-4 flex items-center gap-1.5 cursor-pointer"
+        >
+          <Plus className="h-4 w-4" /> {showAddForm ? 'Cancel' : 'Upload New Video'}
+        </button>
+      </div>
+
+      {showAddForm && (
+        <form onSubmit={handleCreateVideo} className="glass-white rounded-2xl p-6 border border-cyan-200 space-y-4 shadow-md">
+          <h3 className="font-bold text-lg text-primary border-b border-blue-100 pb-2">Upload New Farm Video</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Video Title *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Modern Brooder Setup Guide for 500 Chicks"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-cyan focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-cyan focus:outline-none"
+              >
+                {['Farm Tours', 'Vaccination', 'Chicken Feeding', 'Incubation', 'Customer Visits', 'Construction', 'Success Stories', 'Equipment', 'Daily Activities'].map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Video File or URL *</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  placeholder="https://... or upload video file"
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                  className="flex-1 p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-cyan focus:outline-none"
+                />
+                <label className="bg-cyan-100 hover:bg-cyan-200 text-cyan-800 font-bold text-xs px-3 py-2.5 rounded-lg cursor-pointer flex items-center gap-1">
+                  <Upload className="w-4 h-4" />
+                  <span>{uploading ? 'Uploading...' : 'Browse'}</span>
+                  <input type="file" accept="video/*" onChange={(e) => handleFileUpload(e, 'video')} className="hidden" />
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Thumbnail Image File or URL</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="https://... or upload image"
+                  value={thumbnailUrl}
+                  onChange={(e) => setThumbnailUrl(e.target.value)}
+                  className="flex-1 p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-cyan focus:outline-none"
+                />
+                <label className="bg-cyan-100 hover:bg-cyan-200 text-cyan-800 font-bold text-xs px-3 py-2.5 rounded-lg cursor-pointer flex items-center gap-1">
+                  <Upload className="w-4 h-4" />
+                  <span>Browse</span>
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'thumbnail')} className="hidden" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Video Duration</label>
+              <input
+                type="text"
+                placeholder="e.g. 04:30"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-cyan focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 pt-6">
+              <input
+                type="checkbox"
+                id="featuredVideo"
+                checked={featured}
+                onChange={(e) => setFeatured(e.target.checked)}
+                className="w-4 h-4 text-cyan-600 rounded cursor-pointer"
+              />
+              <label htmlFor="featuredVideo" className="text-xs font-bold text-gray-700 cursor-pointer">
+                Mark as Featured Video
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-700 mb-1">Description</label>
+            <textarea
+              rows={3}
+              placeholder="Full description of the video content..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-cyan focus:outline-none"
+            />
+          </div>
+
+          <button type="submit" className="btn-primary w-full text-sm font-bold !py-3 flex items-center justify-center gap-2 cursor-pointer">
+            <Save className="h-4 w-4" /> Publish Video
+          </button>
+        </form>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {videos.map(v => (
+          <div key={v.id} className="glass-white rounded-xl overflow-hidden border border-blue-100 shadow-sm flex flex-col justify-between">
+            <div className="relative aspect-video bg-slate-900">
+              <img src={v.thumbnailUrl || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80'} alt={v.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <Play className="w-10 h-10 text-white/90 drop-shadow" />
+              </div>
+              <span className="absolute top-2 left-2 bg-black/70 text-cyan-300 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">
+                {v.category}
+              </span>
+              {v.duration && (
+                <span className="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                  {v.duration}
+                </span>
+              )}
+            </div>
+
+            <div className="p-4 flex-1 space-y-2">
+              <h4 className="font-bold text-gray-900 text-sm leading-snug">{v.title}</h4>
+              <p className="text-xs text-gray-500 line-clamp-2">{v.description}</p>
+
+              <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-100">
+                <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-blue-500" /> {v.views} views</span>
+                <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5 text-rose-500" /> {v.likes} likes</span>
+              </div>
+            </div>
+
+            <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+              <button
+                onClick={() => updateVideo(v.id, { featured: !v.featured })}
+                className={`text-xs px-2.5 py-1 rounded font-bold cursor-pointer ${
+                  v.featured ? 'bg-cyan-100 text-cyan-800' : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {v.featured ? 'Featured' : 'Make Featured'}
+              </button>
+              <button
+                onClick={() => deleteVideo(v.id)}
+                className="text-xs px-2.5 py-1 rounded bg-red-100 text-red-600 hover:bg-red-200 font-bold cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // TAB: Settings
 // ─────────────────────────────────────────────────────────────────────────────
 function SettingsTab() {
@@ -788,7 +1326,7 @@ function SettingsTab() {
       <div className="glass-white rounded-2xl p-6 border border-red-100">
         <h3 className="font-bold text-red-500 mb-2"><AlertTriangle className="h-5 w-5 inline mr-1.5" /> Danger Zone</h3>
         <p className="text-sm text-gray-600 mb-4">This will reset all database entries to the default sample data. This action cannot be undone.</p>
-        <button onClick={() => { if (confirm('Are you sure you want to reset all data to defaults?')) resetDB(); }} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-colors">
+        <button onClick={() => { if (confirm('Are you sure you want to reset all data to defaults?')) resetDB(); }} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-colors cursor-pointer">
           <RotateCcw className="h-4 w-4 inline mr-1.5" /> Reset All Data to Defaults
         </button>
       </div>
@@ -803,6 +1341,8 @@ export default function AdminTabContent() {
   const { activeTab } = useAdmin();
   const tabMap: Record<string, React.ReactNode> = {
     dashboard: <DashboardTab />,
+    stories: <StoriesTab />,
+    videos: <VideosTab />,
     database: <DatabaseTab />,
     products: <ProductsTab />,
     orders: <OrdersTab />,

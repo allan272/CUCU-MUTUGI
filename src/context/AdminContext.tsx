@@ -5,17 +5,21 @@ import {
   Order,
   Farmer,
   BlogPost,
+  Story,
+  Video,
   SiteSettings,
   DBTable,
   DEFAULT_PRODUCTS,
   DEFAULT_ORDERS,
   DEFAULT_FARMERS,
   DEFAULT_BLOGS,
+  DEFAULT_STORIES,
+  DEFAULT_VIDEOS,
   DEFAULT_SETTINGS
 } from '@/lib/seeds';
 
 // Re-export the types so components importing from AdminContext don't break
-export type { Product, Order, Farmer, BlogPost, SiteSettings, DBTable };
+export type { Product, Order, Farmer, BlogPost, Story, Video, SiteSettings, DBTable };
 
 // ─── Loader ───────────────────────────────────────────────────────────────────
 async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongodb' | 'local' }> {
@@ -26,6 +30,8 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
         orders: DEFAULT_ORDERS,
         farmers: DEFAULT_FARMERS,
         blogPosts: DEFAULT_BLOGS,
+        stories: DEFAULT_STORIES,
+        videos: DEFAULT_VIDEOS,
         settings: DEFAULT_SETTINGS
       },
       source: 'local'
@@ -38,12 +44,24 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
       const res = await fetch('/api/db', {
         headers: {
           'x-admin-password': password
-        }
+        },
+        signal: AbortSignal.timeout(5000),
       });
       if (res.ok) {
         const data = await res.json();
         if (data && !data.error) {
-          return { data: data as DBTable, source: 'mongodb' };
+          return {
+            data: {
+              products: data.products || DEFAULT_PRODUCTS,
+              orders: data.orders || DEFAULT_ORDERS,
+              farmers: data.farmers || DEFAULT_FARMERS,
+              blogPosts: data.blogPosts || DEFAULT_BLOGS,
+              stories: data.stories || DEFAULT_STORIES,
+              videos: data.videos || DEFAULT_VIDEOS,
+              settings: data.settings || DEFAULT_SETTINGS
+            },
+            source: 'mongodb'
+          };
         } else {
           console.warn('MongoDB API returned error or empty data. Using local storage fallback.');
         }
@@ -58,7 +76,21 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
   // Fallback to Local Storage
   try {
     const raw = localStorage.getItem('cucu_mutugi_db');
-    if (raw) return { data: JSON.parse(raw), source: 'local' };
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        data: {
+          products: parsed.products || DEFAULT_PRODUCTS,
+          orders: parsed.orders || DEFAULT_ORDERS,
+          farmers: parsed.farmers || DEFAULT_FARMERS,
+          blogPosts: parsed.blogPosts || DEFAULT_BLOGS,
+          stories: parsed.stories || DEFAULT_STORIES,
+          videos: parsed.videos || DEFAULT_VIDEOS,
+          settings: parsed.settings || DEFAULT_SETTINGS
+        },
+        source: 'local'
+      };
+    }
   } catch (error) {
     console.error('Local storage load failed:', error);
   }
@@ -69,6 +101,8 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
       orders: DEFAULT_ORDERS,
       farmers: DEFAULT_FARMERS,
       blogPosts: DEFAULT_BLOGS,
+      stories: DEFAULT_STORIES,
+      videos: DEFAULT_VIDEOS,
       settings: DEFAULT_SETTINGS
     },
     source: 'local'
@@ -80,6 +114,7 @@ interface AdminContextValue {
   db: DBTable;
   dbSource: 'mongodb' | 'local';
   isAuthenticated: boolean;
+  adminLoaded: boolean;
   login: (password: string) => Promise<boolean>;
   logout: () => void;
   authError: string | null;
@@ -87,6 +122,8 @@ interface AdminContextValue {
   setOrders: (o: Order[]) => void;
   setFarmers: (f: Farmer[]) => void;
   setBlogPosts: (b: BlogPost[]) => void;
+  setStories: (s: Story[]) => void;
+  setVideos: (v: Video[]) => void;
   updateSettings: (s: Partial<SiteSettings>) => void;
   addProduct: (p: Omit<Product, 'id' | 'createdAt'>) => void;
   updateProduct: (id: string, p: Partial<Product>) => void;
@@ -96,6 +133,15 @@ interface AdminContextValue {
   addBlogPost: (b: Omit<BlogPost, 'id' | 'createdAt'>) => void;
   updateBlogPost: (id: string, b: Partial<BlogPost>) => void;
   deleteBlogPost: (id: string) => void;
+  addStory: (s: Omit<Story, 'id' | 'createdAt' | 'likes' | 'views'>) => void;
+  updateStory: (id: string, s: Partial<Story>) => void;
+  deleteStory: (id: string) => void;
+  likeStory: (id: string) => void;
+  voteStoryPoll: (id: string, optionIndex: number) => void;
+  addVideo: (v: Omit<Video, 'id' | 'createdAt' | 'likes' | 'views'>) => void;
+  updateVideo: (id: string, v: Partial<Video>) => void;
+  deleteVideo: (id: string) => void;
+  likeVideo: (id: string) => void;
   resetDB: () => void;
   activeTab: string;
   setActiveTab: (t: string) => void;
@@ -115,6 +161,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     orders: DEFAULT_ORDERS,
     farmers: DEFAULT_FARMERS,
     blogPosts: DEFAULT_BLOGS,
+    stories: DEFAULT_STORIES,
+    videos: DEFAULT_VIDEOS,
     settings: DEFAULT_SETTINGS
   });
   const [dbSource, setDBSource] = useState<'mongodb' | 'local'>('local');
@@ -122,7 +170,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [authError, setAuthError] = useState<string | null>(null);
   const [adminPassword, setAdminPassword] = useState<string>('');
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true); // Start as true — login form shows instantly
 
   useEffect(() => {
     async function initialize() {
@@ -130,20 +178,17 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         const savedPwd = sessionStorage.getItem('cucu_mutugi_admin_pwd') || '';
         if (savedPwd) {
           try {
-            // Fast auth check — this returns in ~37ms, no MongoDB wait
             const res = await fetch('/api/auth', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ password: savedPwd }),
-              signal: AbortSignal.timeout(4000),
+              signal: AbortSignal.timeout(3000),
             });
             if (res.ok) {
               const data = await res.json();
               if (data.success) {
                 setAdminPassword(savedPwd);
                 setIsAuthenticated(true);
-                setLoaded(true); // ← show dashboard immediately
-                // Load MongoDB data in the background — don't block UI
                 loadDB(savedPwd).then(result => {
                   setDB(result.data);
                   setDBSource(result.source);
@@ -151,19 +196,16 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
                 return;
               }
             }
+            // If auth failed, clear stale password
+            sessionStorage.removeItem('cucu_mutugi_admin_pwd');
           } catch {
-            // Timeout or network error — clear stale session
             sessionStorage.removeItem('cucu_mutugi_admin_pwd');
           }
         }
       }
-      // No valid saved session — show login form immediately (no MongoDB needed)
-      setIsAuthenticated(false);
-      setLoaded(true);
     }
     initialize();
   }, []);
-
 
   const login = async (password: string): Promise<boolean> => {
     setAuthError(null);
@@ -200,7 +242,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     setDBSource('local');
   };
 
-  // Update client state and localStorage copy
   const persistLocal = useCallback((newDB: DBTable) => {
     setDB(newDB);
     try {
@@ -210,7 +251,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Send update to MongoDB API route
   const syncToMongoDB = async (action: string, payload: any) => {
     if (!adminPassword) return;
     try {
@@ -248,6 +288,16 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const setBlogPosts = (blogPosts: BlogPost[]) => {
     persistLocal({ ...db, blogPosts });
     syncToMongoDB('setBlogPosts', blogPosts);
+  };
+
+  const setStories = (stories: Story[]) => {
+    persistLocal({ ...db, stories });
+    syncToMongoDB('setStories', stories);
+  };
+
+  const setVideos = (videos: Video[]) => {
+    persistLocal({ ...db, videos });
+    syncToMongoDB('setVideos', videos);
   };
 
   const updateSettings = (s: Partial<SiteSettings>) => {
@@ -324,30 +374,129 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     syncToMongoDB('deleteBlogPost', { id });
   };
 
+  const addStory = (s: Omit<Story, 'id' | 'createdAt' | 'likes' | 'views'>) => {
+    const now = new Date();
+    const newS: Story = {
+      ...s,
+      id: `s${Date.now()}`,
+      likes: 0,
+      views: 0,
+      createdAt: now.toISOString(),
+      expiresAt: s.expiresAt || new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString()
+    };
+    persistLocal({ ...db, stories: [newS, ...db.stories] });
+    syncToMongoDB('addStory', newS);
+  };
+
+  const updateStory = (id: string, s: Partial<Story>) => {
+    persistLocal({
+      ...db,
+      stories: db.stories.map(x => (x.id === id ? { ...x, ...s } : x))
+    });
+    syncToMongoDB('updateStory', { id, updates: s });
+  };
+
+  const deleteStory = (id: string) => {
+    persistLocal({
+      ...db,
+      stories: db.stories.filter(x => x.id !== id)
+    });
+    syncToMongoDB('deleteStory', { id });
+  };
+
+  const likeStory = (id: string) => {
+    persistLocal({
+      ...db,
+      stories: db.stories.map(x => (x.id === id ? { ...x, likes: x.likes + 1 } : x))
+    });
+    fetch('/api/stories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'like', storyId: id })
+    }).catch(() => {});
+  };
+
+  const voteStoryPoll = (id: string, optionIndex: number) => {
+    persistLocal({
+      ...db,
+      stories: db.stories.map(x => {
+        if (x.id === id && x.poll && x.poll.options[optionIndex]) {
+          const updatedOptions = [...x.poll.options];
+          updatedOptions[optionIndex] = {
+            ...updatedOptions[optionIndex],
+            votes: updatedOptions[optionIndex].votes + 1
+          };
+          return {
+            ...x,
+            poll: {
+              ...x.poll,
+              options: updatedOptions,
+              userVotedIndex: optionIndex
+            }
+          };
+        }
+        return x;
+      })
+    });
+    fetch('/api/stories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'vote', storyId: id, optionIndex })
+    }).catch(() => {});
+  };
+
+  const addVideo = (v: Omit<Video, 'id' | 'createdAt' | 'likes' | 'views'>) => {
+    const newV: Video = {
+      ...v,
+      id: `v${Date.now()}`,
+      likes: 0,
+      views: 0,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    persistLocal({ ...db, videos: [newV, ...db.videos] });
+    syncToMongoDB('addVideo', newV);
+  };
+
+  const updateVideo = (id: string, v: Partial<Video>) => {
+    persistLocal({
+      ...db,
+      videos: db.videos.map(x => (x.id === id ? { ...x, ...v } : x))
+    });
+    syncToMongoDB('updateVideo', { id, updates: v });
+  };
+
+  const deleteVideo = (id: string) => {
+    persistLocal({
+      ...db,
+      videos: db.videos.filter(x => x.id !== id)
+    });
+    syncToMongoDB('deleteVideo', { id });
+  };
+
+  const likeVideo = (id: string) => {
+    persistLocal({
+      ...db,
+      videos: db.videos.map(x => (x.id === id ? { ...x, likes: x.likes + 1 } : x))
+    });
+    fetch('/api/videos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'like', videoId: id })
+    }).catch(() => {});
+  };
+
   const resetDB = async () => {
-    // Optimistic update of local UI first
     persistLocal({
       products: DEFAULT_PRODUCTS,
       orders: DEFAULT_ORDERS,
       farmers: DEFAULT_FARMERS,
       blogPosts: DEFAULT_BLOGS,
+      stories: DEFAULT_STORIES,
+      videos: DEFAULT_VIDEOS,
       settings: DEFAULT_SETTINGS
     });
-    
-    // Sync reset to MongoDB
     await syncToMongoDB('reset', null);
   };
-
-  if (!loaded) return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center gap-4"
-      style={{ background: 'linear-gradient(135deg, #0A192F 0%, #172A45 50%, #1A365D 100%)' }}
-    >
-      <div className="w-16 h-16 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
-      <p className="text-cyan-300 text-sm font-semibold tracking-widest uppercase">Loading Admin Panel…</p>
-    </div>
-  );
-
 
   return (
     <AdminContext.Provider
@@ -355,6 +504,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         db,
         dbSource,
         isAuthenticated,
+        adminLoaded: loaded,
         login,
         logout,
         authError,
@@ -362,6 +512,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         setOrders,
         setFarmers,
         setBlogPosts,
+        setStories,
+        setVideos,
         updateSettings,
         addProduct,
         updateProduct,
@@ -371,6 +523,15 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         addBlogPost,
         updateBlogPost,
         deleteBlogPost,
+        addStory,
+        updateStory,
+        deleteStory,
+        likeStory,
+        voteStoryPoll,
+        addVideo,
+        updateVideo,
+        deleteVideo,
+        likeVideo,
         resetDB,
         activeTab,
         setActiveTab
@@ -380,3 +541,4 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     </AdminContext.Provider>
   );
 }
+

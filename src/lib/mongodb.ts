@@ -55,9 +55,24 @@ async function resolveMongoSrv(connectionString: string): Promise<string> {
 }
 
 const uri = process.env.MONGODB_URI;
-const options = {};
+
+// Tight timeouts so failures fail fast (not 50-90 seconds)
+const options = {
+  serverSelectionTimeoutMS: 5000,
+  connectTimeoutMS: 5000,
+  socketTimeoutMS: 8000,
+};
 
 let clientPromise: Promise<MongoClient>;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`MongoDB connection timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+}
 
 if (!uri) {
   clientPromise = Promise.reject(new Error('MONGODB_URI is not set in environment variables.'));
@@ -66,7 +81,7 @@ if (!uri) {
   const connectClient = async (): Promise<MongoClient> => {
     const resolvedUri = await resolveMongoSrv(uri);
     const client = new MongoClient(resolvedUri, options);
-    return client.connect();
+    return withTimeout(client.connect(), 6000);
   };
 
   if (process.env.NODE_ENV === 'development') {
