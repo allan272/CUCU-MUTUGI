@@ -1,0 +1,52 @@
+Hygiene and Sanitation
+Once the previous flock has been harvested or depleted, the poultry house and all equipment should be thoroughly cleaned and disinfected. The house should remain vacant for a minimum of two weeks before the arrival of the next flock. This downtime helps reduce the buildup and spread of disease-causing organisms.
+After removing the birds, take all equipment out of the house and lightly dampen the ceiling, walls, and litter with water to minimize dust during litter removal. Remove all old litter and dispose of it at least 1.5 km away from the farm premises. Do not store or spread used litter near the poultry house, as it may re-contaminate the cleaned facility.
+To further reduce the risk of disease transmission, dispose of all unused feed remaining in the house. Feed should not be carried over to the next flock unless it has been stored separately in sealed bags away from the poultry house.
+Wash the house thoroughly using water and detergent, beginning with the roof, followed by the walls, and finally the floor. Allow the house to dry completely before applying a disinfectant solution, again working from the roof downward.
+All equipment should be washed, disinfected, and inspected for damage. Any necessary repairs and maintenance should be completed during this period. An effective broad-spectrum disinfectant may also be applied using a pressure washer fitted with a jet nozzle. Ensure that all interior surfaces and equipment are thoroughly soaked, working systematically from top to bottom.
+Common Disinfectants Used in Poultry Production
+Disinfectant Type
+Examples
+Advantages
+Disadvantages
+Oxidizing Agents
+Hydrogen Peroxide
+Broad-spectrum antimicrobial activity
+Corrosive; reduced effectiveness in the presence of organic matter
+Alcohols
+Ethanol, Isopropyl Alcohol
+Broad-spectrum activity; inexpensive; fast-acting
+Highly flammable; evaporates quickly, reducing contact time
+Halogens
+Iodine, Iodophors
+Broad-spectrum activity; relatively inexpensive
+Can be corrosive to equipment and surfaces
+Phenolic Compounds
+Phenols
+Effective in footbaths and against a wide range of microorganisms
+Limited effectiveness against some viruses and spores
+Quaternary Ammonium Compounds (QACs)
+TH4
+Broad-spectrum activity; good cleaning properties
+Relatively expensive; less effective in the presence of organic matter
+Aldehydes
+Formalin (Formaldehyde)
+Broad-spectrum activity; highly effective disinfectant
+Toxic to humans and animals; relatively expensive
+Biosecurity and Farm Sanitation
+Maintaining good hygiene is one of the most important factors in keeping poultry healthy. Disease-free chicks are largely dependent on healthy parent stock and hygienic hatchery conditions. Effective farm sanitation involves thorough cleaning and the use of appropriate disinfectants. However, disinfectants can be rendered ineffective by the presence of organic matter; therefore, proper cleaning must always precede disinfection.
+An all-in-all-out production system is considered the best management practice in poultry farming, as it helps prevent the buildup and spread of disease-causing organisms. Where flocks of different ages must be kept, each flock should be housed separately to minimize the risk of disease transmission.
+Access to poultry houses should be restricted to authorized staff only. When visitors are permitted entry, the following information should be recorded:
+Name, address, and telephone number
+Place of origin
+Purpose of the visit
+The last farm visited
+Poultry workers should wear clean, disinfected clothing and footwear at all times. When visiting flocks of different ages, workers should begin with the youngest flock and proceed to older birds. Sick flocks should always be attended to last, regardless of age, to reduce the risk of disease spread.
+Effective measures should be implemented to control rodents, wild birds, and insects, as these are common vectors of poultry diseases. Control methods may be mechanical, biological, or chemical. Materials and equipment should not be introduced into poultry houses unless they have been thoroughly cleaned and disinfected.
+Where a water storage or header tank is present, it should be opened, inspected, and scrubbed clean using a suitable detergent whenever possible. Before adding a cleaning solution, completely drain the drinking system and header tank. For maximum effectiveness, circulate the sanitizing solution throughout the drinking system. If circulation is not possible, allow the solution to remain in the system for at least 12 hours before thoroughly flushing it with clean water.
+House Preparation After Disinfection
+Following disinfection, all biosecurity measures at the poultry house entrances should be reinstated. Once the house is completely dry, spread approximately four inches (10 cm) of litter material evenly across the floor and return all cleaned and disinfected equipment to the house.
+Common litter materials include wood shavings, straw, rice husks, and coffee husks. Good-quality litter should provide insulation from the floor, absorb moisture effectively, and help maintain a dry and comfortable environment for the birds.
+The brooder area should be prepared at least 24 hours before the arrival of chicks to ensure that temperature, equipment, feed, and water systems are properly set up and functioning.
+To evaluate the effectiveness of the sanitation program, both visual inspections and microbiological testing are recommended. Quantitative laboratory tests may also be used to assess the level of microbial contamination. Although complete sterilization of poultry facilities is not practical, regular microbiological monitoring can help verify that harmful pathogens, such as Salmonella, have been effectively eliminated.
+Routine monitoring and strict adherence to biosecurity protocols are essential for maintaining flock health and reducing the risk of disease outbreaks.

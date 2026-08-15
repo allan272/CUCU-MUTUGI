@@ -1,0 +1,89 @@
+Brooding Management
+Brooding is the process of providing newly hatched chicks with supplemental heat and optimal environmental conditions to support temperature regulation, growth, and early development. Since young chicks are unable to effectively regulate their body temperature, proper brooding is essential for ensuring bird welfare, health, and performance during the first weeks of life.
+Heat may be supplied through gas or electric brooders, depending on farm infrastructure and management practices. To ensure a smooth transition from hatchery to farm, the brooding area should be fully prepared at least 24 hours before chick placement.
+Pre-Placement Preparation
+Prior to chick arrival, the following measures should be implemented:
+Ensure the brooding house is thoroughly cleaned, disinfected, and maintained under strict biosecurity protocols.
+Arrange feeders and drinkers to allow easy access to feed and water immediately upon arrival.
+Position supplementary feeders and drinkers close to the primary feeding and watering systems.
+Ensure chicks do not need to travel more than one metre to access feed or water during the first 24 hours.
+Pre-heat the brooding area and stabilize temperature and humidity levels before chick placement.
+Maintain a floor temperature of approximately 28°C–30°C to provide optimal comfort and encourage feed intake.
+Chick Placement and Early Management
+Upon arrival at the farm, chicks should be unloaded and placed into the brooding area as quickly as possible. Fresh feed and clean drinking water should be readily available to encourage early feeding and hydration. After placement, chicks should be allowed to settle for one to two hours before their behaviour is assessed.
+Bird distribution and activity levels provide valuable indicators of environmental conditions and chick comfort. Any signs of crowding, uneven distribution, or inactivity should be addressed promptly.
+Key Brooding Management Areas
+Successful brooding depends on close monitoring and management of the following factors:
+Temperature: Maintaining appropriate and consistent temperatures to prevent chilling or heat stress.
+Space Allocation: Providing adequate stocking density and access to equipment to promote bird welfare and uniform growth.
+Ventilation: Ensuring sufficient airflow to maintain air quality while avoiding drafts.
+Feed and Water Management: Providing continuous access to high-quality feed and clean water to support healthy growth and development.
+Effective brooding practices contribute significantly to chick survival, flock uniformity, disease resistance, growth performance, and overall production efficiency.
+Temperature Management During Brooding
+Maintaining the correct temperature during the brooding period is essential for chick health, welfare, growth, and survival. Newly hatched chicks have limited ability to regulate their body temperature and therefore rely on a carefully controlled environment to remain comfortable and active.
+The recommended brooding temperatures are outlined below:
+Age (Weeks)
+Temperature at Chick Level (°C)
+House Temperature (°C)
+1
+33–35
+30–32
+2
+30–32
+27–29
+3
+27–29
+24–26
+4
+24–26
+21–23
+Temperature should be monitored continuously using thermometers positioned at chick height to ensure accurate readings within the brooding area. In addition to temperature measurements, chick behaviour should be closely observed as an important indicator of environmental comfort.
+Comfortable chicks are active, evenly distributed throughout the brooding area, and consume feed and water regularly. Excessive chick noise, crowding, lethargy, or uneven distribution may indicate that the brooding temperature is not optimal and requires adjustment.
+Indicators of Improper Brooder Temperatures
+When temperatures are too low:
+Chicks huddle closely together beneath the heat source.
+Increased chirping or distress calls are observed.
+Feed and water intake may decline.
+Growth rates may be reduced and mortality may increase.
+When temperatures are too high:
+Chicks move away from the heat source and gather around the edges of the brooding area.
+Birds may pant and exhibit signs of heat stress.
+Water consumption increases while feed intake decreases.
+Growth performance and flock uniformity may be negatively affected.
+Proper temperature management during brooding promotes bird comfort, strengthens immunity, improves feed conversion, and supports optimal growth and development.
+Space Management During Brooding
+Providing adequate space during brooding is essential for promoting bird welfare, ensuring easy access to feed and water, and achieving uniform growth across the flock.
+During the first week of life, the brooding area should occupy approximately one-third of the poultry house. The brooder space should then be expanded gradually every two days to accommodate the growing birds. By 14 days of age, chicks should have access to approximately two-thirds of the house, and by three weeks of age, they should be allowed full access to the entire house.
+Proper space allocation enables chicks to move freely, access feed and water efficiently, and maintain uniform growth rates. Adequate spacing also reduces competition, stress, and the risk of overcrowding.
+Overcrowding within the brooding area can result in:
+Reduced access to feed and water.
+Poor flock uniformity.
+Increased stress and competition among birds.
+Higher mortality rates due to starvation or trampling.
+Reduced growth performance and stunting.
+Effective space management contributes significantly to bird comfort, health, and overall production performance.
+Ventilation Management
+Proper ventilation is critical during the brooding period and should be maintained at all times while ensuring the required brooder temperatures are achieved. Good ventilation helps maintain air quality, control moisture levels, and create a healthy environment for chick development.
+Ventilation plays a key role in:
+Removing excess moisture and harmful gases such as ammonia.
+Maintaining fresh, dry litter conditions.
+Reducing disease challenges and respiratory problems.
+Providing a continuous supply of fresh air to support healthy growth and development.
+To ensure effective ventilation, a minimum ventilation opening should be maintained at the top of the poultry house. During periods of high temperature, curtains should be opened from the top rather than the bottom to encourage airflow while preventing direct drafts.
+Young chicks are particularly sensitive to drafts and wind chill effects. Therefore, ventilation systems should provide adequate air exchange without exposing birds to cold air currents that may compromise their health and welfare.
+Maintaining the correct balance between temperature and ventilation is essential for achieving optimal chick comfort, health, and performance throughout the brooding period.
+Feeding Management
+Early access to feed and water is critical for chick health, welfare, and growth. Newly placed chicks should begin feeding and drinking as soon as possible after arrival to support the development of the digestive system, strengthen immunity, and promote uniform growth across the flock.
+When chicks are feeding and drinking adequately, the crop becomes filled with a soft mixture of feed and water. Monitoring crop fill during the first 24 hours after placement is an effective way to assess whether chicks have successfully located feed and water and are adapting well to their new environment.
+A sample of chicks should be examined approximately two hours after placement to confirm successful feeding and drinking. Crop assessments should be conducted gently by checking 30–40 chicks selected from three to four different locations within the brooding area.
+Crop Fill Targets
+Time After Placement
+Target Crop Fill (% of Chicks with Full Crops)
+2 Hours
+75%
+12 Hours
+>85%
+24 Hours
+>95%
+Achieving these crop fill targets indicates that chicks have good access to feed and water and that brooding conditions are appropriate. If targets are not met, corrective action should be taken to evaluate factors such as feeder and drinker placement, brooding temperature, lighting, stocking density, and chick comfort.
+Effective feeding management during the brooding period contributes to improved chick welfare, flock uniformity, growth performance, and overall production efficiency.

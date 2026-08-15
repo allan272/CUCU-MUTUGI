@@ -1,0 +1,539 @@
+🐔
+POULTRY COMPANY
+WEBSITE BLUEPRINT
+Complete Website Planning & Link Reference Guide
+Prepared for: Allen
+Date: 5 June 2026
+─────────────────────────────────────────────────────
+Inspired by the Kenchic model — built to go beyond it.
+SECTION 1: YOUR WEBSITE DOMAIN & BASE LINKS
+Before you build any page, you need a domain. Fill in the fields below once your domain is confirmed. Every link in this document will be based on this root URL.
+Field
+Your Value
+Company Name
+e.g.  Sunrise Poultry Ltd
+Website Domain
+e.g.  https://www.sunrisepoultry.co.ke
+Primary Email
+e.g.  info@sunrisepoultry.co.ke
+WhatsApp Number
+e.g.  +254 700 000 000
+Facebook Page URL
+e.g.  https://facebook.com/sunrisepoultry
+Instagram URL
+e.g.  https://instagram.com/sunrisepoultry
+YouTube Channel
+e.g.  https://youtube.com/@sunrisepoultry
+TikTok URL
+e.g.  https://tiktok.com/@sunrisepoultry
+LinkedIn Page
+e.g.  https://linkedin.com/company/sunrisepoultry
+💡 TIP: Register your domain at Kenya Network Information Centre (KeNIC) for a .co.ke domain, or use Namecheap / GoDaddy for .com domains. A .co.ke domain builds more local trust with Kenyan farmers.
+SECTION 2: PAGE-BY-PAGE WEBSITE LINK REFERENCE
+Use the tables below to record the actual URL for each page as your developer builds them. Replace the placeholder text with your real links.
+2.1  Core / Navigation Pages
+Page / Section
+Your Website Link (fill in)
+Description
+Home Page
+https://www.yoursite.co.ke/
+Main landing page — hero, stats, CTAs
+About Us
+https://www.yoursite.co.ke/about
+Company story, mission, vision, team
+Products
+https://www.yoursite.co.ke/products
+All products overview/listing page
+Hatchery
+https://www.yoursite.co.ke/hatchery
+Hatchery process, biosecurity, technology
+Farmer Resources
+https://www.yoursite.co.ke/resources
+Guides, manuals, learning center
+Blog
+https://www.yoursite.co.ke/blog
+Articles and SEO content
+Contact Us
+https://www.yoursite.co.ke/contact
+Contact form, phone, map, WhatsApp
+FAQ
+https://www.yoursite.co.ke/faq
+Frequently asked questions
+Privacy Policy
+https://www.yoursite.co.ke/privacy
+Legal privacy policy page
+Terms of Service
+https://www.yoursite.co.ke/terms
+Website terms and conditions
+2.2  Day Old Chicks — Product Pages
+Page / Section
+Your Website Link (fill in)
+Description
+Broilers (Overview)
+https://www.yoursite.co.ke/chicks/broilers
+Broiler breed info, pricing, order
+Layers (Overview)
+https://www.yoursite.co.ke/chicks/layers
+Layer breed info, egg production
+Kienyeji
+https://www.yoursite.co.ke/chicks/kienyeji
+Indigenous breed info and pricing
+Kenbro
+https://www.yoursite.co.ke/chicks/kenbro
+Kenbro dual-purpose breed details
+Order Chicks
+https://www.yoursite.co.ke/chicks/order
+Chick ordering form / cart
+Chick Delivery Info
+https://www.yoursite.co.ke/chicks/delivery
+Delivery zones, timelines, costs
+2.3  E-Commerce / Store Pages
+Page / Section
+Your Website Link (fill in)
+Description
+Shop (All Products)
+https://www.yoursite.co.ke/shop
+Main online store / product listing
+Eggs
+https://www.yoursite.co.ke/shop/eggs
+Eggs — table eggs, hatching eggs
+Feed & Supplements
+https://www.yoursite.co.ke/shop/feed
+Starter, grower, finisher feeds
+Vaccines
+https://www.yoursite.co.ke/shop/vaccines
+ND, Gumboro, Marek's vaccines
+Equipment
+https://www.yoursite.co.ke/shop/equipment
+Feeders, drinkers, brooders
+Incubators
+https://www.yoursite.co.ke/shop/incubators
+Incubators and egg hatchers
+Shopping Cart
+https://www.yoursite.co.ke/cart
+Cart / checkout page
+My Orders
+https://www.yoursite.co.ke/account/orders
+Farmer's order history
+Payment Page
+https://www.yoursite.co.ke/checkout
+M-Pesa / card payment gateway
+2.4  Farmer Resource Center Pages
+Page / Section
+Your Website Link (fill in)
+Description
+Resources Home
+https://www.yoursite.co.ke/resources
+Main farmer learning hub
+Brooding Guide
+https://www.yoursite.co.ke/resources/brooding
+How to brood day-old chicks
+Vaccination Guide
+https://www.yoursite.co.ke/resources/vaccination
+Vaccination schedule by breed
+Feed Formulation
+https://www.yoursite.co.ke/resources/feed
+DIY feed mixing ratios
+Disease Management
+https://www.yoursite.co.ke/resources/disease
+Prevention and treatment guide
+Housing Design
+https://www.yoursite.co.ke/resources/housing
+Chicken house plans & specs
+Record Keeping
+https://www.yoursite.co.ke/resources/records
+How to keep flock records
+Poultry Business Plan
+https://www.yoursite.co.ke/resources/business
+Sample business plan template
+2.5  Disease Knowledge Base
+Page / Section
+Your Website Link (fill in)
+Description
+Disease Library Home
+https://www.yoursite.co.ke/diseases
+Searchable disease database
+Newcastle Disease
+https://www.yoursite.co.ke/diseases/newcastle
+Symptoms, prevention, treatment
+Gumboro (IBD)
+https://www.yoursite.co.ke/diseases/gumboro
+Infectious bursal disease info
+Fowl Typhoid
+https://www.yoursite.co.ke/diseases/fowl-typhoid
+Salmonella gallinarum info
+Coccidiosis
+https://www.yoursite.co.ke/diseases/coccidiosis
+Cocci prevention & medication
+Marek's Disease
+https://www.yoursite.co.ke/diseases/mareks
+Marek's virus management
+Fowl Pox
+https://www.yoursite.co.ke/diseases/fowl-pox
+Pox symptoms and vaccination
+Mycoplasma (CRD)
+https://www.yoursite.co.ke/diseases/mycoplasmosis
+Chronic respiratory disease
+Request Vet Support
+https://www.yoursite.co.ke/vet-support
+Vet contact / callback form
+2.6  Interactive Tools / Calculators
+Page / Section
+Your Website Link (fill in)
+Description
+Calculators Home
+https://www.yoursite.co.ke/calculators
+Hub for all poultry tools
+Feed Calculator
+https://www.yoursite.co.ke/calculators/feed
+Calculate feed needs by flock size
+Profit Calculator
+https://www.yoursite.co.ke/calculators/profit
+Estimate profit from a flock
+Vaccination Planner
+https://www.yoursite.co.ke/calculators/vaccination
+Auto-generate vac schedule
+Housing Calculator
+https://www.yoursite.co.ke/calculators/housing
+Space requirements by flock size
+2.7  Blog & SEO Pages
+Page / Section
+Your Website Link (fill in)
+Description
+Blog Home
+https://www.yoursite.co.ke/blog
+All blog posts listing
+How to Start Broilers
+https://www.yoursite.co.ke/blog/how-to-start-broiler-farming
+Beginner broiler guide
+Best Breeds in Kenya
+https://www.yoursite.co.ke/blog/best-chicken-breeds-kenya
+Breed comparison article
+Vaccination Schedule
+https://www.yoursite.co.ke/blog/vaccination-schedule
+Complete schedule guide
+Feed Formulation
+https://www.yoursite.co.ke/blog/feed-formulation-guide
+DIY feed mixing guide
+Poultry Business Plan
+https://www.yoursite.co.ke/blog/poultry-business-plan-kenya
+Business plan article
+2.8  Farmer Dashboard (Advanced Feature)
+📌 NOTE: The Farmer Dashboard is what will separate your website from competitors like Kenchic. Farmers log in and manage their flock digitally from their phone.
+Page / Section
+Your Website Link (fill in)
+Description
+Dashboard Home
+https://www.yoursite.co.ke/dashboard
+Farmer's personal portal home
+My Flocks
+https://www.yoursite.co.ke/dashboard/flocks
+List and manage active flocks
+Add New Flock
+https://www.yoursite.co.ke/dashboard/flocks/new
+Register a new batch of birds
+Vaccination Records
+https://www.yoursite.co.ke/dashboard/vaccination
+Track vaccination dates
+Feed Log
+https://www.yoursite.co.ke/dashboard/feed
+Daily feed consumption records
+Mortality Log
+https://www.yoursite.co.ke/dashboard/mortality
+Record and track bird deaths
+Profit Tracker
+https://www.yoursite.co.ke/dashboard/profit
+Revenue and cost tracking
+My Profile
+https://www.yoursite.co.ke/dashboard/profile
+Farmer profile and settings
+My Orders
+https://www.yoursite.co.ke/dashboard/orders
+Past and current orders
+Support Tickets
+https://www.yoursite.co.ke/dashboard/support
+Raise issues with agri-team
+2.9  Success Stories & Gallery
+Page / Section
+Your Website Link (fill in)
+Description
+Success Stories Home
+https://www.yoursite.co.ke/success-stories
+All farmer testimonials
+Submit Your Story
+https://www.yoursite.co.ke/success-stories/submit
+Farmer story submission form
+Gallery
+https://www.yoursite.co.ke/gallery
+Farm photos and media gallery
+Video Stories
+https://www.yoursite.co.ke/gallery/videos
+Farmer video testimonials
+2.10  Dealer & Distribution Network
+Page / Section
+Your Website Link (fill in)
+Description
+Find a Dealer
+https://www.yoursite.co.ke/dealers
+Interactive Kenya dealer map
+Become a Dealer
+https://www.yoursite.co.ke/dealers/apply
+Dealer application form
+Poultry Centers
+https://www.yoursite.co.ke/poultry-centres
+List of your physical centres
+Vet Partners
+https://www.yoursite.co.ke/vet-partners
+Veterinary partner directory
+SECTION 3: THIRD-PARTY SERVICE LINKS TO INTEGRATE
+Your website will connect to several external services. Record and share these links with your developer.
+3.1  Payment & M-Pesa Integration
+Service
+Link / Details
+M-Pesa Daraja API
+https://developer.safaricom.co.ke/ — Get API keys here
+Pesapal (Alt Gateway)
+https://www.pesapal.com/
+IntaSend
+https://intasend.com/ — Kenya-first payment gateway
+PayStack (Cards)
+https://paystack.com/ke/ — Card payments, KE supported
+Your Paybill No.
+e.g.  Paybill: 522533  /  Account: YourRef
+Your Till No.
+e.g.  Till Number: 000000
+3.2  Communication & Support Links
+Service
+Link / Details
+WhatsApp Chat Link
+https://wa.me/254700000000 — Replace with your number
+WhatsApp Business API
+https://business.whatsapp.com/ — For bulk messaging
+AfricasTalking (SMS)
+https://africastalking.com/ — SMS alerts to farmers
+Twilio (Backup SMS)
+https://www.twilio.com/
+Tidio (Live Chat)
+https://www.tidio.com/ — Easy chat widget
+Crisp Chat (Alt)
+https://crisp.chat/
+3.3  Maps & Location Services
+Service
+Link / Details
+Google Maps API
+https://console.cloud.google.com/ — Enable Maps JS API
+Google My Business
+https://business.google.com/ — Set up your business listing
+Your Google Maps Pin
+e.g.  https://maps.app.goo.gl/YOURPINHERE
+3.4  Authentication & User Management
+Service
+Link / Details
+Firebase Auth
+https://firebase.google.com/ — Phone/email auth for farmer login
+Auth0 (Alt)
+https://auth0.com/ — Enterprise-grade auth option
+Supabase Auth
+https://supabase.com/ — Open source + PostgreSQL built-in
+3.5  Hosting & Deployment Links
+Service
+Link / Details
+Vercel (Frontend)
+https://vercel.com/ — Recommended for Next.js
+Railway (Backend)
+https://railway.app/ — Node.js + PostgreSQL hosting
+Supabase (DB Alt)
+https://supabase.com/ — Managed PostgreSQL + storage
+Cloudinary (Images)
+https://cloudinary.com/ — Farm photo storage & CDN
+Uploadthing (Alt)
+https://uploadthing.com/ — File/image uploads
+Your Staging URL
+e.g.  https://staging.yoursite.co.ke
+Your Live URL
+e.g.  https://www.yoursite.co.ke
+SECTION 4: ADMIN PANEL LINKS
+These are the back-end URLs only you and your team will use. Keep these private and protected with strong passwords.
+Page / Section
+Your Website Link (fill in)
+Description
+Admin Dashboard
+https://www.yoursite.co.ke/admin
+Main admin control panel
+Manage Products
+https://www.yoursite.co.ke/admin/products
+Add / edit / delete products
+Manage Orders
+https://www.yoursite.co.ke/admin/orders
+View and fulfill all orders
+Manage Farmers
+https://www.yoursite.co.ke/admin/farmers
+Farmer database and accounts
+Blog Editor
+https://www.yoursite.co.ke/admin/blog
+Write and publish blog posts
+Manage Dealers
+https://www.yoursite.co.ke/admin/dealers
+Add/remove dealers on the map
+Disease Library Edit
+https://www.yoursite.co.ke/admin/diseases
+Edit disease knowledge base
+Analytics Dashboard
+https://analytics.google.com/
+Google Analytics for your site
+Search Console
+https://search.google.com/search-console
+SEO performance dashboard
+📌 NOTE: Share admin credentials ONLY with trusted team members. Use role-based access so your farm manager can't accidentally delete products.
+SECTION 5: SEO & SOCIAL MEDIA LINK STRATEGY
+5.1  Key Pages to Rank on Google
+Build these pages specifically for search engine traffic. Each should target one keyword:
+Target Keyword
+Page URL
+Monthly Searches (Est.)
+day old chicks Kenya
+/chicks
+High
+broiler farming Kenya
+/blog/broiler-farming
+High
+poultry feed formulation Kenya
+/resources/feed
+Medium
+kienyeji chicken Kenya
+/chicks/kienyeji
+High
+layer chicken Kenya
+/chicks/layers
+High
+poultry disease treatment Kenya
+/diseases
+Medium
+poultry hatchery Kenya
+/hatchery
+Medium
+buy chicken vaccines Kenya
+/shop/vaccines
+Medium
+5.2  WhatsApp Link Setup
+WhatsApp is the #1 channel for Kenyan farmers. Set up click-to-chat links correctly:
+Purpose
+Link Format
+Basic Chat Link
+https://wa.me/254XXXXXXXXX
+Pre-filled Message
+https://wa.me/254XXXXXXXXX?text=Hello%2C+I+want+to+order+chicks
+Broiler Inquiry
+https://wa.me/254XXXXXXXXX?text=I+want+to+order+broiler+chicks
+Layer Inquiry
+https://wa.me/254XXXXXXXXX?text=I+want+to+order+layer+chicks
+General Support
+https://wa.me/254XXXXXXXXX?text=I+need+farmer+support
+💡 TIP: Add a floating WhatsApp button on EVERY page of your website. This single feature can double your lead generation from mobile users.
+SECTION 6: DATABASE TABLES (For Your Developer)
+Give this list to your developer. These are the core database tables your website needs to function:
+Table Name
+What It Stores
+users
+Farmer accounts, login details, profile info
+products
+Chicks, eggs, feed, vaccines, equipment listings
+orders
+All purchase orders with status and payment info
+farmers
+Extended farmer profile: county, flock history, contacts
+flocks
+Each batch of birds per farmer (breed, qty, start date)
+vaccinations
+Vaccination records linked to flocks
+feed_logs
+Daily feed consumption per flock
+diseases
+Disease library — name, symptoms, treatment, images
+blog_posts
+Blog articles, SEO fields, author, publish date
+testimonials
+Farmer success stories with photo, county, results
+dealers
+Dealer name, county, GPS coordinates, contact
+counties
+Kenya counties list for location filtering
+vaccines
+Vaccine inventory — name, dose, price, stock level
+SECTION 7: RECOMMENDED TECH STACK
+Layer
+Technology
+Why
+Frontend
+Next.js + React
+Fast, SEO-friendly, mobile-first
+Styling
+Tailwind CSS
+Quick to build responsive UI
+Backend
+Node.js + Express
+Handles APIs and business logic
+Database
+PostgreSQL
+Reliable, structured data for orders/farmers
+Auth
+Firebase Auth
+Phone number login — easy for farmers
+Images
+Cloudinary
+Stores and serves farm photos fast
+Payments
+M-Pesa Daraja + IntaSend
+Kenya-first payment options
+SMS/WhatsApp
+AfricasTalking
+Farmer order alerts and reminders
+Hosting (FE)
+Vercel
+Free tier available, instant deploys
+Hosting (BE)
+Railway
+Simple Node.js + DB hosting
+Maps
+Google Maps API
+Interactive Kenya dealer map
+SECTION 8: THEME & DESIGN REFERENCE
+8.1  Color Palette
+Color Role
+Hex Code
+Use
+Primary Green
+#1A6B2A
+Navigation, buttons, headings, brand color
+Gold / Accent
+#C49A1A
+Highlights, stars, badges, borders
+Dark Charcoal
+#1C2526
+Body text, footers, dark backgrounds
+Light Green
+#E8F5E9
+Section backgrounds, table rows
+Light Gold
+#FFF8E1
+Tips, callout boxes
+White
+#FFFFFF
+Page background, cards
+8.2  Key Design Principles
+Mobile-first — over 80% of Kenyan farmers will visit on a smartphone
+Large, clear call-to-action buttons (Order Chicks, WhatsApp Us, Get Support)
+High-quality photos of real chickens, real farms, real Kenyan farmers
+Green and gold palette signals agriculture, trust, and prosperity
+Swahili language option — consider adding a KE language toggle
+Fast loading — optimize all images; farmers may have slower connections
+Every page should have a WhatsApp floating button
+NEXT STEPS
+Register your domain (e.g. yourcompany.co.ke) and fill in Section 1
+Share this document with your developer as the full project brief
+Sign up for the third-party services in Section 3 and collect your API keys
+Fill in each 'Your Website Link' column as pages are built and deployed
+Test every link and form before your official launch
+Set up Google Analytics and Search Console from Day 1
+📌 NOTE: Build the Farmer Dashboard last — but design for it from the start. It is the feature that will make your platform the most trusted poultry partner in East Africa.
+Good luck, Allen. Build something farmers are proud to use. 🐔
