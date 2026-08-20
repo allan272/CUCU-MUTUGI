@@ -1,8 +1,8 @@
 import Link from 'next/link';
+import MediaShowcase from '@/components/MediaShowcase';
 import {
   MessageSquare,
   Smartphone,
-  FolderOpen,
   GraduationCap,
   Megaphone,
   Users,
@@ -150,28 +150,12 @@ export default function FollowUsPage() {
           </div>
         </div>
 
-        {/* Google Drive Resources */}
-        <div className="space-y-4">
-          <h2 className="text-3xl font-bold text-primary text-center mb-10">Resource Library</h2>
-          <a
-            href="https://drive.google.com/drive/folders/12XyA9r8y7Uu6Xs8ZBPN-llwOS-wkpUgw?usp=drive_link"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-blue-600 hover:bg-blue-700 text-white p-12 rounded-xl transition-all transform hover:scale-105 shadow-lg block"
-          >
-            <div className="flex items-center gap-6">
-              <FolderOpen className="h-16 w-16 text-white flex-shrink-0" />
-              <div>
-                <h3 className="text-3xl font-bold mb-3">Google Drive Resources</h3>
-                <p className="text-lg opacity-90 mb-4">
-                  Access our complete library of poultry farming guides, images, videos, and educational materials
-                </p>
-                <div className="bg-blue-800 px-6 py-3 rounded-lg inline-block font-bold">
-                  Open Google Drive
-                </div>
-              </div>
-            </div>
-          </a>
+        {/* Local Integrated Media & Resource Showcase */}
+        <div className="pt-6">
+          <MediaShowcase
+            title="Farm Media & Resource Hub"
+            subtitle="View, filter, and scroll through all our official farm videos, chick brooding walkthroughs, and delivery photos directly below."
+          />
         </div>
 
         {/* Why Follow Us */}

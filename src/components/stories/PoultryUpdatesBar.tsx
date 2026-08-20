@@ -2,25 +2,15 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Sparkles, Video as VideoIcon } from 'lucide-react';
-import { Story } from '@/lib/seeds';
+import { useAdmin } from '@/context/AdminContext';
 import StoryViewerModal from './StoryViewerModal';
 
 export default function PoultryUpdatesBar() {
-  const [stories, setStories] = useState<Story[]>([]);
+  const { db } = useAdmin();
   const [selectedStoryIndex, setSelectedStoryIndex] = useState<number | null>(null);
   const [seenStories, setSeenStories] = useState<Record<string, boolean>>({});
 
-  // Fetch stories from public API — no AdminProvider dependency
-  useEffect(() => {
-    fetch('/api/stories')
-      .then(res => res.json())
-      .then(data => {
-        if (data?.stories) setStories(data.stories);
-      })
-      .catch(() => {
-        // Silently fail — bar will simply not appear
-      });
-  }, []);
+  const stories = db.stories || [];
 
   // Restore "seen" state from localStorage
   useEffect(() => {
@@ -53,7 +43,7 @@ export default function PoultryUpdatesBar() {
   if (activeStories.length === 0) return null;
 
   return (
-    <section className="w-full bg-slate-950/90 backdrop-blur-md border-b-2 border-amber-400/80 py-4 px-4 sm:px-6 shadow-inner">
+    <section className="w-full bg-slate-950/95 backdrop-blur-md border-b-2 border-amber-400/80 py-4 px-4 sm:px-6 shadow-inner">
       <div className="max-w-7xl mx-auto flex items-center gap-6 overflow-x-auto no-scrollbar scroll-smooth">
 
         {/* Brand icon */}
@@ -84,12 +74,12 @@ export default function PoultryUpdatesBar() {
                   className={`w-16 h-16 rounded-full p-0.5 transition-all duration-300 transform group-hover:scale-105 ${
                     isSeen
                       ? 'bg-slate-700 opacity-70'
-                      : 'bg-gradient-to-tr from-amber-400 via-amber-300 to-amber-500 shadow-md shadow-amber-400/20'
+                      : 'bg-gradient-to-tr from-amber-400 via-amber-300 to-emerald-500 shadow-md shadow-amber-400/20'
                   }`}
                 >
                   <div className="w-full h-full rounded-full overflow-hidden relative border-2 border-slate-950 bg-slate-800">
                     <Image
-                      src={story.mediaUrl || 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=400&q=80'}
+                      src={story.mediaUrl || '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg'}
                       alt={story.title}
                       fill
                       sizes="64px"
@@ -102,8 +92,8 @@ export default function PoultryUpdatesBar() {
                     )}
                   </div>
                 </div>
-                <span className="text-[11px] font-bold text-slate-200 mt-1.5 max-w-[72px] truncate group-hover:text-amber-400 transition-colors">
-                  {story.category}
+                <span className="text-[11px] font-bold text-slate-200 mt-1.5 max-w-[80px] truncate group-hover:text-amber-400 transition-colors" title={story.title}>
+                  {story.title}
                 </span>
               </button>
             );

@@ -1,20 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #D97706;
-  --color-primary-dark: #B45309;
-  --color-primary-light: #F59E0B;
-  --color-aqua: #0284C7;
-  --color-aqua-light: #38BDF8;
-  --color-aqua-dark: #0369A1;
-  --color-teal: #0D9488;
+  --color-primary: #15803D;
+  --color-primary-dark: #166534;
+  --color-primary-light: #22C55E;
+  --color-green-farm: #15803D;
+  --color-green-light: #86EFAC;
+  --color-green-dark: #14532D;
+  --color-sun-yellow: #F59E0B;
+  --color-sun-light: #FEF08A;
+  --color-sun-dark: #D97706;
+  --color-amber-gold: #F59E0B;
   --color-white: #FFFFFF;
   --color-off-white: #FFFDF0;
   --color-charcoal: #0F172A;
-  --color-gold: #FFC000;
-  --color-accent: #FFC000;
+  --color-gold: #F59E0B;
+  --color-accent: #EAB308;
   --color-accent-light: #FEF08A;
-  --color-accent-dark: #D97706;
+  --color-accent-dark: #CA8A04;
 }
 
 :root {
@@ -34,12 +37,11 @@ body {
   padding: 0;
 }
 
-/* === ANIMATED BACKGROUND - Signature Golden Yellow === */
+/* === ANIMATED BACKGROUND - Green & Yellow Agricultural Blend === */
 .animated-bg {
   position: relative;
   overflow: hidden;
-  background-color: #FFC000; /* Signature poster yellow */
-  background: linear-gradient(135deg, #FFC000 0%, #FFB000 35%, #F59E0B 70%, #E69500 100%);
+  background: linear-gradient(135deg, #15803D 0%, #16A34A 35%, #EAB308 75%, #F59E0B 100%);
 }
 
 .animated-bg::before {
@@ -47,15 +49,23 @@ body {
   position: absolute;
   inset: 0;
   background: 
-    radial-gradient(ellipse at 20% 50%, rgba(255, 255, 255, 0.45) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(2, 132, 199, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 90%, rgba(254, 240, 138, 0.5) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 40%, rgba(254, 240, 138, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(245, 158, 11, 0.4) 0%, transparent 50%);
   animation: bgPulse 8s ease-in-out infinite alternate;
 }
 
+.bg-farm-blend {
+  background: linear-gradient(135deg, #166534 0%, #15803D 50%, #D97706 100%);
+}
+
+.bg-yellow-green-accent {
+  background: linear-gradient(90deg, #EAB308 0%, #22C55E 100%);
+}
+
 @keyframes bgPulse {
-  0% { opacity: 0.7; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.04); }
+  0% { opacity: 0.75; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.03); }
 }
 
 /* === FLOATING PARTICLES === */
@@ -69,7 +79,7 @@ body {
 .particle {
   position: absolute;
   border-radius: 50%;
-  background: rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.25);
   animation: floatUp linear infinite;
 }
 
@@ -113,15 +123,15 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px rgba(180, 83, 9, 0.12);
+  box-shadow: 0 8px 32px rgba(22, 101, 52, 0.15);
 }
 
 .glass-white {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(254, 240, 138, 0.8);
-  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(254, 240, 138, 0.9);
+  box-shadow: 0 8px 32px rgba(21, 128, 61, 0.12);
 }
 
 /* === CARDS === */
@@ -131,45 +141,45 @@ body {
 
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 20px 40px rgba(21, 128, 61, 0.22);
 }
 
 /* === BUTTONS === */
 .btn-primary {
-  background: #0F172A;
-  color: #FFC000;
+  background: #15803D;
+  color: #FEF08A;
   padding: 0.75rem 2rem;
   border-radius: 2rem;
   font-weight: 800;
   font-size: 1rem;
-  border: 2px solid #0F172A;
+  border: 2px solid #166534;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 4px 18px rgba(21, 128, 61, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.4);
-  background: #1E293B;
-  color: #FFE066;
+  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.45);
+  background: #166534;
+  color: #FFFFFF;
 }
 
 .btn-outline {
-  background: rgba(255, 255, 255, 0.9);
-  color: #0F172A;
+  background: rgba(255, 255, 255, 0.95);
+  color: #15803D;
   padding: 0.75rem 2rem;
   border-radius: 2rem;
   font-weight: 800;
   font-size: 1rem;
-  border: 2px solid #0F172A;
+  border: 2px solid #15803D;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-outline:hover {
-  background: #0F172A;
-  color: #FFC000;
+  background: #15803D;
+  color: #FEF08A;
   transform: translateY(-2px);
 }
 
@@ -187,20 +197,20 @@ body {
 
 /* === GRADIENT SECTION === */
 .section-gradient {
-  background: linear-gradient(180deg, #FFFDF0 0%, #FEF9C3 50%, #FFFDF0 100%);
+  background: linear-gradient(180deg, #FFFDF0 0%, #DCFCE7 40%, #FEF9C3 80%, #FFFDF0 100%);
 }
 
 /* === GLOW EFFECTS === */
 .glow-yellow {
-  box-shadow: 0 0 25px rgba(255, 192, 0, 0.5), 0 0 45px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5), 0 0 45px rgba(234, 179, 8, 0.3);
 }
 
-.glow-blue {
-  box-shadow: 0 0 20px rgba(2, 132, 199, 0.4), 0 0 40px rgba(56, 189, 248, 0.2);
+.glow-green {
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.5), 0 0 45px rgba(21, 128, 61, 0.3);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #0F172A 0%, #B45309 60%, #0284C7 100%);
+  background: linear-gradient(135deg, #15803D 0%, #D97706 60%, #166534 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -218,5 +228,5 @@ body {
 
 /* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #FEF9C3; }
-::-webkit-scrollbar-thumb { background: linear-gradient(#FFC000, #F59E0B); border-radius: 4px; }
+::-webkit-scrollbar-track { background: #FFFDF0; }
+::-webkit-scrollbar-thumb { background: linear-gradient(#15803D, #F59E0B); border-radius: 4px; }

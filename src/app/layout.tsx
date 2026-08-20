@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ServiceWorkerRegister from "./sw-register";
 import ClientAdminProvider from "@/components/ClientAdminProvider";
+import PoultryAssistantBot from "@/components/chat/PoultryAssistantBot";
 
 export const metadata: Metadata = {
   title: "CUCU MUTUGI POULTRY | Growing Farmers, Building Prosperity",
@@ -44,6 +45,7 @@ export default function RootLayout({
           <main className="flex-grow">
             {children}
           </main>
+          <PoultryAssistantBot />
           <Footer />
         </ClientAdminProvider>
       </body>

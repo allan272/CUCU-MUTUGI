@@ -1,6 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { Order, useAdmin } from '@/context/AdminContext';
+import CommerceTab from './CommerceTab';
+import CustomerActivityTab from './CustomerActivityTab';
+import CommunityAdminTab from './CommunityAdminTab';
 import {
   Egg,
   Package,
@@ -837,7 +840,9 @@ function StoriesTab() {
 
   const handleCreateStory = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !mediaUrl) return;
+    if (!title.trim()) return;
+
+    const finalMediaUrl = mediaUrl.trim() || '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg';
 
     let pollObj = undefined;
     if (pollQuestion.trim() && pollOptionsStr.trim()) {
@@ -851,7 +856,7 @@ function StoriesTab() {
       title,
       category,
       mediaType,
-      mediaUrl,
+      mediaUrl: finalMediaUrl,
       description: description.trim() || undefined,
       actionText: actionText.trim() || undefined,
       actionUrl: actionUrl.trim() || undefined,
@@ -870,35 +875,44 @@ function StoriesTab() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center flex-wrap gap-4">
+      <div className="flex justify-between items-center flex-wrap gap-4 bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-200 shadow-sm">
         <div>
-          <h2 className="text-2xl font-extrabold text-primary flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-amber-500" /> Poultry Updates (Stories)
+          <h2 className="text-2xl font-black text-emerald-950 flex items-center gap-2">
+            <Clock className="h-6 w-6 text-amber-500" /> 24-Hour Status Updates Management
           </h2>
-          <p className="text-sm text-gray-500">Manage WhatsApp / Instagram style updates displayed at top of site</p>
+          <p className="text-sm font-semibold text-emerald-800">
+            Post WhatsApp / Instagram style 24-hour status updates visible on the public site's 24h Updates tab.
+          </p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="btn-primary text-sm !py-2.5 !px-4 flex items-center gap-1.5 cursor-pointer"
+          className="bg-emerald-700 hover:bg-emerald-800 text-amber-300 font-extrabold text-sm py-2.5 px-5 rounded-2xl transition-all shadow-md flex items-center gap-2 cursor-pointer border border-emerald-800"
         >
-          <Plus className="h-4 w-4" /> {showAddForm ? 'Cancel' : 'Create New Story'}
+          <Plus className="h-4 w-4" /> {showAddForm ? 'Cancel' : 'Post 24h Status Update'}
         </button>
       </div>
 
       {showAddForm && (
-        <form onSubmit={handleCreateStory} className="glass-white rounded-2xl p-6 border border-blue-200 space-y-4 shadow-md">
-          <h3 className="font-bold text-lg text-primary border-b border-blue-100 pb-2">Create Story Update</h3>
+        <form onSubmit={handleCreateStory} className="glass-white rounded-3xl p-6 border-2 border-amber-300 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between border-b border-amber-200 pb-3">
+            <h3 className="font-black text-lg text-emerald-950 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" /> Create 24-Hour Status Update
+            </h3>
+            <span className="bg-emerald-100 text-emerald-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
+              Auto-Expires in 24 Hours
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Story Title *</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Status Title *</label>
               <input
                 type="text"
                 required
-                placeholder="e.g. 🐣 New Batch Arrived"
+                placeholder="e.g. 🐣 5,000 ISA Brown Layer Chicks Ready!"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                className="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
@@ -907,7 +921,7 @@ function StoriesTab() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                className="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium"
               >
                 {['New Chicks', 'Vaccination', 'Egg Collection', 'Farm Tour', 'New Feed', 'Delivery', 'Incubation'].map(c => (
                   <option key={c} value={c}>{c}</option>
@@ -922,26 +936,25 @@ function StoriesTab() {
               <select
                 value={mediaType}
                 onChange={(e) => setMediaType(e.target.value as any)}
-                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                className="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium"
               >
-                <option value="image">Image</option>
-                <option value="video">Video</option>
+                <option value="image">Image Photo</option>
+                <option value="video">Video Clip</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Upload Media File or Enter URL *</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Upload Media File or Enter URL (Optional)</label>
               <div className="flex gap-2">
                 <input
                   type="text"
-                  required
-                  placeholder="https://... or upload file"
+                  placeholder="https://... or upload image/video (optional)"
                   value={mediaUrl}
                   onChange={(e) => setMediaUrl(e.target.value)}
-                  className="flex-1 p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                  className="flex-1 p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
-                <label className="bg-blue-100 hover:bg-blue-200 text-primary font-bold text-xs px-3 py-2.5 rounded-lg cursor-pointer flex items-center gap-1">
-                  <Upload className="w-4 h-4" />
+                <label className="bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold text-xs px-3.5 py-2.5 rounded-xl cursor-pointer flex items-center gap-1">
+                  <Upload className="w-4 h-4 text-emerald-700" />
                   <span>{uploading ? 'Uploading...' : 'Browse'}</span>
                   <input type="file" accept="image/*,video/*" onChange={handleFileUpload} className="hidden" />
                 </label>
@@ -950,55 +963,55 @@ function StoriesTab() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1">Description / Announcement</label>
+            <label className="block text-xs font-bold text-gray-700 mb-1">Description / Update Announcement</label>
             <textarea
               rows={2}
-              placeholder="e.g. 5000 Layer Chicks available this week. Delivered free across Kenya."
+              placeholder="e.g. Fresh batch of vaccinated day-old chicks leaving Embu HQ for Nakuru & Eldoret tomorrow morning!"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+              className="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Action Button Text</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Call to Action Button Text</label>
               <input
                 type="text"
-                placeholder="e.g. Order Now"
+                placeholder="e.g. Order Chicks Now"
                 value={actionText}
                 onChange={(e) => setActionText(e.target.value)}
-                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                className="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Action Button Target Link</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Action Button Link</label>
               <input
                 type="text"
                 placeholder="e.g. /products or /contact"
                 value={actionUrl}
                 onChange={(e) => setActionUrl(e.target.value)}
-                className="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-aqua focus:outline-none"
+                className="w-full p-2.5 text-sm border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
-          <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 space-y-3">
-            <label className="block text-xs font-bold text-primary uppercase tracking-wider">Optional Interactive Poll</label>
+          <div className="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200 space-y-3">
+            <label className="block text-xs font-black text-emerald-900 uppercase tracking-wider">Optional Interactive Farmer Poll</label>
             <input
               type="text"
-              placeholder="Poll Question e.g. Are you stocking layers or broilers?"
+              placeholder="Poll Question e.g. What breed are you stocking this month?"
               value={pollQuestion}
               onChange={(e) => setPollQuestion(e.target.value)}
-              className="w-full p-2 text-xs border rounded-lg bg-white"
+              className="w-full p-2.5 text-xs border rounded-xl bg-white font-medium"
             />
             <input
               type="text"
-              placeholder="Options separated by commas e.g. Layers 🥚, Broilers 🍗, Kienyeji 🐔"
+              placeholder="Options separated by commas e.g. ISA Brown Layers 🥚, Cobb 500 Broilers 🍗, Kuroiler 🐔"
               value={pollOptionsStr}
               onChange={(e) => setPollOptionsStr(e.target.value)}
-              className="w-full p-2 text-xs border rounded-lg bg-white"
+              className="w-full p-2.5 text-xs border rounded-xl bg-white font-medium"
             />
           </div>
 
@@ -1008,62 +1021,76 @@ function StoriesTab() {
               id="featuredStory"
               checked={featured}
               onChange={(e) => setFeatured(e.target.checked)}
-              className="w-4 h-4 text-cyan-600 rounded cursor-pointer"
+              className="w-4 h-4 text-emerald-600 rounded cursor-pointer"
             />
             <label htmlFor="featuredStory" className="text-xs font-bold text-gray-700 cursor-pointer">
-              Featured Story Highlight (Never expires after 24 hours)
+              Mark as Permanent Highlight (Keep visible beyond 24 hours)
             </label>
           </div>
 
-          <button type="submit" className="btn-primary w-full text-sm font-bold !py-3 flex items-center justify-center gap-2 cursor-pointer">
-            <Save className="h-4 w-4" /> Publish Story
+          <button type="submit" className="btn-primary w-full text-sm font-black !py-3 flex items-center justify-center gap-2 cursor-pointer shadow-lg">
+            <Save className="h-4 w-4 text-amber-300" /> Post 24-Hour Status Update
           </button>
         </form>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {stories.map(s => (
-          <div key={s.id} className="glass-white rounded-xl overflow-hidden border border-blue-100 shadow-sm flex flex-col justify-between">
-            <div className="relative aspect-video bg-slate-900">
-              <img src={s.mediaUrl} alt={s.title} className="w-full h-full object-cover" />
-              <span className="absolute top-2 left-2 bg-black/70 text-cyan-300 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">
-                {s.category}
-              </span>
-              {s.featured && (
-                <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> Featured
-                </span>
-              )}
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {stories.map(s => {
+          const expiresDate = s.expiresAt ? new Date(s.expiresAt) : new Date(Date.now() + 24*60*60*1000);
+          const isExpired = Date.now() > expiresDate.getTime() && !s.featured;
+          const hoursLeft = Math.max(0, Math.round((expiresDate.getTime() - Date.now()) / (1000 * 60 * 60)));
 
-            <div className="p-4 flex-1 space-y-2">
-              <h4 className="font-bold text-gray-900 text-sm leading-snug">{s.title}</h4>
-              {s.description && <p className="text-xs text-gray-500 line-clamp-2">{s.description}</p>}
-              
-              <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-100">
-                <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5 text-blue-500" /> {s.views} views</span>
-                <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5 text-rose-500" /> {s.likes} likes</span>
+          return (
+            <div key={s.id} className={`bg-white rounded-2xl overflow-hidden border-2 transition-all shadow-sm flex flex-col justify-between ${
+              isExpired ? 'border-gray-200 opacity-60' : 'border-amber-300 hover:border-emerald-500'
+            }`}>
+              <div className="relative aspect-video bg-slate-950">
+                {s.mediaType === 'video' ? (
+                  <video src={s.mediaUrl} className="w-full h-full object-cover" muted />
+                ) : (
+                  <img src={s.mediaUrl} alt={s.title} className="w-full h-full object-cover" />
+                )}
+                <span className="absolute top-2 left-2 bg-slate-950/80 text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                  {s.category}
+                </span>
+
+                <span className={`absolute top-2 right-2 text-white text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-md ${
+                  s.featured ? 'bg-amber-500' : isExpired ? 'bg-rose-600' : 'bg-emerald-600'
+                }`}>
+                  <Clock className="w-3 h-3" />
+                  {s.featured ? 'Permanent Highlight' : isExpired ? 'Expired' : `${hoursLeft}h Left`}
+                </span>
+              </div>
+
+              <div className="p-4 flex-1 space-y-2">
+                <h4 className="font-extrabold text-slate-900 text-base leading-snug">{s.title}</h4>
+                {s.description && <p className="text-xs text-slate-600 font-medium line-clamp-2">{s.description}</p>}
+                
+                <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-amber-100 font-bold">
+                  <span className="flex items-center gap-1 text-emerald-700"><Eye className="w-3.5 h-3.5" /> {s.views} views</span>
+                  <span className="flex items-center gap-1 text-rose-600"><Heart className="w-3.5 h-3.5" /> {s.likes} likes</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-amber-50/60 border-t border-amber-200 flex justify-between items-center">
+                <button
+                  onClick={() => updateStory(s.id, { featured: !s.featured })}
+                  className={`text-xs px-3 py-1.5 rounded-xl font-extrabold cursor-pointer transition-colors ${
+                    s.featured ? 'bg-amber-400 text-slate-950' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                  }`}
+                >
+                  {s.featured ? 'Highlight Active' : 'Make Permanent'}
+                </button>
+                <button
+                  onClick={() => deleteStory(s.id)}
+                  className="text-xs px-3 py-1.5 rounded-xl bg-rose-100 text-rose-700 hover:bg-rose-200 font-extrabold cursor-pointer transition-colors"
+                >
+                  Delete
+                </button>
               </div>
             </div>
-
-            <div className="p-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-              <button
-                onClick={() => updateStory(s.id, { featured: !s.featured })}
-                className={`text-xs px-2.5 py-1 rounded font-bold cursor-pointer ${
-                  s.featured ? 'bg-amber-100 text-amber-800' : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                {s.featured ? 'Featured' : 'Make Featured'}
-              </button>
-              <button
-                onClick={() => deleteStory(s.id)}
-                className="text-xs px-2.5 py-1 rounded bg-red-100 text-red-600 hover:bg-red-200 font-bold cursor-pointer"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -1341,6 +1368,9 @@ export default function AdminTabContent() {
   const { activeTab } = useAdmin();
   const tabMap: Record<string, React.ReactNode> = {
     dashboard: <DashboardTab />,
+    commerce: <CommerceTab />,
+    community: <CommunityAdminTab />,
+    activity: <CustomerActivityTab />,
     stories: <StoriesTab />,
     videos: <VideosTab />,
     database: <DatabaseTab />,

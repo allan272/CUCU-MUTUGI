@@ -1,0 +1,938 @@
+{
+  "products": [
+    {
+      "id": "p1",
+      "name": "Kuroiler Chicks",
+      "category": "Kienyeji",
+      "breed": "Kuroiler",
+      "price": 120,
+      "stock": 500,
+      "image": "",
+      "description": "Fast-growing dual-purpose breed. Excellent for both eggs and meat.",
+      "ageRange": "1 day – 1 month",
+      "vaccinated": true,
+      "active": true,
+      "createdAt": "2026-06-01"
+    },
+    {
+      "id": "p2",
+      "name": "Sasso Chicks",
+      "category": "Kienyeji",
+      "breed": "Sasso",
+      "price": 130,
+      "stock": 300,
+      "image": "",
+      "description": "Hardy breed with rich flavour, high demand in the local market.",
+      "ageRange": "1 day – 1 month",
+      "vaccinated": true,
+      "active": true,
+      "createdAt": "2026-06-01"
+    },
+    {
+      "id": "p3",
+      "name": "Kenbro Chicks",
+      "category": "Kienyeji",
+      "breed": "Kenbro",
+      "price": 115,
+      "stock": 400,
+      "image": "",
+      "description": "Adaptable dual-purpose breed, excellent feed conversion ratio.",
+      "ageRange": "1 day – 1 month",
+      "vaccinated": true,
+      "active": true,
+      "createdAt": "2026-06-01"
+    },
+    {
+      "id": "p4",
+      "name": "Broiler Chicks (Cobb 500)",
+      "category": "Broilers",
+      "breed": "Cobb 500",
+      "price": 100,
+      "stock": 800,
+      "image": "",
+      "description": "Top commercial broiler. Ready for market in 6 weeks.",
+      "ageRange": "1 day old",
+      "vaccinated": true,
+      "active": true,
+      "createdAt": "2026-06-02"
+    },
+    {
+      "id": "p5",
+      "name": "Layer Chicks (ISA Brown)",
+      "category": "Layers",
+      "breed": "ISA Brown",
+      "price": 110,
+      "stock": 600,
+      "image": "",
+      "description": "High-producing layer breed, up to 320 eggs per year.",
+      "ageRange": "1 day old",
+      "vaccinated": true,
+      "active": true,
+      "createdAt": "2026-06-02"
+    },
+    {
+      "id": "p6",
+      "name": "Rainbow Rooster",
+      "category": "Kienyeji",
+      "breed": "Rainbow Rooster",
+      "price": 125,
+      "stock": 200,
+      "image": "",
+      "description": "Colourful, hardy, and popular in local markets.",
+      "ageRange": "1 day – 1 month",
+      "vaccinated": true,
+      "active": true,
+      "createdAt": "2026-06-03"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-001",
+      "farmer": "James Mwangi",
+      "phone": "0712345678",
+      "county": "Embu",
+      "breed": "Kuroiler",
+      "qty": 100,
+      "totalKES": 12000,
+      "status": "Delivered",
+      "date": "2026-06-01",
+      "notes": "Delivered on time"
+    },
+    {
+      "id": "ORD-002",
+      "farmer": "Mary Wanjiru",
+      "phone": "0723456789",
+      "county": "Nairobi",
+      "breed": "Broilers",
+      "qty": 200,
+      "totalKES": 20000,
+      "status": "In Transit",
+      "date": "2026-06-05",
+      "notes": ""
+    },
+    {
+      "id": "ORD-003",
+      "farmer": "Peter Kamau",
+      "phone": "0734567890",
+      "county": "Nakuru",
+      "breed": "Layers",
+      "qty": 150,
+      "totalKES": 16500,
+      "status": "Pending",
+      "date": "2026-06-06",
+      "notes": ""
+    },
+    {
+      "id": "ORD-004",
+      "farmer": "Grace Achieng",
+      "phone": "0745678901",
+      "county": "Eldoret",
+      "breed": "Sasso",
+      "qty": 80,
+      "totalKES": 10400,
+      "status": "Delivered",
+      "date": "2026-06-02",
+      "notes": ""
+    },
+    {
+      "id": "ORD-005",
+      "farmer": "David Njoroge",
+      "phone": "0756789012",
+      "county": "Kirinyaga",
+      "breed": "Kenbro",
+      "qty": 120,
+      "totalKES": 13800,
+      "status": "Confirmed",
+      "date": "2026-06-07",
+      "notes": "Needs morning delivery"
+    }
+  ],
+  "farmers": [
+    {
+      "id": "f1",
+      "name": "James Mwangi",
+      "phone": "0712345678",
+      "email": "james@email.com",
+      "county": "Embu",
+      "flocks": 3,
+      "totalOrders": 5,
+      "joinedAt": "2026-01-15"
+    },
+    {
+      "id": "f2",
+      "name": "Mary Wanjiru",
+      "phone": "0723456789",
+      "county": "Nairobi",
+      "flocks": 2,
+      "totalOrders": 3,
+      "joinedAt": "2026-02-20"
+    },
+    {
+      "id": "f3",
+      "name": "Peter Kamau",
+      "phone": "0734567890",
+      "county": "Nakuru",
+      "flocks": 1,
+      "totalOrders": 2,
+      "joinedAt": "2026-03-10"
+    },
+    {
+      "id": "f4",
+      "name": "Grace Achieng",
+      "phone": "0745678901",
+      "county": "Eldoret",
+      "flocks": 4,
+      "totalOrders": 7,
+      "joinedAt": "2026-01-05"
+    }
+  ],
+  "blogPosts": [
+    {
+      "id": "b1",
+      "title": "How to Start Broiler Farming in Kenya",
+      "slug": "how-to-start-broiler-farming",
+      "content": "Broiler farming is one of the most profitable agricultural ventures in Kenya...",
+      "author": "Cucu Mutugi",
+      "published": true,
+      "createdAt": "2026-05-20",
+      "category": "Farming Guide"
+    },
+    {
+      "id": "b2",
+      "title": "Best Breeds for Kenyan Farmers",
+      "slug": "best-breeds-kenya",
+      "content": "Choosing the right breed is the foundation of successful poultry farming...",
+      "author": "Cucu Mutugi",
+      "published": true,
+      "createdAt": "2026-05-25",
+      "category": "Breeds"
+    }
+  ],
+  "stories": [],
+  "videos": [
+    {
+      "id": "v1",
+      "title": "Chick Brooding & Care Walkthrough",
+      "description": "Walkthrough of young chicks inside our brooding facility undergoing feeding and monitoring.",
+      "videoUrl": "/media/gallery/CHICK%202.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg",
+      "category": "Farm Tours",
+      "views": 1250,
+      "likes": 230,
+      "duration": "00:30",
+      "createdAt": "2026-08-02",
+      "featured": true
+    },
+    {
+      "id": "v2",
+      "title": "Cucu Mutugi Fly Logo & Animated Brand Video",
+      "description": "Official brand animation and introduction for Cucu Mutugi Poultry Farm.",
+      "videoUrl": "/media/gallery/FLY%20LOGO.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.27%20PM.jpeg",
+      "category": "Daily Activities",
+      "views": 2100,
+      "likes": 410,
+      "duration": "00:25",
+      "createdAt": "2026-08-02",
+      "featured": true
+    },
+    {
+      "id": "v3",
+      "title": "Kitui County Delivery Dispatch",
+      "description": "Safe delivery of healthy pre-vaccinated chicks to our valued poultry farmers in Kitui.",
+      "videoUrl": "/media/gallery/KITUI%20DELIVERY.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.44.53%20PM.jpeg",
+      "category": "Customer Visits",
+      "views": 890,
+      "likes": 175,
+      "duration": "00:28",
+      "createdAt": "2026-08-02",
+      "featured": true
+    },
+    {
+      "id": "v4",
+      "title": "Flock Health & Feeding Session",
+      "description": "Daily feeding routine and active flock monitoring at Cucu Mutugi Poultry.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.06.13%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.44.58%20PM.jpeg",
+      "category": "Chicken Feeding",
+      "views": 940,
+      "likes": 190,
+      "duration": "00:35",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v5",
+      "title": "Chick Brooder Temperature Setup",
+      "description": "Setting optimal climate and brooding conditions for newborn chicks.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.06.59%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.51.20%20PM%20(1).jpeg",
+      "category": "Farm Tours",
+      "views": 1120,
+      "likes": 215,
+      "duration": "00:40",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v6",
+      "title": "Chicks Feeding in Feeder Trays",
+      "description": "Observing healthy chick appetite and feeding activity on the farm floor.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.07.32%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%209.12.05%20PM.jpeg",
+      "category": "Chicken Feeding",
+      "views": 780,
+      "likes": 145,
+      "duration": "00:45",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v7",
+      "title": "Flock Uniformity & Growth Check",
+      "description": "Checking flock uniformity and weight progression during brooding stage.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.08.07%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-01-27%20at%208.59.13%20PM.jpeg",
+      "category": "Daily Activities",
+      "views": 860,
+      "likes": 160,
+      "duration": "00:32",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v8",
+      "title": "Poultry House Inspection",
+      "description": "Regular sanitation and structural inspection of poultry housing units.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.08.48%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.14.30%20-%20Copy%20(2).jpeg",
+      "category": "Construction",
+      "views": 650,
+      "likes": 120,
+      "duration": "00:50",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v9",
+      "title": "Vaccination Protocol & Administration",
+      "description": "Veterinary team administering essential vaccines before customer dispatch.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.12.36%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.18.27%20-%20Copy.jpeg",
+      "category": "Vaccination",
+      "views": 1450,
+      "likes": 310,
+      "duration": "01:10",
+      "createdAt": "2026-08-02",
+      "featured": true
+    },
+    {
+      "id": "v10",
+      "title": "Chick Box Packaging & Ventilated Dispatch",
+      "description": "Careful loading of ventilated chick transport boxes for customer transit.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.14.38%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.18.28.jpeg",
+      "category": "Customer Visits",
+      "views": 1320,
+      "likes": 270,
+      "duration": "01:05",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v11",
+      "title": "Farmer Reception & Handover",
+      "description": "Handing over pre-vaccinated healthy chicks to happy farmers upon arrival.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.27.47%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.18.33%20-%20Copy%20-%20Copy.jpeg",
+      "category": "Customer Visits",
+      "views": 1540,
+      "likes": 340,
+      "duration": "01:30",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v12",
+      "title": "Automatic Drinker System Overview",
+      "description": "Ensuring clean, uninterrupted water access through automated drinker lines.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.29.52%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-06-05%20at%2008.46.40.jpeg",
+      "category": "Equipment",
+      "views": 920,
+      "likes": 185,
+      "duration": "00:55",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v13",
+      "title": "Improved Kienyeji Flock Showcase",
+      "description": "Demonstration of active Kuroiler and Sasso dual-purpose breeds in motion.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.39.31%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.09.42%20PM.jpeg",
+      "category": "Daily Activities",
+      "views": 1180,
+      "likes": 240,
+      "duration": "01:15",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v14",
+      "title": "Farm Staff Daily Operations",
+      "description": "Behind the scenes with our dedicated poultry management team.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.42.39%20PM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.10.50%20PM.jpeg",
+      "category": "Farm Tours",
+      "views": 890,
+      "likes": 175,
+      "duration": "00:45",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v15",
+      "title": "Chicks Brooding Environment Full Video",
+      "description": "In-depth footage showing optimal chick warmth and activity levels in our brooder.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.12.06%20AM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.11.12%20PM.jpeg",
+      "category": "Farm Tours",
+      "views": 1780,
+      "likes": 390,
+      "duration": "02:10",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v16",
+      "title": "Chick Box Counting & Quality Audit",
+      "description": "Quality verification and box counting prior to delivery vehicle departure.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.14.38%20AM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.13.12%20PM.jpeg",
+      "category": "Customer Visits",
+      "views": 1100,
+      "likes": 220,
+      "duration": "01:00",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v17",
+      "title": "Chick Vitality & Movement Check",
+      "description": "Ensuring high alertness and physical vitality in day-old chick batches.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.15.12%20AM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.13.35%20PM.jpeg",
+      "category": "Daily Activities",
+      "views": 1420,
+      "likes": 290,
+      "duration": "01:25",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v18",
+      "title": "Farm Ventilation & Air Flow Demo",
+      "description": "Demonstrating fresh airflow management to prevent respiratory issues in poultry.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.15.38%20AM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.13.36%20PM.jpeg",
+      "category": "Construction",
+      "views": 980,
+      "likes": 205,
+      "duration": "01:18",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v19",
+      "title": "Delivery Vehicle Loading Procedure",
+      "description": "Securing climate-controlled transport boxes in our delivery vans.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.17.20%20AM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.20.41%20PM.jpeg",
+      "category": "Customer Visits",
+      "views": 1610,
+      "likes": 350,
+      "duration": "01:40",
+      "createdAt": "2026-08-02"
+    },
+    {
+      "id": "v20",
+      "title": "Chick Customer Unboxing Experience",
+      "description": "Farmer receiving and unboxing vibrant healthy chicks on their farm.",
+      "videoUrl": "/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.19.18%20AM.mp4",
+      "thumbnailUrl": "/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.26.19%20PM.jpeg",
+      "category": "Customer Visits",
+      "views": 1950,
+      "likes": 420,
+      "duration": "02:00",
+      "createdAt": "2026-08-02"
+    }
+  ],
+  "settings": {
+    "heroTitle": "CUCU MUTUGI POULTRY",
+    "heroSubtitle": "Growing Farmers, Building Prosperity",
+    "heroCoverImage": "/logo.png",
+    "primaryColor": "#1565C0",
+    "accentColor": "#00BCD4",
+    "logoUrl": "/logo.png",
+    "whatsappNumber": "254706972161",
+    "email": "cucumutugipoultry@gmail.com",
+    "phone1": "0706972161",
+    "phone2": "0740662799",
+    "marketingDays": "Wednesday and Thursday",
+    "footerTagline": "Growing Farmers, Building Prosperity.",
+    "heroStats": [
+      {
+        "val": "14+",
+        "label": "Counties Served"
+      },
+      {
+        "val": "5+",
+        "label": "Breeds Available"
+      },
+      {
+        "val": "FREE",
+        "label": "Delivery"
+      }
+    ],
+    "showWhatsappButton": true
+  },
+  "transactions": [
+    {
+      "date": "2026-08-20",
+      "type": "income",
+      "category": "Chicks Sale (Kuroiler)",
+      "amount": 1,
+      "paymentMethod": "M-Pesa",
+      "id": "tx-1787253469505-9fkv",
+      "createdAt": "2026-08-20T19:17:49.505Z"
+    },
+    {
+      "id": "tx-1",
+      "date": "2026-06-10",
+      "type": "income",
+      "category": "Chicks Sale",
+      "amount": 36000,
+      "paymentMethod": "M-Pesa",
+      "customerOrVendor": "James Mwangi",
+      "reference": "MPX987123",
+      "notes": "300 Kuroiler chicks",
+      "createdAt": "2026-06-10T08:30:00Z"
+    },
+    {
+      "id": "tx-2",
+      "date": "2026-06-10",
+      "type": "expense",
+      "category": "Feed Purchase",
+      "amount": 14500,
+      "paymentMethod": "M-Pesa",
+      "customerOrVendor": "Unga Feeds Embu",
+      "reference": "RCP-5421",
+      "notes": "5 bags chick mash",
+      "createdAt": "2026-06-10T10:15:00Z"
+    },
+    {
+      "id": "tx-3",
+      "date": "2026-06-09",
+      "type": "income",
+      "category": "Egg Sales",
+      "amount": 8400,
+      "paymentMethod": "Cash",
+      "customerOrVendor": "Wanjiku Hotel",
+      "reference": "CSH-09",
+      "notes": "24 trays kienyeji eggs",
+      "createdAt": "2026-06-09T14:20:00Z"
+    },
+    {
+      "id": "tx-4",
+      "date": "2026-06-09",
+      "type": "expense",
+      "category": "Vaccines & Meds",
+      "amount": 3200,
+      "paymentMethod": "M-Pesa",
+      "customerOrVendor": "Agrovet Supplies",
+      "reference": "AGR-771",
+      "notes": "Gumboro & Newcastle vaccines",
+      "createdAt": "2026-06-09T16:00:00Z"
+    },
+    {
+      "id": "tx-5",
+      "date": "2026-06-08",
+      "type": "income",
+      "category": "Chicks Sale",
+      "amount": 22000,
+      "paymentMethod": "Bank Transfer",
+      "customerOrVendor": "Peter Kamau",
+      "reference": "BNK-3341",
+      "notes": "200 ISA Brown layers",
+      "createdAt": "2026-06-08T11:00:00Z"
+    }
+  ],
+  "activities": [
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: 💉 Vaccination Schedule",
+      "page": "/admin",
+      "id": "act-1787255711777-skrj",
+      "timestamp": "2026-08-20T19:55:11.777Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: Brooding Temperature Guide",
+      "page": "/admin",
+      "id": "act-1787255698537-0j30",
+      "timestamp": "2026-08-20T19:54:58.537Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: Payment Method M-Pesa",
+      "page": "/admin",
+      "id": "act-1787255690333-q265",
+      "timestamp": "2026-08-20T19:54:50.333Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: Check Chick Prices",
+      "page": "/admin",
+      "id": "act-1787255684721-ndln",
+      "timestamp": "2026-08-20T19:54:44.721Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: how do i work the commerce option",
+      "page": "/admin",
+      "id": "act-1787255675517-quod",
+      "timestamp": "2026-08-20T19:54:35.517Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Open Poultry Assistant Bot",
+      "page": "/admin",
+      "id": "act-1787255659618-lxc2",
+      "timestamp": "2026-08-20T19:54:19.618Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "👍",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787255650076-thwe",
+      "timestamp": "2026-08-20T19:54:10.076Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Minimize",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254879350-zwlx",
+      "timestamp": "2026-08-20T19:41:19.350Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Chat with Senior Poultry Officer",
+      "page": "/community",
+      "metadata": {
+        "href": "https://wa.me/254706972161?text=Hi%20Cucu%20Mutugi%2C%20I%20need%20assistance%20with%3A%20what%20do%20you%20have%20for%20the%20admin"
+      },
+      "id": "act-1787254872623-11x1",
+      "timestamp": "2026-08-20T19:41:12.623Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: what do you have for the admin",
+      "page": "/community",
+      "id": "act-1787254866950-d6bu",
+      "timestamp": "2026-08-20T19:41:06.950Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Send",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254866939-877z",
+      "timestamp": "2026-08-20T19:41:06.939Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Assistant Bot Query: hello",
+      "page": "/community",
+      "id": "act-1787254855262-9gf7",
+      "timestamp": "2026-08-20T19:40:55.262Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Send",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254855247-tbq4",
+      "timestamp": "2026-08-20T19:40:55.247Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Open Poultry Assistant Bot",
+      "page": "/community",
+      "id": "act-1787254845048-909y",
+      "timestamp": "2026-08-20T19:40:45.048Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "🌾🌾 Feed & Nutrition TipsChick mash, growers, layers mash f",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254614163-uhum",
+      "timestamp": "2026-08-20T19:36:54.163Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "💉💉 Vaccination & Disease ControlGumboro, Newcastle, Fowl P",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254611049-mo1r",
+      "timestamp": "2026-08-20T19:36:51.049Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "🐣🐣 Chicks & Brooding CareDay-old chick heating, temperatur",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254605710-atop",
+      "timestamp": "2026-08-20T19:36:45.710Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Send Message",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254598954-iq1h",
+      "timestamp": "2026-08-20T19:36:38.954Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Log In",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254588819-c2s5",
+      "timestamp": "2026-08-20T19:36:28.819Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Log In",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254580697-nnir",
+      "timestamp": "2026-08-20T19:36:20.697Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Join Farmer Lounge (Free Sign Up)",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254579399-yykl",
+      "timestamp": "2026-08-20T19:36:19.399Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Log In",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254553086-n1gw",
+      "timestamp": "2026-08-20T19:35:53.086Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Log In",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254551188-rpum",
+      "timestamp": "2026-08-20T19:35:51.188Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Create Account & Request Verification",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254546999-0fhn",
+      "timestamp": "2026-08-20T19:35:46.999Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "Join Farmer Lounge (Free Sign Up)",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254497624-4n35",
+      "timestamp": "2026-08-20T19:34:57.624Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "💉💉 Vaccination & Disease ControlGumboro, Newcastle, Fowl P",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254493329-yc1a",
+      "timestamp": "2026-08-20T19:34:53.329Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "🌾🌾 Feed & Nutrition TipsChick mash, growers, layers mash f",
+      "page": "/community",
+      "metadata": {},
+      "id": "act-1787254483082-ccyy",
+      "timestamp": "2026-08-20T19:34:43.082Z"
+    },
+    {
+      "type": "button_click",
+      "buttonName": "💬 Farmer Lounge",
+      "page": "/poultry-updates",
+      "metadata": {
+        "href": "/community"
+      },
+      "id": "act-1787254460742-nnzb",
+      "timestamp": "2026-08-20T19:34:20.742Z"
+    }
+  ],
+  "chatUsers": [
+    {
+      "id": "user-1787254547559-8xy3",
+      "name": "Bradon Mugambi",
+      "email": "allanbrandon520@gmail.com",
+      "password": "wembley",
+      "phone": "0719303786",
+      "county": "Embu",
+      "farmFocus": "Kuroiler & ISA Brown Layers",
+      "avatar": "",
+      "role": "farmer",
+      "status": "approved",
+      "createdAt": "2026-08-20T19:35:47.559Z",
+      "approvedAt": "2026-08-20T19:36:12.185Z"
+    },
+    {
+      "id": "admin-cucu",
+      "name": "Cucu Mutugi Admin",
+      "email": "cucumutugipoultry@gmail.com",
+      "phone": "0706972161",
+      "county": "Embu HQ",
+      "farmFocus": "Hatchery & Farmer Training",
+      "avatar": "/logo.png",
+      "role": "admin",
+      "status": "approved",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "approvedAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "chatChannels": [
+    {
+      "id": "general-lounge",
+      "name": "🐔 General Farmers Lounge",
+      "description": "Public discussion on poultry management, breeds, and farm experiences",
+      "icon": "🐔"
+    },
+    {
+      "id": "chicks-brooding",
+      "name": "🐣 Chicks & Brooding Care",
+      "description": "Day-old chick heating, temperature, glucose, and first-month care",
+      "icon": "🐣"
+    },
+    {
+      "id": "vaccination-health",
+      "name": "💉 Vaccination & Disease Control",
+      "description": "Gumboro, Newcastle, Fowl Pox schedules, vitamins, and bio-security",
+      "icon": "💉"
+    },
+    {
+      "id": "feed-formulation",
+      "name": "🌾 Feed & Nutrition Tips",
+      "description": "Chick mash, growers, layers mash formulas, and cost-saving tips",
+      "icon": "🌾"
+    },
+    {
+      "id": "marketplace",
+      "name": "🛒 Farmer Marketplace",
+      "description": "Buy & sell mature birds, kienyeji eggs, incubators, and equipment",
+      "icon": "🛒"
+    },
+    {
+      "id": "admin-support",
+      "name": "🛡️ Cucu Mutugi Official Support",
+      "description": "Direct orders, delivery updates, and expert advisory from admin",
+      "icon": "🛡️"
+    }
+  ],
+  "chatMessages": [
+    {
+      "id": "msg-1",
+      "channelId": "general-lounge",
+      "senderId": "admin-cucu",
+      "senderName": "Cucu Mutugi Admin",
+      "senderRole": "admin",
+      "senderAvatar": "/logo.png",
+      "senderCounty": "Embu HQ",
+      "content": "Karibuni wakulima wote! Welcome to the Cucu Mutugi Poultry Farmers Lounge. Share your poultry milestones, ask questions, and network with fellow poultry farmers across Kenya! 🐔🌾",
+      "createdAt": "2026-06-10T08:00:00Z",
+      "pinned": true,
+      "reactions": {
+        "👍": [
+          "user-mwangi",
+          "user-wanjiru"
+        ],
+        "❤️": [
+          "user-mwangi"
+        ]
+      }
+    },
+    {
+      "id": "msg-2",
+      "channelId": "general-lounge",
+      "senderId": "user-mwangi",
+      "senderName": "James Mwangi",
+      "senderRole": "farmer",
+      "senderCounty": "Embu",
+      "content": "Habari za asubuhi! The 300 Kuroiler chicks I received on Wednesday arrived in great health. Mortality rate after 7 days is 0%! Proper temperature and glucose water during the first 6 hours makes a big difference.",
+      "createdAt": "2026-06-10T08:15:00Z",
+      "reactions": {
+        "👏": [
+          "admin-cucu",
+          "user-wanjiru"
+        ],
+        "🔥": [
+          "user-wanjiru"
+        ],
+        "👍": [
+          "user-1787254547559-8xy3"
+        ]
+      }
+    },
+    {
+      "id": "msg-3",
+      "channelId": "chicks-brooding",
+      "senderId": "user-wanjiru",
+      "senderName": "Mary Wanjiru",
+      "senderRole": "farmer",
+      "senderCounty": "Nairobi",
+      "content": "Quick question for the group: In chilly weather like Nairobi this week, what is your recommended charcoal jiko vs infrared bulb setup for 500 day-old broiler chicks?",
+      "createdAt": "2026-06-10T09:00:00Z"
+    },
+    {
+      "id": "msg-4",
+      "channelId": "chicks-brooding",
+      "senderId": "admin-cucu",
+      "senderName": "Cucu Mutugi Admin",
+      "senderRole": "admin",
+      "senderAvatar": "/logo.png",
+      "senderCounty": "Embu HQ",
+      "content": "Great question Mary! For 500 chicks, we recommend maintaining 32°C–35°C at chick level during week 1. Two 250W infrared heat lamps plus a circular cardboard guard ring prevent huddling and drafts. Here is our official brooding temperature chart for reference:",
+      "attachments": [
+        {
+          "type": "image",
+          "url": "/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg",
+          "filename": "brooding-guide-chart.jpg"
+        }
+      ],
+      "createdAt": "2026-06-10T09:05:00Z",
+      "reactions": {
+        "❤️": [
+          "user-wanjiru",
+          "user-mwangi"
+        ]
+      }
+    },
+    {
+      "channelId": "general-lounge",
+      "senderId": "user-1787254547559-8xy3",
+      "senderName": "Bradon Mugambi",
+      "senderRole": "farmer",
+      "senderAvatar": "",
+      "senderCounty": "Embu",
+      "content": "yoh",
+      "attachments": [],
+      "pinned": false,
+      "id": "msg-1787254598979-g7t6",
+      "createdAt": "2026-08-20T19:36:38.979Z"
+    }
+  ]
+}

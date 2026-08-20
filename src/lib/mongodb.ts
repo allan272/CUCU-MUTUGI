@@ -63,7 +63,7 @@ const options = {
   socketTimeoutMS: 8000,
 };
 
-let clientPromise: Promise<MongoClient>;
+let clientPromise: Promise<MongoClient | null>;
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
@@ -75,18 +75,22 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 }
 
 if (!uri) {
-  clientPromise = Promise.reject(new Error('MONGODB_URI is not set in environment variables.'));
-  clientPromise.catch(() => {});
+  clientPromise = Promise.resolve(null);
 } else {
-  const connectClient = async (): Promise<MongoClient> => {
-    const resolvedUri = await resolveMongoSrv(uri);
-    const client = new MongoClient(resolvedUri, options);
-    return withTimeout(client.connect(), 6000);
+  const connectClient = async (): Promise<MongoClient | null> => {
+    try {
+      const resolvedUri = await resolveMongoSrv(uri);
+      const client = new MongoClient(resolvedUri, options);
+      return await withTimeout(client.connect(), 6000);
+    } catch (e) {
+      console.warn('MongoDB connection failed, operating in local storage mode:', e);
+      return null;
+    }
   };
 
   if (process.env.NODE_ENV === 'development') {
     const globalWithMongo = global as typeof globalThis & {
-      _mongoClientPromise?: Promise<MongoClient>;
+      _mongoClientPromise?: Promise<MongoClient | null>;
     };
 
     if (!globalWithMongo._mongoClientPromise) {

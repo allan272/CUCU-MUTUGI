@@ -1,9 +1,11 @@
 'use client';
-
 import { useEffect } from 'react';
+import { initGlobalTracker } from '@/lib/tracker';
 
 export default function ServiceWorkerRegister() {
   useEffect(() => {
+    initGlobalTracker();
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js')

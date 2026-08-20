@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: ['192.168.14.241', '172.30.208.1', 'localhost'],
+  allowedDevOrigins: [
+    '172.28.171.190',
+    '192.168.14.241',
+    '172.30.208.1',
+    'localhost',
+    '127.0.0.1',
+  ],
   images: {
     unoptimized: false,
     formats: ['image/webp'],
@@ -30,4 +36,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

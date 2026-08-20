@@ -107,6 +107,81 @@ export interface SiteSettings {
   showWhatsappButton: boolean;
 }
 
+export interface Transaction {
+  id: string;
+  date: string;
+  type: 'income' | 'expense';
+  category: string;
+  amount: number;
+  paymentMethod: 'M-Pesa' | 'Cash' | 'Bank Transfer' | 'Other';
+  customerOrVendor?: string;
+  notes?: string;
+  reference?: string;
+  createdAt: string;
+}
+
+export interface CustomerActivity {
+  id: string;
+  type: 'search' | 'button_click' | 'email_captured' | 'page_view';
+  query?: string;
+  buttonName?: string;
+  email?: string;
+  page?: string;
+  metadata?: Record<string, any>;
+  timestamp: string;
+}
+
+export interface ChatUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  county?: string;
+  farmFocus?: string;
+  avatar?: string;
+  role: 'admin' | 'moderator' | 'farmer';
+  status: 'pending_approval' | 'approved' | 'banned';
+  createdAt: string;
+  approvedAt?: string;
+  password?: string;
+}
+
+export interface ChatChannel {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  badge?: string;
+  isPrivate?: boolean;
+}
+
+export interface ChatAttachment {
+  type: 'image' | 'document' | 'audio';
+  url: string;
+  filename?: string;
+  sizeBytes?: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  channelId: string;
+  senderId: string;
+  senderName: string;
+  senderRole?: 'admin' | 'moderator' | 'farmer';
+  senderAvatar?: string;
+  senderCounty?: string;
+  content: string;
+  attachments?: ChatAttachment[];
+  replyTo?: {
+    id: string;
+    senderName: string;
+    content: string;
+  };
+  reactions?: Record<string, string[]>;
+  createdAt: string;
+  pinned?: boolean;
+}
+
 export interface DBTable {
   products: Product[];
   orders: Order[];
@@ -115,7 +190,148 @@ export interface DBTable {
   stories: Story[];
   videos: Video[];
   settings: SiteSettings;
+  transactions?: Transaction[];
+  activities?: CustomerActivity[];
+  chatUsers?: ChatUser[];
+  chatMessages?: ChatMessage[];
+  chatChannels?: ChatChannel[];
 }
+
+export const DEFAULT_CHAT_CHANNELS: ChatChannel[] = [
+  { id: 'general-lounge', name: '🐔 General Farmers Lounge', description: 'Public discussion on poultry management, breeds, and farm experiences', icon: '🐔' },
+  { id: 'chicks-brooding', name: '🐣 Chicks & Brooding Care', description: 'Day-old chick heating, temperature, glucose, and first-month care', icon: '🐣' },
+  { id: 'vaccination-health', name: '💉 Vaccination & Disease Control', description: 'Gumboro, Newcastle, Fowl Pox schedules, vitamins, and bio-security', icon: '💉' },
+  { id: 'feed-formulation', name: '🌾 Feed & Nutrition Tips', description: 'Chick mash, growers, layers mash formulas, and cost-saving tips', icon: '🌾' },
+  { id: 'marketplace', name: '🛒 Farmer Marketplace', description: 'Buy & sell mature birds, kienyeji eggs, incubators, and equipment', icon: '🛒' },
+  { id: 'admin-support', name: '🛡️ Cucu Mutugi Official Support', description: 'Direct orders, delivery updates, and expert advisory from admin', icon: '🛡️' },
+];
+
+export const DEFAULT_CHAT_USERS: ChatUser[] = [
+  {
+    id: 'admin-cucu',
+    name: 'Cucu Mutugi Admin',
+    email: 'cucumutugipoultry@gmail.com',
+    phone: '0706972161',
+    county: 'Embu HQ',
+    farmFocus: 'Hatchery & Farmer Training',
+    avatar: '/logo.png',
+    role: 'admin',
+    status: 'approved',
+    createdAt: '2026-01-01T00:00:00Z',
+    approvedAt: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'user-mwangi',
+    name: 'James Mwangi',
+    email: 'james.mwangi@gmail.com',
+    phone: '0712345678',
+    county: 'Embu',
+    farmFocus: '500 Kuroiler Layers',
+    avatar: '',
+    role: 'farmer',
+    status: 'approved',
+    createdAt: '2026-06-01T09:00:00Z',
+    approvedAt: '2026-06-01T09:30:00Z',
+  },
+  {
+    id: 'user-wanjiru',
+    name: 'Mary Wanjiru',
+    email: 'mary.wanjiru254@yahoo.com',
+    phone: '0723456789',
+    county: 'Nairobi',
+    farmFocus: '1,000 Cobb 500 Broilers',
+    avatar: '',
+    role: 'farmer',
+    status: 'approved',
+    createdAt: '2026-06-02T10:15:00Z',
+    approvedAt: '2026-06-02T10:30:00Z',
+  },
+  {
+    id: 'user-kamau',
+    name: 'Peter Kamau',
+    email: 'peter.kamau@outlook.com',
+    phone: '0734567890',
+    county: 'Nakuru',
+    farmFocus: '300 ISA Brown Layers',
+    avatar: '',
+    role: 'farmer',
+    status: 'pending_approval',
+    createdAt: '2026-06-10T11:00:00Z',
+  }
+];
+
+export const DEFAULT_CHAT_MESSAGES: ChatMessage[] = [
+  {
+    id: 'msg-1',
+    channelId: 'general-lounge',
+    senderId: 'admin-cucu',
+    senderName: 'Cucu Mutugi Admin',
+    senderRole: 'admin',
+    senderAvatar: '/logo.png',
+    senderCounty: 'Embu HQ',
+    content: 'Karibuni wakulima wote! Welcome to the Cucu Mutugi Poultry Farmers Lounge. Share your poultry milestones, ask questions, and network with fellow poultry farmers across Kenya! 🐔🌾',
+    createdAt: '2026-06-10T08:00:00Z',
+    pinned: true,
+    reactions: { '👍': ['user-mwangi', 'user-wanjiru'], '❤️': ['user-mwangi'] },
+  },
+  {
+    id: 'msg-2',
+    channelId: 'general-lounge',
+    senderId: 'user-mwangi',
+    senderName: 'James Mwangi',
+    senderRole: 'farmer',
+    senderCounty: 'Embu',
+    content: 'Habari za asubuhi! The 300 Kuroiler chicks I received on Wednesday arrived in great health. Mortality rate after 7 days is 0%! Proper temperature and glucose water during the first 6 hours makes a big difference.',
+    createdAt: '2026-06-10T08:15:00Z',
+    reactions: { '👏': ['admin-cucu', 'user-wanjiru'], '🔥': ['user-wanjiru'] },
+  },
+  {
+    id: 'msg-3',
+    channelId: 'chicks-brooding',
+    senderId: 'user-wanjiru',
+    senderName: 'Mary Wanjiru',
+    senderRole: 'farmer',
+    senderCounty: 'Nairobi',
+    content: 'Quick question for the group: In chilly weather like Nairobi this week, what is your recommended charcoal jiko vs infrared bulb setup for 500 day-old broiler chicks?',
+    createdAt: '2026-06-10T09:00:00Z',
+  },
+  {
+    id: 'msg-4',
+    channelId: 'chicks-brooding',
+    senderId: 'admin-cucu',
+    senderName: 'Cucu Mutugi Admin',
+    senderRole: 'admin',
+    senderAvatar: '/logo.png',
+    senderCounty: 'Embu HQ',
+    content: 'Great question Mary! For 500 chicks, we recommend maintaining 32°C–35°C at chick level during week 1. Two 250W infrared heat lamps plus a circular cardboard guard ring prevent huddling and drafts. Here is our official brooding temperature chart for reference:',
+    attachments: [
+      {
+        type: 'image',
+        url: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg',
+        filename: 'brooding-guide-chart.jpg'
+      }
+    ],
+    createdAt: '2026-06-10T09:05:00Z',
+    reactions: { '❤️': ['user-wanjiru', 'user-mwangi'] }
+  }
+];
+
+export const DEFAULT_TRANSACTIONS: Transaction[] = [
+  { id: 'tx-1', date: '2026-06-10', type: 'income', category: 'Chicks Sale', amount: 36000, paymentMethod: 'M-Pesa', customerOrVendor: 'James Mwangi', reference: 'MPX987123', notes: '300 Kuroiler chicks', createdAt: '2026-06-10T08:30:00Z' },
+  { id: 'tx-2', date: '2026-06-10', type: 'expense', category: 'Feed Purchase', amount: 14500, paymentMethod: 'M-Pesa', customerOrVendor: 'Unga Feeds Embu', reference: 'RCP-5421', notes: '5 bags chick mash', createdAt: '2026-06-10T10:15:00Z' },
+  { id: 'tx-3', date: '2026-06-09', type: 'income', category: 'Egg Sales', amount: 8400, paymentMethod: 'Cash', customerOrVendor: 'Wanjiku Hotel', reference: 'CSH-09', notes: '24 trays kienyeji eggs', createdAt: '2026-06-09T14:20:00Z' },
+  { id: 'tx-4', date: '2026-06-09', type: 'expense', category: 'Vaccines & Meds', amount: 3200, paymentMethod: 'M-Pesa', customerOrVendor: 'Agrovet Supplies', reference: 'AGR-771', notes: 'Gumboro & Newcastle vaccines', createdAt: '2026-06-09T16:00:00Z' },
+  { id: 'tx-5', date: '2026-06-08', type: 'income', category: 'Chicks Sale', amount: 22000, paymentMethod: 'Bank Transfer', customerOrVendor: 'Peter Kamau', reference: 'BNK-3341', notes: '200 ISA Brown layers', createdAt: '2026-06-08T11:00:00Z' },
+];
+
+export const DEFAULT_ACTIVITIES: CustomerActivity[] = [
+  { id: 'act-1', type: 'search', query: 'ISA Brown day old chicks price', page: '/products', timestamp: '2026-06-10T09:12:00Z' },
+  { id: 'act-2', type: 'button_click', buttonName: 'Order Kuroiler Chicks', page: '/products', timestamp: '2026-06-10T09:15:00Z' },
+  { id: 'act-3', type: 'email_captured', email: 'farmer.mwangi@gmail.com', page: '/contact', metadata: { source: 'Brooding Guide Request' }, timestamp: '2026-06-10T10:05:00Z' },
+  { id: 'act-4', type: 'button_click', buttonName: 'WhatsApp Inquiry Button', page: '/', timestamp: '2026-06-10T11:22:00Z' },
+  { id: 'act-5', type: 'search', query: 'kienyeji chicken feeding guide', page: '/resources', timestamp: '2026-06-10T12:00:00Z' },
+  { id: 'act-6', type: 'email_captured', email: 'grace.achieng254@yahoo.com', page: '/resources/feeding-programme', metadata: { source: 'Newsletter' }, timestamp: '2026-06-09T15:30:00Z' },
+];
 
 export const DEFAULT_PRODUCTS: Product[] = [
   { id: 'p1', name: 'Kuroiler Chicks', category: 'Kienyeji', breed: 'Kuroiler', price: 120, stock: 500, image: '', description: 'Fast-growing dual-purpose breed. Excellent for both eggs and meat.', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
@@ -235,42 +451,247 @@ export const DEFAULT_STORIES: Story[] = [
 export const DEFAULT_VIDEOS: Video[] = [
   {
     id: 'v1',
-    title: 'Cucu Mutugi — Chick Brooding at the Farm',
-    description: 'A real look inside Cucu Mutugi Poultry brooding unit. Watch how we care for chicks from day one to ensure healthy, thriving flocks.',
-    videoUrl: '/media/chick-video-2.mp4',
-    thumbnailUrl: '/media/owner-with-chicks-1.jpg',
+    title: 'Chick Brooding & Care Walkthrough',
+    description: 'Walkthrough of young chicks inside our brooding facility undergoing feeding and monitoring.',
+    videoUrl: '/media/gallery/CHICK%202.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg',
     category: 'Farm Tours',
     views: 1250,
     likes: 230,
     duration: '00:30',
-    createdAt: '2026-06-10',
+    createdAt: '2026-08-02',
     featured: true,
   },
   {
     id: 'v2',
-    title: 'Kitui Delivery — Chicks on the Road!',
-    description: 'Watch our team delivering healthy pre-vaccinated chicks to farmers in Kitui County. Free countrywide delivery every Wednesday and Thursday.',
-    videoUrl: '/media/kitui-delivery.mp4',
-    thumbnailUrl: '/media/team-delivery-1.jpg',
-    category: 'Customer Visits',
-    views: 890,
-    likes: 175,
-    duration: '00:28',
-    createdAt: '2026-06-12',
+    title: 'Cucu Mutugi Fly Logo & Animated Brand Video',
+    description: 'Official brand animation and introduction for Cucu Mutugi Poultry Farm.',
+    videoUrl: '/media/gallery/FLY%20LOGO.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.27%20PM.jpeg',
+    category: 'Daily Activities',
+    views: 2100,
+    likes: 410,
+    duration: '00:25',
+    createdAt: '2026-08-02',
     featured: true,
   },
   {
     id: 'v3',
-    title: 'Cucu Mutugi Poultry — Brand Introduction',
-    description: 'Meet the team behind Cucu Mutugi Poultry. See why thousands of Kenyan farmers trust us for quality pre-vaccinated chicks and free delivery.',
-    videoUrl: '/media/fly-logo.mp4',
-    thumbnailUrl: '/media/owner-flag.jpg',
-    category: 'Farm Tours',
-    views: 2100,
-    likes: 410,
-    duration: '00:25',
-    createdAt: '2026-06-15',
+    title: 'Kitui County Delivery Dispatch',
+    description: 'Safe delivery of healthy pre-vaccinated chicks to our valued poultry farmers in Kitui.',
+    videoUrl: '/media/gallery/KITUI%20DELIVERY.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.44.53%20PM.jpeg',
+    category: 'Customer Visits',
+    views: 890,
+    likes: 175,
+    duration: '00:28',
+    createdAt: '2026-08-02',
     featured: true,
+  },
+  {
+    id: 'v4',
+    title: 'Flock Health & Feeding Session',
+    description: 'Daily feeding routine and active flock monitoring at Cucu Mutugi Poultry.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.06.13%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.44.58%20PM.jpeg',
+    category: 'Chicken Feeding',
+    views: 940,
+    likes: 190,
+    duration: '00:35',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v5',
+    title: 'Chick Brooder Temperature Setup',
+    description: 'Setting optimal climate and brooding conditions for newborn chicks.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.06.59%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.51.20%20PM%20(1).jpeg',
+    category: 'Farm Tours',
+    views: 1120,
+    likes: 215,
+    duration: '00:40',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v6',
+    title: 'Chicks Feeding in Feeder Trays',
+    description: 'Observing healthy chick appetite and feeding activity on the farm floor.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.07.32%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%209.12.05%20PM.jpeg',
+    category: 'Chicken Feeding',
+    views: 780,
+    likes: 145,
+    duration: '00:45',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v7',
+    title: 'Flock Uniformity & Growth Check',
+    description: 'Checking flock uniformity and weight progression during brooding stage.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.08.07%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-27%20at%208.59.13%20PM.jpeg',
+    category: 'Daily Activities',
+    views: 860,
+    likes: 160,
+    duration: '00:32',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v8',
+    title: 'Poultry House Inspection',
+    description: 'Regular sanitation and structural inspection of poultry housing units.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.08.48%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.14.30%20-%20Copy%20(2).jpeg',
+    category: 'Construction',
+    views: 650,
+    likes: 120,
+    duration: '00:50',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v9',
+    title: 'Vaccination Protocol & Administration',
+    description: 'Veterinary team administering essential vaccines before customer dispatch.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.12.36%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.18.27%20-%20Copy.jpeg',
+    category: 'Vaccination',
+    views: 1450,
+    likes: 310,
+    duration: '01:10',
+    createdAt: '2026-08-02',
+    featured: true,
+  },
+  {
+    id: 'v10',
+    title: 'Chick Box Packaging & Ventilated Dispatch',
+    description: 'Careful loading of ventilated chick transport boxes for customer transit.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.14.38%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.18.28.jpeg',
+    category: 'Customer Visits',
+    views: 1320,
+    likes: 270,
+    duration: '01:05',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v11',
+    title: 'Farmer Reception & Handover',
+    description: 'Handing over pre-vaccinated healthy chicks to happy farmers upon arrival.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.27.47%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-06-04%20at%2021.18.33%20-%20Copy%20-%20Copy.jpeg',
+    category: 'Customer Visits',
+    views: 1540,
+    likes: 340,
+    duration: '01:30',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v12',
+    title: 'Automatic Drinker System Overview',
+    description: 'Ensuring clean, uninterrupted water access through automated drinker lines.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.29.52%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-06-05%20at%2008.46.40.jpeg',
+    category: 'Equipment',
+    views: 920,
+    likes: 185,
+    duration: '00:55',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v13',
+    title: 'Improved Kienyeji Flock Showcase',
+    description: 'Demonstration of active Kuroiler and Sasso dual-purpose breeds in motion.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.39.31%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.09.42%20PM.jpeg',
+    category: 'Daily Activities',
+    views: 1180,
+    likes: 240,
+    duration: '01:15',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v14',
+    title: 'Farm Staff Daily Operations',
+    description: 'Behind the scenes with our dedicated poultry management team.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.42.39%20PM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.10.50%20PM.jpeg',
+    category: 'Farm Tours',
+    views: 890,
+    likes: 175,
+    duration: '00:45',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v15',
+    title: 'Chicks Brooding Environment Full Video',
+    description: 'In-depth footage showing optimal chick warmth and activity levels in our brooder.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.12.06%20AM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.11.12%20PM.jpeg',
+    category: 'Farm Tours',
+    views: 1780,
+    likes: 390,
+    duration: '02:10',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v16',
+    title: 'Chick Box Counting & Quality Audit',
+    description: 'Quality verification and box counting prior to delivery vehicle departure.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.14.38%20AM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.13.12%20PM.jpeg',
+    category: 'Customer Visits',
+    views: 1100,
+    likes: 220,
+    duration: '01:00',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v17',
+    title: 'Chick Vitality & Movement Check',
+    description: 'Ensuring high alertness and physical vitality in day-old chick batches.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.15.12%20AM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.13.35%20PM.jpeg',
+    category: 'Daily Activities',
+    views: 1420,
+    likes: 290,
+    duration: '01:25',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v18',
+    title: 'Farm Ventilation & Air Flow Demo',
+    description: 'Demonstrating fresh airflow management to prevent respiratory issues in poultry.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.15.38%20AM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.13.36%20PM.jpeg',
+    category: 'Construction',
+    views: 980,
+    likes: 205,
+    duration: '01:18',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v19',
+    title: 'Delivery Vehicle Loading Procedure',
+    description: 'Securing climate-controlled transport boxes in our delivery vans.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.17.20%20AM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.20.41%20PM.jpeg',
+    category: 'Customer Visits',
+    views: 1610,
+    likes: 350,
+    duration: '01:40',
+    createdAt: '2026-08-02',
+  },
+  {
+    id: 'v20',
+    title: 'Chick Customer Unboxing Experience',
+    description: 'Farmer receiving and unboxing vibrant healthy chicks on their farm.',
+    videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%208.19.18%20AM.mp4',
+    thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-08-02%20at%203.26.19%20PM.jpeg',
+    category: 'Customer Visits',
+    views: 1950,
+    likes: 420,
+    duration: '02:00',
+    createdAt: '2026-08-02',
   },
 ];
 

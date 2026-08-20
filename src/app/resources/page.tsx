@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Egg, Wheat, Droplet, Activity, Brush, ClipboardList, Wrench, Check, Mail, Smartphone, ArrowRight } from 'lucide-react';
+import { Egg, Wheat, Droplet, Activity, Brush, ClipboardList, Wrench, Check, Mail, Smartphone, ArrowRight, Film } from 'lucide-react';
 
 export default function ResourcesPage() {
   const guides = [
@@ -123,6 +123,25 @@ export default function ResourcesPage() {
               <p className="text-slate-700 font-medium">Maintain proper temperature, ventilation, space allocation, and lighting conditions to promote bird comfort and health.</p>
             </div>
           </div>
+        </div>
+
+        {/* Media & Video Resource Gallery Banner */}
+        <div className="bg-amber-400 p-10 rounded-3xl mb-16 border-4 border-amber-500 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="space-y-3 text-slate-950 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-slate-950 text-amber-400 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider">
+              <Film className="w-4 h-4 text-amber-400" /> Interactive Media Hub
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black">Video Guides & Photo Library</h2>
+            <p className="text-slate-900 font-bold text-base md:text-lg max-w-xl">
+              Watch real brooding demonstrations, vaccination protocols, drinker installations, and customer delivery dispatches from Cucu Mutugi Poultry.
+            </p>
+          </div>
+          <Link
+            href="/videos"
+            className="flex-shrink-0 bg-slate-950 hover:bg-black text-amber-400 font-black px-8 py-4 rounded-2xl transition-all transform hover:scale-105 shadow-2xl flex items-center gap-2 text-lg border-2 border-amber-400"
+          >
+            Open Media Hub <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
 
         {/* Support Section */}

@@ -2,6 +2,7 @@
 import { useAdmin } from '@/context/AdminContext';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTabContent from '@/components/admin/AdminTabContent';
+import AdminAIAssistant from '@/components/admin/AdminAIAssistant';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Lock, Eye, EyeOff, Loader2, LogOut } from 'lucide-react';
@@ -16,11 +17,15 @@ function AdminUI() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!password) return;
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const pwdToTry = password;
+    if (!pwdToTry.trim()) return;
     setSubmitting(true);
-    await login(password);
+    await login(pwdToTry);
     setSubmitting(false);
   };
 
@@ -54,7 +59,11 @@ function AdminUI() {
           </div>
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form
+            action="javascript:void(0)"
+            onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); handleSubmit(e); }}
+            className="space-y-6"
+          >
             <div>
               <label className="block text-white/60 text-xs font-bold uppercase tracking-wider mb-2" htmlFor="admin-password">
                 Administrative Password
@@ -65,12 +74,12 @@ function AdminUI() {
                 </span>
                 <input
                   id="admin-password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full text-white bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-400/50 transition-all placeholder:text-white/20"
-                  required
+                  placeholder="Enter admin password"
+                  className="w-full text-white bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-400/50 transition-all placeholder:text-white/30"
                 />
                 <button
                   type="button"
@@ -88,20 +97,22 @@ function AdminUI() {
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-900 font-bold text-sm uppercase tracking-wider shadow-lg active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Verifying Credentials...
-                </>
-              ) : (
-                'Access Control Panel'
-              )}
-            </button>
+            <div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-900 font-extrabold text-sm uppercase tracking-wider shadow-lg active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Verifying Credentials...
+                  </>
+                ) : (
+                  'Access Control Panel'
+                )}
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -149,6 +160,8 @@ function AdminUI() {
           <AdminTabContent />
         </div>
       </div>
+      {/* Gemini-powered AI Assistant — only visible when admin is authenticated */}
+      <AdminAIAssistant />
     </div>
   );
 }
