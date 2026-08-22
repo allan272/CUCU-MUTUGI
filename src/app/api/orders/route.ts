@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { getStoredDB, saveStoredDB } from '@/lib/serverStorage';
 import { normalizePhoneNumber, sendBrevoSms } from '@/lib/brevoSms';
 import type { Order, Product } from '@/lib/seeds';
-import { addAuditEntry, addNotification } from '@/lib/serverStorage';
+import { addAuditEntry, addNotification, addTransaction } from '@/lib/serverStorage';
+import { broadcastAdminMessage } from '@/lib/outboundMessaging';
 
 function makeOrderId(): string {
   return `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
@@ -97,12 +98,25 @@ export async function POST(request: Request) {
       `Total: KES ${totalKES.toLocaleString()}\n` +
       `Order ID: ${order.id}`;
 
+    await addTransaction({
+      date: new Date().toISOString().split('T')[0],
+      type: 'income',
+      category: 'Website chick order',
+      amount: totalKES,
+      paymentMethod: 'Other',
+      customerOrVendor: customerName,
+      reference: order.id,
+      notes: `${product.name} x ${requestedQty} | ${county}`,
+    });
+
     await addNotification({
       title: 'New chick order received',
       body: adminMessage,
       type: 'order',
       url: '/admin?tab=orders',
-    });
+    }, { broadcast: false });
+
+    const adminBroadcast = await broadcastAdminMessage(adminMessage);
 
     const customerSms = phone
       ? await sendBrevoSms({
@@ -122,6 +136,7 @@ export async function POST(request: Request) {
       order,
       remainingStock: updatedProducts.find((item) => item.id === product.id)?.stock ?? product.stock,
       sms: { customer: customerSms },
+      adminBroadcast,
       message: 'Order submitted successfully.',
     });
   } catch (error: unknown) {

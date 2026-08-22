@@ -60,6 +60,9 @@ export default function Navbar() {
             <Link href="/products" className="btn-primary text-xs !py-2 !px-4 flex items-center gap-1.5 shadow-md">
               <ShoppingBag className="h-4 w-4 text-amber-300" /> Order Chicks
             </Link>
+            <Link href="/dashboard#install" className="text-xs font-black text-emerald-950 bg-emerald-100 px-3 py-1.5 rounded-full hover:bg-emerald-200 transition-colors shadow-sm border border-emerald-300">
+              Install App
+            </Link>
             <Link href="/admin" className="text-xs font-black text-emerald-950 bg-amber-400 px-3 py-1.5 rounded-full hover:bg-amber-300 transition-colors shadow-sm border border-amber-500">
               Admin Panel
             </Link>
@@ -98,6 +101,9 @@ export default function Navbar() {
             <div className="pt-2 flex flex-col gap-2">
               <Link href="/products" className="btn-primary inline-flex items-center gap-1.5 text-sm !py-2.5 !px-5 w-full justify-center">
                 <ShoppingBag className="h-4 w-4 text-amber-300" /> Order Chicks
+              </Link>
+              <Link href="/dashboard#install" onClick={() => setMenuOpen(false)} className="text-xs font-black text-center text-emerald-950 bg-emerald-100 py-2.5 rounded-xl hover:bg-emerald-200 border border-emerald-300">
+                Install App
               </Link>
               <Link href="/admin" className="text-xs font-black text-center text-emerald-950 bg-amber-400 py-2.5 rounded-xl hover:bg-amber-300 border border-amber-500">
                 Admin Panel

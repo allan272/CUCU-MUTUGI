@@ -299,6 +299,31 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === 'undefined') return;
 
     try {
+      if (adminPassword) {
+        const res = await fetch('/api/db', {
+          headers: { 'x-admin-password': adminPassword },
+          cache: 'no-store',
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setDB((prev) => ({
+            ...prev,
+            products: data.products || prev.products,
+            orders: data.orders || prev.orders,
+            farmers: data.farmers || prev.farmers,
+            blogPosts: data.blogPosts || prev.blogPosts,
+            stories: data.stories || prev.stories,
+            videos: data.videos || prev.videos,
+            settings: data.settings || prev.settings,
+            transactions: data.transactions || prev.transactions,
+            auditTrail: data.auditTrail || prev.auditTrail,
+            notifications: data.notifications || prev.notifications,
+          }));
+          return;
+        }
+      }
+
       const [storiesRes, notificationsRes] = await Promise.all([
         fetch('/api/stories', { cache: 'no-store' }),
         fetch('/api/notifications', { cache: 'no-store' }),
@@ -326,7 +351,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.warn('Live data refresh failed:', error);
     }
-  }, []);
+  }, [adminPassword]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
+import { useAdmin } from '@/context/AdminContext';
 import {
   DollarSign,
   TrendingUp,
@@ -57,6 +58,7 @@ const CATEGORIES = {
 };
 
 export default function CommerceTab() {
+  const { db } = useAdmin();
   const [transactions, setTransactions] = useState<Transaction[]>(DEFAULT_TRANSACTIONS);
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -471,6 +473,71 @@ export default function CommerceTab() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-5">
+          <div>
+            <h3 className="text-lg font-black text-slate-900">Website Orders</h3>
+            <p className="text-xs text-slate-500">Orders from the public shop are recorded here automatically and also flow into the ledger as income.</p>
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="rounded-2xl bg-emerald-50 px-4 py-3">
+              <div className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-700">Orders</div>
+              <div className="text-xl font-black text-emerald-900">{db.orders.length}</div>
+            </div>
+            <div className="rounded-2xl bg-amber-50 px-4 py-3">
+              <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-700">Pending</div>
+              <div className="text-xl font-black text-amber-900">{db.orders.filter((order) => order.status === 'Pending').length}</div>
+            </div>
+            <div className="rounded-2xl bg-slate-50 px-4 py-3">
+              <div className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Value</div>
+              <div className="text-xl font-black text-slate-900">
+                KES {db.orders.reduce((sum, order) => sum + order.totalKES, 0).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-emerald-100 text-left text-[11px] font-black uppercase tracking-wider text-slate-400">
+                <th className="py-3 px-2">Order ID</th>
+                <th className="py-3 px-2">Farmer</th>
+                <th className="py-3 px-2">Product</th>
+                <th className="py-3 px-2">Qty</th>
+                <th className="py-3 px-2">KES</th>
+                <th className="py-3 px-2">Status</th>
+                <th className="py-3 px-2">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {db.orders.slice(0, 6).map((order) => (
+                <tr key={order.id} className="border-b border-emerald-50 hover:bg-emerald-50/60 transition-colors">
+                  <td className="py-3 px-2 font-bold text-slate-700 whitespace-nowrap">{order.id}</td>
+                  <td className="py-3 px-2 font-medium text-slate-900">{order.farmer}</td>
+                  <td className="py-3 px-2 text-slate-600">{order.breed}</td>
+                  <td className="py-3 px-2 font-semibold">{order.qty}</td>
+                  <td className="py-3 px-2 font-black text-emerald-700 whitespace-nowrap">KES {order.totalKES.toLocaleString()}</td>
+                  <td className="py-3 px-2">
+                    <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-amber-800">
+                      {order.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 text-slate-500 whitespace-nowrap">{order.date}</td>
+                </tr>
+              ))}
+              {db.orders.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-400 font-medium">
+                    No website orders recorded yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

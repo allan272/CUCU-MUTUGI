@@ -264,7 +264,10 @@ export async function getNotifications(): Promise<AppNotification[]> {
   return db.notifications || [];
 }
 
-export async function addNotification(notification: Omit<AppNotification, 'id' | 'createdAt'>): Promise<AppNotification[]> {
+export async function addNotification(
+  notification: Omit<AppNotification, 'id' | 'createdAt'>,
+  options: { broadcast?: boolean } = {}
+): Promise<AppNotification[]> {
   const db = await getStoredDB();
   const newNotification: AppNotification = {
     ...notification,
@@ -273,13 +276,15 @@ export async function addNotification(notification: Omit<AppNotification, 'id' |
   };
   const updated = [newNotification, ...(db.notifications || [])].slice(0, 100);
   await saveStoredDB({ notifications: updated });
-  try {
-    const broadcast = `${newNotification.title}\n${newNotification.body}`.trim();
-    if (broadcast) {
-      await broadcastAdminMessage(broadcast);
+  if (options.broadcast !== false) {
+    try {
+      const broadcast = `${newNotification.title}\n${newNotification.body}`.trim();
+      if (broadcast) {
+        await broadcastAdminMessage(broadcast);
+      }
+    } catch (error) {
+      console.warn('Admin broadcast could not be queued:', error);
     }
-  } catch (error) {
-    console.warn('Admin broadcast could not be queued:', error);
   }
   return updated;
 }

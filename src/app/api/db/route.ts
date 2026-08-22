@@ -47,48 +47,49 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // 1. Try loading from MongoDB
-  try {
-    const client = await clientPromise;
-    if (client) {
-      const db = client.db(DB_NAME);
-
-      const productsColl = db.collection('products');
-      const ordersColl = db.collection('orders');
-      const farmersColl = db.collection('farmers');
-      const blogColl = db.collection('blog_posts');
-      const storiesColl = db.collection('stories');
-      const videosColl = db.collection('videos');
-      const settingsColl = db.collection('settings');
-
-      let products = await productsColl.find({}).toArray();
-      let orders = await ordersColl.find({}).toArray();
-      let farmers = await farmersColl.find({}).toArray();
-      let blogs = await blogColl.find({}).toArray();
-      let stories = await storiesColl.find({}).toArray();
-      let videos = await videosColl.find({}).toArray();
-      let settingsDoc = await settingsColl.findOne({ _id: 'site_settings' as any });
-
-      if (products.length > 0 || stories.length > 0 || orders.length > 0) {
-        return NextResponse.json({
-          products: products.map(p => formatDoc<Product>(p)),
-          orders: orders.map(o => formatDoc<Order>(o)),
-          farmers: farmers.map(f => formatDoc<Farmer>(f)),
-          blogPosts: blogs.map(b => formatDoc<BlogPost>(b)),
-          stories: stories.map(s => formatDoc<Story>(s)),
-          videos: videos.map(v => formatDoc<Video>(v)),
-          settings: formatDoc<SiteSettings>(settingsDoc) || DEFAULT_SETTINGS,
-          source: 'mongodb'
-        });
-      }
-    }
-  } catch (error: any) {
-    console.warn('MongoDB GET Error, falling back to disk JSON DB:', error?.message || error);
-  }
-
-  // 2. Fallback to Persistent Disk JSON Storage
   try {
     const diskDB = await getStoredDB();
+    try {
+      const client = await clientPromise;
+      if (client) {
+        const db = client.db(DB_NAME);
+
+        const productsColl = db.collection('products');
+        const ordersColl = db.collection('orders');
+        const farmersColl = db.collection('farmers');
+        const blogColl = db.collection('blog_posts');
+        const storiesColl = db.collection('stories');
+        const videosColl = db.collection('videos');
+        const settingsColl = db.collection('settings');
+
+        const [products, orders, farmers, blogs, stories, videos, settingsDoc] = await Promise.all([
+          productsColl.find({}).toArray(),
+          ordersColl.find({}).toArray(),
+          farmersColl.find({}).toArray(),
+          blogColl.find({}).toArray(),
+          storiesColl.find({}).toArray(),
+          videosColl.find({}).toArray(),
+          settingsColl.findOne({ _id: 'site_settings' as any }),
+        ]);
+
+        return NextResponse.json({
+          products: diskDB.products?.length ? diskDB.products : products.map(p => formatDoc<Product>(p)),
+          orders: diskDB.orders?.length ? diskDB.orders : orders.map(o => formatDoc<Order>(o)),
+          farmers: diskDB.farmers?.length ? diskDB.farmers : farmers.map(f => formatDoc<Farmer>(f)),
+          blogPosts: diskDB.blogPosts?.length ? diskDB.blogPosts : blogs.map(b => formatDoc<BlogPost>(b)),
+          stories: diskDB.stories?.length ? diskDB.stories : stories.map(s => formatDoc<Story>(s)),
+          videos: diskDB.videos?.length ? diskDB.videos : videos.map(v => formatDoc<Video>(v)),
+          settings: diskDB.settings || formatDoc<SiteSettings>(settingsDoc) || DEFAULT_SETTINGS,
+          transactions: diskDB.transactions || [],
+          auditTrail: diskDB.auditTrail || [],
+          notifications: diskDB.notifications || [],
+          source: 'local-disk',
+        });
+      }
+    } catch (error: any) {
+      console.warn('MongoDB GET merge failed, using disk JSON DB:', error?.message || error);
+    }
+
     return NextResponse.json({
       ...diskDB,
       source: 'local-disk'
@@ -158,11 +159,11 @@ export async function POST(request: Request) {
         await saveStoredDB({ products: [payload, ...(diskDB.products || [])] });
         break;
 
-      case 'updateProduct': {
-        const { id, updates } = payload;
-        const products = (diskDB.products || []).map(p => p.id === id ? { ...p, ...updates } : p);
-        await saveStoredDB({ products });
-        break;
+        case 'updateProduct': {
+          const { id, updates } = payload;
+          const products = (diskDB.products || []).map(p => p.id === id ? { ...p, ...updates } : p);
+          await saveStoredDB({ products });
+          break;
       }
 
       case 'deleteProduct': {
@@ -205,11 +206,11 @@ export async function POST(request: Request) {
         break;
       }
 
-      case 'updateOrder': {
-        const { id, updates } = payload;
-        const orders = (diskDB.orders || []).map(o => o.id === id ? { ...o, ...updates } : o);
-        await saveStoredDB({ orders });
-        break;
+        case 'updateOrder': {
+          const { id, updates } = payload;
+          const orders = (diskDB.orders || []).map(o => o.id === id ? { ...o, ...updates } : o);
+          await saveStoredDB({ orders });
+          break;
       }
 
       case 'deleteFarmer': {
@@ -235,11 +236,11 @@ export async function POST(request: Request) {
         break;
       }
 
-      case 'updateSettings': {
-        const settings = { ...(diskDB.settings || DEFAULT_SETTINGS), ...payload };
-        await saveStoredDB({ settings });
-        break;
-      }
+        case 'updateSettings': {
+          const settings = { ...(diskDB.settings || DEFAULT_SETTINGS), ...payload };
+          await saveStoredDB({ settings });
+          break;
+        }
     }
 
     // 2. Try updating MongoDB if connected
@@ -321,6 +322,87 @@ export async function POST(request: Request) {
 
           case 'deleteProduct':
             await productsColl.deleteOne({ _id: payload.id as any });
+            break;
+
+          case 'setProducts':
+            await productsColl.deleteMany({});
+            if (Array.isArray(payload) && payload.length > 0) {
+              await productsColl.insertMany(payload.map((product: Product) => ({ ...product, _id: product.id as any })));
+            }
+            break;
+
+          case 'setOrders':
+            await ordersColl.deleteMany({});
+            if (Array.isArray(payload) && payload.length > 0) {
+              await ordersColl.insertMany(payload.map((order: Order) => ({ ...order, _id: order.id as any })));
+            }
+            break;
+
+          case 'setFarmers':
+            await farmersColl.deleteMany({});
+            if (Array.isArray(payload) && payload.length > 0) {
+              await farmersColl.insertMany(payload.map((farmer: Farmer) => ({ ...farmer, _id: farmer.id as any })));
+            }
+            break;
+
+          case 'setBlogPosts':
+            await blogColl.deleteMany({});
+            if (Array.isArray(payload) && payload.length > 0) {
+              await blogColl.insertMany(payload.map((post: BlogPost) => ({ ...post, _id: post.id as any })));
+            }
+            break;
+
+          case 'addBlogPost':
+            await blogColl.updateOne(
+              { _id: payload.id as any },
+              { $set: { ...payload, _id: payload.id as any } },
+              { upsert: true }
+            );
+            break;
+
+          case 'updateBlogPost': {
+            const { id, updates } = payload;
+            await blogColl.updateOne({ _id: id as any }, { $set: updates });
+            break;
+          }
+
+          case 'deleteBlogPost':
+            await blogColl.deleteOne({ _id: payload.id as any });
+            break;
+
+          case 'setVideos':
+            await videosColl.deleteMany({});
+            if (Array.isArray(payload) && payload.length > 0) {
+              await videosColl.insertMany(payload.map((video: Video) => ({ ...video, _id: video.id as any })));
+            }
+            break;
+
+          case 'updateVideo': {
+            const { id, updates } = payload;
+            await videosColl.updateOne({ _id: id as any }, { $set: updates });
+            break;
+          }
+
+          case 'deleteVideo':
+            await videosColl.deleteOne({ _id: payload.id as any });
+            break;
+
+          case 'updateOrder': {
+            const { id, updates } = payload;
+            await ordersColl.updateOne({ _id: id as any }, { $set: updates });
+            break;
+          }
+
+          case 'deleteFarmer':
+            await farmersColl.deleteOne({ _id: payload.id as any });
+            break;
+
+          case 'updateSettings':
+            await settingsColl.updateOne(
+              { _id: 'site_settings' as any },
+              { $set: { ...payload, _id: 'site_settings' as any } },
+              { upsert: true }
+            );
             break;
         }
       }
