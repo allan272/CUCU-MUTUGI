@@ -295,6 +295,68 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const refreshLiveData = useCallback(async () => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      const [storiesRes, notificationsRes] = await Promise.all([
+        fetch('/api/stories', { cache: 'no-store' }),
+        fetch('/api/notifications', { cache: 'no-store' }),
+      ]);
+
+      const updates: Partial<DBTable> = {};
+
+      if (storiesRes.ok) {
+        const storiesData = await storiesRes.json();
+        if (Array.isArray(storiesData.stories)) {
+          updates.stories = storiesData.stories;
+        }
+      }
+
+      if (notificationsRes.ok) {
+        const notificationsData = await notificationsRes.json();
+        if (Array.isArray(notificationsData.notifications)) {
+          updates.notifications = notificationsData.notifications;
+        }
+      }
+
+      if (Object.keys(updates).length) {
+        setDB((prev) => ({ ...prev, ...updates }));
+      }
+    } catch (error) {
+      console.warn('Live data refresh failed:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    refreshLiveData();
+
+    const timer = window.setInterval(() => {
+      refreshLiveData();
+    }, 10000);
+
+    const handleFocus = () => {
+      refreshLiveData();
+    };
+
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        refreshLiveData();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [refreshLiveData]);
+
   const syncToMongoDB = async (action: string, payload: any) => {
     if (!adminPassword) return;
     try {

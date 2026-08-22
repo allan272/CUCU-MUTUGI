@@ -38,7 +38,7 @@ export default function AppNotifications() {
               // Browser alert for installed users who opted in
               new Notification(item.title, {
                 body: item.body,
-                icon: '/icon.png',
+                icon: '/cucumutugi-logo.png',
                 tag: item.id,
               });
             });
@@ -54,10 +54,22 @@ export default function AppNotifications() {
     };
 
     syncNotifications();
-    const timer = window.setInterval(syncNotifications, 45000);
+    const timer = window.setInterval(syncNotifications, 10000);
+    const onFocus = () => {
+      syncNotifications().catch(() => {});
+    };
+    const onVisibilityChange = () => {
+      if (!document.hidden) {
+        syncNotifications().catch(() => {});
+      }
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     return () => {
       mounted = false;
       window.clearInterval(timer);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, [permission]);
 

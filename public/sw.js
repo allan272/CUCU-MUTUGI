@@ -1,15 +1,15 @@
 // Cucu Mutugi Poultry PWA Service Worker
 // Version bump here forces all installed apps to receive an update notification
-const CACHE_VERSION = 'cucu-mutugi-v4';
+const CACHE_VERSION = 'cucu-mutugi-v5';
 const CACHE_NAME = CACHE_VERSION;
 
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/logo.png',
-  '/icon-192x192.png',
-  '/icon-512x512.png',
-  '/apple-touch-icon.png',
+  '/cucumutugi-logo.png',
+  '/cucumutugi-logo-192.png',
+  '/cucumutugi-logo-512.png',
+  '/cucumutugi-apple-touch-icon.png',
 ];
 
 // ── Install: pre-cache core shell ──────────────────────────────────────────
@@ -111,8 +111,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'Cucu Mutugi Poultry', {
       body: data.body || 'You have a new notification.',
-      icon: '/logo.png',
-      badge: '/icon-192x192.png',
+      icon: '/cucumutugi-logo.png',
+      badge: '/cucumutugi-logo-192.png',
       data: { url: data.url || '/' },
     })
   );

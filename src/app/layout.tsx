@@ -17,11 +17,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/icon.png', type: 'image/png' },
-      { url: '/favicon.ico' }
+      { url: '/cucumutugi-logo.png', type: 'image/png' },
+      { url: '/cucumutugi-favicon.ico' }
     ],
-    shortcut: '/icon.png',
-    apple: '/apple-icon.png',
+    shortcut: '/cucumutugi-logo.png',
+    apple: '/cucumutugi-apple-touch-icon.png',
   },
 };
 
@@ -34,8 +34,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/icon.png" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <link rel="icon" href="/cucumutugi-logo.png" />
+        <link rel="apple-touch-icon" href="/cucumutugi-apple-touch-icon.png" />
         <meta name="theme-color" content="#1A6B2A" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
