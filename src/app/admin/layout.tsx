@@ -5,7 +5,7 @@ import AdminTabContent from '@/components/admin/AdminTabContent';
 import AdminAIAssistant from '@/components/admin/AdminAIAssistant';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Lock, Eye, EyeOff, Loader2, LogOut } from 'lucide-react';
+import { Lock, Loader2, LogOut } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return <AdminUI />;
@@ -14,7 +14,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 function AdminUI() {
   const { isAuthenticated, login, logout, authError, dbSource } = useAdmin();
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
@@ -69,9 +68,6 @@ function AdminUI() {
                 <label className="block text-white/80 text-xs font-bold uppercase tracking-wider" htmlFor="admin-password">
                   Administrative Password
                 </label>
-                <span className="text-[11px] text-amber-300 font-bold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
-                  Default: admin87654321
-                </span>
               </div>
               <div className="relative flex items-center">
                 <span className="absolute left-3.5 text-white/40 pointer-events-none">
@@ -80,25 +76,12 @@ function AdminUI() {
                 <input
                   id="admin-password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter admin password (admin87654321)"
-                  className="w-full text-white bg-white/10 border border-white/20 rounded-xl pl-10 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all placeholder:text-white/40 font-medium"
+                  placeholder="Enter admin password"
+                  className="w-full text-white bg-white/10 border border-white/20 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all placeholder:text-white/40 font-medium"
                 />
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowPassword(prev => !prev);
-                  }}
-                  className="absolute right-3 p-1.5 text-amber-300 hover:text-white rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer z-20 flex items-center justify-center"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4 text-amber-400" />}
-                </button>
               </div>
             </div>
 

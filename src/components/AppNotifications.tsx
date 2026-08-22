@@ -38,7 +38,7 @@ export default function AppNotifications() {
               // Browser alert for installed users who opted in
               new Notification(item.title, {
                 body: item.body,
-                icon: '/logo.png',
+                icon: '/icon.png',
                 tag: item.id,
               });
             });

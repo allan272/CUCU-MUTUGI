@@ -105,6 +105,17 @@ export interface SiteSettings {
   footerTagline: string;
   heroStats: { val: string; label: string }[];
   showWhatsappButton: boolean;
+  departments: DepartmentSection[];
+}
+
+export interface DepartmentSection {
+  id: string;
+  name: string;
+  owner: string;
+  purpose: string;
+  status: 'Active' | 'Needs Attention';
+  metrics: string[];
+  accent: string;
 }
 
 export interface Transaction {
@@ -353,6 +364,21 @@ export const DEFAULT_ACTIVITIES: CustomerActivity[] = [
   { id: 'act-4', type: 'button_click', buttonName: 'WhatsApp Inquiry Button', page: '/', timestamp: '2026-06-10T11:22:00Z' },
   { id: 'act-5', type: 'search', query: 'kienyeji chicken feeding guide', page: '/resources', timestamp: '2026-06-10T12:00:00Z' },
   { id: 'act-6', type: 'email_captured', email: 'grace.achieng254@yahoo.com', page: '/resources/feeding-programme', metadata: { source: 'Newsletter' }, timestamp: '2026-06-09T15:30:00Z' },
+];
+
+export const DEFAULT_DEPARTMENTS: DepartmentSection[] = [
+  { id: 'hatchery', name: 'Hatchery', owner: 'Breeding Supervisor', purpose: 'Manages incubation, chick quality, and dispatch readiness.', status: 'Active', metrics: ['Incubation schedule', 'Hatch rate', 'Day-old readiness'], accent: 'from-amber-500 to-orange-500' },
+  { id: 'brooding', name: 'Brooding', owner: 'Farm Care Lead', purpose: 'Handles temperatures, feed starts, and early chick survival.', status: 'Active', metrics: ['Temp control', 'Brooder hygiene', 'Week-1 care'], accent: 'from-emerald-500 to-teal-500' },
+  { id: 'feed-nutrition', name: 'Feed & Nutrition', owner: 'Nutrition Officer', purpose: 'Tracks feed stock, formulation, and growth support.', status: 'Active', metrics: ['Feed stock', 'Rations', 'Consumption trends'], accent: 'from-blue-500 to-cyan-500' },
+  { id: 'health-vaccination', name: 'Health & Vaccination', owner: 'Vet Desk', purpose: 'Manages vaccine schedules, disease control, and treatment notes.', status: 'Active', metrics: ['Vaccination calendar', 'Biosecurity', 'Vet alerts'], accent: 'from-rose-500 to-pink-500' },
+  { id: 'sales-orders', name: 'Sales & Orders', owner: 'Sales Manager', purpose: 'Receives customer orders and confirms pricing, quantity, and delivery.', status: 'Active', metrics: ['Orders today', 'Pending confirmations', 'Revenue'], accent: 'from-amber-500 to-yellow-500' },
+  { id: 'delivery-logistics', name: 'Delivery & Logistics', owner: 'Dispatch Officer', purpose: 'Coordinates routes, delivery timing, and customer handover.', status: 'Active', metrics: ['Route planning', 'Dispatch list', 'Delivery confirmations'], accent: 'from-slate-600 to-slate-800' },
+  { id: 'customer-care', name: 'Customer Care', owner: 'Support Desk', purpose: 'Handles calls, WhatsApp, SMS follow-ups, and response speed.', status: 'Needs Attention', metrics: ['Inbox response', 'Pending callbacks', 'Issue resolution'], accent: 'from-violet-500 to-indigo-500' },
+  { id: 'finance-records', name: 'Finance & Records', owner: 'Accounts', purpose: 'Tracks ledger entries, margins, expenses, and receipts.', status: 'Active', metrics: ['Income', 'Expenses', 'Profit tracking'], accent: 'from-emerald-600 to-lime-500' },
+  { id: 'community-training', name: 'Community & Training', owner: 'Community Manager', purpose: 'Verifies members, posts training updates, and moderates the lounge.', status: 'Active', metrics: ['Verified farmers', 'Announcements', 'Support threads'], accent: 'from-teal-500 to-cyan-500' },
+  { id: 'content-media', name: 'Content & Media', owner: 'Content Lead', purpose: 'Publishes stories, videos, and website updates.', status: 'Active', metrics: ['Stories', 'Videos', 'Page updates'], accent: 'from-amber-500 to-rose-500' },
+  { id: 'office-admin', name: 'Office & Admin', owner: 'Administrator', purpose: 'Coordinates approvals, site settings, and workflow handoffs.', status: 'Active', metrics: ['Approvals', 'Site settings', 'Internal notes'], accent: 'from-slate-700 to-slate-900' },
+  { id: 'digital-store', name: 'Digital Store', owner: 'Web Team', purpose: 'Keeps the public product pages, install prompt, and online experience polished.', status: 'Active', metrics: ['Live products', 'Install prompt', 'Customer journey'], accent: 'from-orange-500 to-amber-500' },
 ];
 
 export const DEFAULT_PRODUCTS: Product[] = [
@@ -691,5 +717,6 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     { val: 'FREE', label: 'Delivery' },
   ],
   showWhatsappButton: true,
+  departments: DEFAULT_DEPARTMENTS,
 };
 

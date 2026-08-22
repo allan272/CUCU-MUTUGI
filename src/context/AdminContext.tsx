@@ -23,6 +23,13 @@ export type { Product, Order, Farmer, BlogPost, Story, Video, SiteSettings, DBTa
 
 // ─── Loader ───────────────────────────────────────────────────────────────────
 async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongodb' | 'local' }> {
+  const normalizeSettings = (settings?: Partial<DBTable['settings']> | null): DBTable['settings'] => ({
+    ...DEFAULT_SETTINGS,
+    ...(settings || {}),
+    heroStats: settings?.heroStats?.length ? settings.heroStats : DEFAULT_SETTINGS.heroStats,
+    departments: settings?.departments?.length ? settings.departments : DEFAULT_SETTINGS.departments,
+  });
+
   if (typeof window === 'undefined') {
     return {
         data: {
@@ -32,7 +39,7 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
           blogPosts: DEFAULT_BLOGS,
           stories: DEFAULT_STORIES,
           videos: DEFAULT_VIDEOS,
-          settings: DEFAULT_SETTINGS,
+          settings: normalizeSettings(DEFAULT_SETTINGS),
           transactions: [],
           auditTrail: [],
           notifications: [],
@@ -61,7 +68,7 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
               blogPosts: data.blogPosts || DEFAULT_BLOGS,
               stories: data.stories || DEFAULT_STORIES,
               videos: data.videos || DEFAULT_VIDEOS,
-              settings: data.settings || DEFAULT_SETTINGS,
+              settings: normalizeSettings(data.settings),
               transactions: data.transactions || [],
               auditTrail: data.auditTrail || [],
               notifications: data.notifications || [],
@@ -92,7 +99,7 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
           blogPosts: parsed.blogPosts || DEFAULT_BLOGS,
           stories: parsed.stories || DEFAULT_STORIES,
           videos: parsed.videos || DEFAULT_VIDEOS,
-          settings: parsed.settings || DEFAULT_SETTINGS,
+          settings: normalizeSettings(parsed.settings),
           transactions: parsed.transactions || [],
           auditTrail: parsed.auditTrail || [],
           notifications: parsed.notifications || [],

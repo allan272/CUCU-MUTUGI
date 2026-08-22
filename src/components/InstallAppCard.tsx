@@ -56,9 +56,9 @@ export default function InstallAppCard() {
             <div className="inline-flex items-center gap-2 bg-amber-400 text-slate-950 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-[0.24em] mb-3">
               <Sparkles className="h-3.5 w-3.5" /> Mobile App
             </div>
-            <h3 className="text-2xl font-black">Install the farm app</h3>
+            <h3 className="text-2xl font-black">Install cucumutugi</h3>
             <p className="text-sm text-emerald-100 mt-2 max-w-md">
-              Add CUCU MUTUGI POULTRY to your phone for faster access, offline-friendly opening, and one-tap return visits.
+              Add cucumutugi to your phone for faster access, offline-friendly opening, and one-tap return visits.
             </p>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center border border-white/10">
@@ -74,7 +74,7 @@ export default function InstallAppCard() {
             className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-400 px-5 py-3 font-black text-slate-950 transition-colors hover:bg-amber-300 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Download className="h-4 w-4" />
-            {installing ? 'Opening installer...' : canInstall ? 'Install App' : 'Install not available yet'}
+            {installing ? 'Opening installer...' : canInstall ? 'Install cucumutugi' : 'Install not available yet'}
           </button>
           <a
             href="/manifest.json"

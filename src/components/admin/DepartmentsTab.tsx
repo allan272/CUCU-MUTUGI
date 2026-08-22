@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAdmin } from '@/context/AdminContext';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -15,72 +15,107 @@ import {
   Smartphone,
   Users,
   Package,
+  Save,
+  RotateCcw,
 } from 'lucide-react';
+import { DEFAULT_DEPARTMENTS, type DepartmentSection } from '@/lib/seeds';
 
-type Department = {
-  name: string;
-  icon: LucideIcon;
-  owner: string;
-  purpose: string;
-  status: 'Active' | 'Needs Attention';
-  metrics: string[];
-  accent: string;
+const DEPARTMENT_ICONS: Record<string, LucideIcon> = {
+  hatchery: Egg,
+  brooding: HeartPulse,
+  'feed-nutrition': Package,
+  'health-vaccination': ShieldCheck,
+  'sales-orders': ShoppingCart,
+  'delivery-logistics': Truck,
+  'customer-care': Smartphone,
+  'finance-records': Calculator,
+  'community-training': Users,
+  'content-media': FileText,
+  'office-admin': Workflow,
+  'digital-store': Megaphone,
 };
 
-const DEPARTMENTS: Department[] = [
-  { name: 'Hatchery', icon: Egg, owner: 'Breeding Supervisor', purpose: 'Manages incubation, chick quality, and dispatch readiness.', status: 'Active', metrics: ['Incubation schedule', 'Hatch rate', 'Day-old readiness'], accent: 'from-amber-500 to-orange-500' },
-  { name: 'Brooding', icon: HeartPulse, owner: 'Farm Care Lead', purpose: 'Handles temperatures, feed starts, and early chick survival.', status: 'Active', metrics: ['Temp control', 'Brooder hygiene', 'Week-1 care'], accent: 'from-emerald-500 to-teal-500' },
-  { name: 'Feed & Nutrition', icon: Package, owner: 'Nutrition Officer', purpose: 'Tracks feed stock, formulation, and growth support.', status: 'Active', metrics: ['Feed stock', 'Rations', 'Consumption trends'], accent: 'from-blue-500 to-cyan-500' },
-  { name: 'Health & Vaccination', icon: ShieldCheck, owner: 'Vet Desk', purpose: 'Manages vaccine schedules, disease control, and treatment notes.', status: 'Active', metrics: ['Vaccination calendar', 'Biosecurity', 'Vet alerts'], accent: 'from-rose-500 to-pink-500' },
-  { name: 'Sales & Orders', icon: ShoppingCart, owner: 'Sales Manager', purpose: 'Receives customer orders and confirms pricing, quantity, and delivery.', status: 'Active', metrics: ['Orders today', 'Pending confirmations', 'Revenue'], accent: 'from-amber-500 to-yellow-500' },
-  { name: 'Delivery & Logistics', icon: Truck, owner: 'Dispatch Officer', purpose: 'Coordinates routes, delivery timing, and customer handover.', status: 'Active', metrics: ['Route planning', 'Dispatch list', 'Delivery confirmations'], accent: 'from-slate-600 to-slate-800' },
-  { name: 'Customer Care', icon: Smartphone, owner: 'Support Desk', purpose: 'Handles calls, WhatsApp, SMS follow-ups, and response speed.', status: 'Needs Attention', metrics: ['Inbox response', 'Pending callbacks', 'Issue resolution'], accent: 'from-violet-500 to-indigo-500' },
-  { name: 'Finance & Records', icon: Calculator, owner: 'Accounts', purpose: 'Tracks ledger entries, margins, expenses, and receipts.', status: 'Active', metrics: ['Income', 'Expenses', 'Profit tracking'], accent: 'from-emerald-600 to-lime-500' },
-  { name: 'Community & Training', icon: Users, owner: 'Community Manager', purpose: 'Verifies members, posts training updates, and moderates the lounge.', status: 'Active', metrics: ['Verified farmers', 'Announcements', 'Support threads'], accent: 'from-teal-500 to-cyan-500' },
-  { name: 'Content & Media', icon: FileText, owner: 'Content Lead', purpose: 'Publishes stories, videos, and website updates.', status: 'Active', metrics: ['Stories', 'Videos', 'Page updates'], accent: 'from-amber-500 to-rose-500' },
-  { name: 'Office & Admin', icon: Workflow, owner: 'Administrator', purpose: 'Coordinates approvals, site settings, and workflow handoffs.', status: 'Active', metrics: ['Approvals', 'Site settings', 'Internal notes'], accent: 'from-slate-700 to-slate-900' },
-  { name: 'Digital Store', icon: Megaphone, owner: 'Web Team', purpose: 'Keeps the public product pages, install prompt, and online experience polished.', status: 'Active', metrics: ['Live products', 'Install prompt', 'Customer journey'], accent: 'from-orange-500 to-amber-500' },
-];
+function cloneDepartment(department: DepartmentSection): DepartmentSection {
+  return {
+    ...department,
+    metrics: [...department.metrics],
+  };
+}
 
 export default function DepartmentsTab() {
-  const { db } = useAdmin();
+  const { db, updateSettings } = useAdmin();
+  const departmentsFromSettings = db.settings.departments?.length ? db.settings.departments : DEFAULT_DEPARTMENTS;
+  const [departments, setDepartments] = useState<DepartmentSection[]>(departmentsFromSettings.map(cloneDepartment));
+
+  useEffect(() => {
+    setDepartments(departmentsFromSettings.map(cloneDepartment));
+  }, [db.settings.departments]);
 
   const stats = useMemo(() => {
-    const totalOrders = db.orders.length;
-    const activeProducts = db.products.filter((product) => product.active !== false).length;
-    const verifiedFarmers = db.farmers.length;
-
     return [
-      { label: 'Orders', value: totalOrders },
-      { label: 'Active Products', value: activeProducts },
-      { label: 'Farmers', value: verifiedFarmers },
+      { label: 'Orders', value: db.orders.length },
+      { label: 'Active Products', value: db.products.filter((product) => product.active !== false).length },
+      { label: 'Farmers', value: db.farmers.length },
     ];
   }, [db.orders.length, db.products, db.farmers.length]);
 
+  const persistDepartments = (nextDepartments: DepartmentSection[]) => {
+    setDepartments(nextDepartments);
+    updateSettings({ departments: nextDepartments });
+  };
+
+  const updateDepartment = (id: string, patch: Partial<DepartmentSection>) => {
+    const nextDepartments = departments.map((department) => (
+      department.id === id ? { ...department, ...patch } : department
+    ));
+    setDepartments(nextDepartments);
+  };
+
+  const saveDepartment = (id: string) => {
+    const nextDepartments = departments.map((department) => (
+      department.id === id ? cloneDepartment(department) : department
+    ));
+    persistDepartments(nextDepartments);
+  };
+
+  const resetDepartments = () => {
+    persistDepartments(DEFAULT_DEPARTMENTS.map(cloneDepartment));
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h2 className="text-2xl font-black text-primary">Farm Departments</h2>
           <p className="text-gray-500 text-sm max-w-2xl">
-            Organize the operation like a real poultry business, with every department having a clear job and handoff.
+            Each department can edit its own section, save its details, and keep the farm workflow organized from one dashboard.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           {stats.map((item) => (
             <div key={item.label} className="bg-white rounded-2xl border border-blue-100 px-4 py-3 shadow-sm text-center min-w-24">
               <div className="text-xl font-black text-primary">{item.value}</div>
               <div className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">{item.label}</div>
             </div>
           ))}
+          <button
+            type="button"
+            onClick={resetDepartments}
+            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Reset Defaults
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {DEPARTMENTS.map((department) => {
-          const Icon = department.icon;
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+        {departments.map((department) => {
+          const Icon = DEPARTMENT_ICONS[department.id] || Users;
+          const metricsText = department.metrics.join('\n');
+
           return (
-            <div key={department.name} className="bg-white rounded-3xl border border-blue-100 shadow-sm overflow-hidden">
+            <div key={department.id} className="rounded-3xl border border-blue-100 bg-white shadow-sm overflow-hidden">
               <div className={`p-5 bg-gradient-to-r ${department.accent} text-white`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
@@ -99,8 +134,71 @@ export default function DepartmentsTab() {
                   </span>
                 </div>
               </div>
+
               <div className="p-5 space-y-4">
-                <p className="text-sm text-slate-600">{department.purpose}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Department Name</label>
+                    <input
+                      value={department.name}
+                      onChange={(e) => updateDepartment(department.id, { name: e.target.value })}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Owner</label>
+                    <input
+                      value={department.owner}
+                      onChange={(e) => updateDepartment(department.id, { owner: e.target.value })}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Purpose</label>
+                  <textarea
+                    rows={3}
+                    value={department.purpose}
+                    onChange={(e) => updateDepartment(department.id, { purpose: e.target.value })}
+                    className="mt-1 w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Status</label>
+                    <select
+                      value={department.status}
+                      onChange={(e) => updateDepartment(department.id, { status: e.target.value as DepartmentSection['status'] })}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Needs Attention">Needs Attention</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Accent Class</label>
+                    <input
+                      value={department.accent}
+                      onChange={(e) => updateDepartment(department.id, { accent: e.target.value })}
+                      className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+                      placeholder="from-emerald-500 to-teal-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-black uppercase tracking-wider text-slate-500">Metrics</label>
+                  <textarea
+                    rows={4}
+                    value={metricsText}
+                    onChange={(e) => updateDepartment(department.id, { metrics: e.target.value.split('\n').map((item) => item.trim()).filter(Boolean) })}
+                    className="mt-1 w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+                    placeholder="One metric per line"
+                  />
+                </div>
+
                 <div className="flex flex-wrap gap-2">
                   {department.metrics.map((metric) => (
                     <span key={metric} className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-700">
@@ -108,6 +206,15 @@ export default function DepartmentsTab() {
                     </span>
                   ))}
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => saveDepartment(department.id)}
+                  className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-800"
+                >
+                  <Save className="h-4 w-4" />
+                  Save Section
+                </button>
               </div>
             </div>
           );

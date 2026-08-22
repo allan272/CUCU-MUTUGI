@@ -1,6 +1,6 @@
 {
-  "name": "Cucu Mutugi Poultry",
-  "short_name": "CMP App",
+  "name": "cucumutugi",
+  "short_name": "cucumutugi",
   "description": "Cucu Mutugi Poultry Farmer Dashboard and Marketplace",
   "start_url": "/",
   "display": "standalone",

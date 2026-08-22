@@ -36,8 +36,8 @@ import {
   Eye,
   Play,
   Printer,
-  Download,
   FileDown,
+  FileSpreadsheet,
 } from 'lucide-react';
 
 // Image compression helper to support large uploads and restrict size stored in DB
@@ -1386,21 +1386,6 @@ function escapeHtml(value: string) {
     .replaceAll("'", '&#39;');
 }
 
-function toCsv(rows: Record<string, unknown>[]) {
-  if (!rows.length) return '';
-  const headers = Array.from(
-    rows.reduce((set, row) => {
-      Object.keys(row).forEach((key) => set.add(key));
-      return set;
-    }, new Set<string>())
-  );
-  const serialize = (value: unknown) => {
-    const text = value == null ? '' : typeof value === 'string' ? value : JSON.stringify(value);
-    return `"${String(text).replaceAll('"', '""')}"`;
-  };
-  return [headers.join(','), ...rows.map((row) => headers.map((header) => serialize(row[header])).join(','))].join('\n');
-}
-
 function buildAdminReportData(db: ReturnType<typeof useAdmin>['db'], activeTab: string) {
   const transactions = db.transactions || [];
   const activities = db.activities || [];
@@ -1424,20 +1409,7 @@ function buildAdminReportData(db: ReturnType<typeof useAdmin>['db'], activeTab: 
       auditTrail: auditTrail.length,
       customerActivities: activities.length,
     },
-    departments: [
-      'Hatchery',
-      'Brooding',
-      'Feed & Nutrition',
-      'Health & Vaccination',
-      'Sales & Orders',
-      'Delivery & Logistics',
-      'Customer Care',
-      'Finance & Records',
-      'Community & Training',
-      'Content & Media',
-      'Office & Admin',
-      'Digital Store',
-    ],
+    departments: db.settings.departments || [],
     commerce: {
       income,
       expense,
@@ -1457,33 +1429,40 @@ function buildAdminReportData(db: ReturnType<typeof useAdmin>['db'], activeTab: 
   };
 }
 
-function buildPrintableHtml(title: string, report: ReturnType<typeof buildAdminReportData>) {
-  const sections = [
-    { title: 'Overview', items: Object.entries(report.overview).map(([k, v]) => `<li><strong>${escapeHtml(k)}</strong>: ${escapeHtml(String(v))}</li>`).join('') },
-    { title: 'Departments', items: report.departments.map((item) => `<li>${escapeHtml(item)}</li>`).join('') },
-    { title: 'Commerce', items: [
-      `<li><strong>Income</strong>: KES ${report.commerce.income.toLocaleString()}</li>`,
-      `<li><strong>Expense</strong>: KES ${report.commerce.expense.toLocaleString()}</li>`,
-      `<li><strong>Profit</strong>: KES ${report.commerce.profit.toLocaleString()}</li>`,
-      `<li><strong>Margin</strong>: ${report.commerce.margin.toFixed(1)}%</li>`,
-    ].join('') },
-    { title: 'Notifications', items: report.notifications.slice(0, 10).map((n) => `<li><strong>${escapeHtml(n.title)}</strong> - ${escapeHtml(n.body)}</li>`).join('') || '<li>No notifications recorded.</li>' },
-    { title: 'Audit Trail', items: report.auditTrail.slice(0, 10).map((a) => `<li><strong>${escapeHtml(a.entity)}</strong> ${escapeHtml(a.action)} - ${escapeHtml(a.summary)}</li>`).join('') || '<li>No audit entries recorded.</li>' },
-  ];
+type AdminReport = ReturnType<typeof buildAdminReportData>;
+
+function formatReportValue(value: unknown): string {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (Array.isArray(value)) return value.map((item) => formatReportValue(item)).join(', ');
+  return JSON.stringify(value);
+}
+
+function buildPrintableHtml(title: string, report: AdminReport) {
+  const tableRows = (headers: string[], rows: string[][]) => `
+    <table>
+      <thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}
+      </tbody>
+    </table>`;
 
   return `<!doctype html>
   <html>
     <head>
       <title>${escapeHtml(title)}</title>
       <style>
-        body { font-family: Arial, sans-serif; margin: 32px; color: #0f172a; }
+        body { font-family: Arial, sans-serif; margin: 28px; color: #0f172a; }
         h1 { font-size: 28px; margin: 0 0 8px; }
-        h2 { font-size: 18px; margin: 24px 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
-        p, li { font-size: 13px; line-height: 1.5; }
+        h2 { font-size: 18px; margin: 24px 0 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
+        p, li, td, th { font-size: 12px; line-height: 1.5; }
         .meta { color: #64748b; margin-bottom: 18px; }
-        ul { margin: 0; padding-left: 18px; }
-        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-        .card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 12px; break-inside: avoid; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px; vertical-align: top; text-align: left; }
+        th { background: #f8fafc; }
         .muted { color: #475569; }
         @media print { body { margin: 18px; } }
       </style>
@@ -1492,11 +1471,317 @@ function buildPrintableHtml(title: string, report: ReturnType<typeof buildAdminR
       <h1>${escapeHtml(title)}</h1>
       <p class="meta">Generated ${new Date(report.generatedAt).toLocaleString()} | Section: ${escapeHtml(report.activeTab)}</p>
       <div class="grid">
-        ${sections.map((section) => `<div class="card"><h2>${escapeHtml(section.title)}</h2><ul>${section.items}</ul></div>`).join('')}
+        <div class="card">
+          <h2>Overview</h2>
+          ${tableRows(
+            ['Metric', 'Value'],
+            Object.entries(report.overview).map(([key, value]) => [key, formatReportValue(value)])
+          )}
+        </div>
+        <div class="card">
+          <h2>Commerce</h2>
+          ${tableRows(
+            ['Metric', 'Value'],
+            [
+              ['Income', `KES ${report.commerce.income.toLocaleString()}`],
+              ['Expense', `KES ${report.commerce.expense.toLocaleString()}`],
+              ['Profit', `KES ${report.commerce.profit.toLocaleString()}`],
+              ['Margin', `${report.commerce.margin.toFixed(1)}%`],
+            ]
+          )}
+        </div>
+        <div class="card">
+          <h2>Departments</h2>
+          ${tableRows(
+            ['Name', 'Owner', 'Status', 'Purpose', 'Metrics'],
+            report.departments.map((department) => [
+              department.name,
+              department.owner,
+              department.status,
+              department.purpose,
+              department.metrics.join(', '),
+            ])
+          )}
+        </div>
+        <div class="card">
+          <h2>Orders</h2>
+          ${tableRows(
+            ['ID', 'Farmer', 'Breed', 'Qty', 'KES', 'Status'],
+            report.orders.slice(0, 10).map((order) => [
+              order.id,
+              order.farmer,
+              order.breed,
+              String(order.qty),
+              order.totalKES.toLocaleString(),
+              order.status,
+            ])
+          )}
+        </div>
+        <div class="card">
+          <h2>Products</h2>
+          ${tableRows(
+            ['Name', 'Category', 'Price', 'Stock', 'Active'],
+            report.products.slice(0, 10).map((product) => [
+              product.name,
+              product.category,
+              `KES ${product.price.toLocaleString()}`,
+              String(product.stock),
+              String(product.active),
+            ])
+          )}
+        </div>
+        <div class="card">
+          <h2>Farmers</h2>
+          ${tableRows(
+            ['Name', 'Phone', 'County', 'Flocks', 'Orders'],
+            report.farmers.slice(0, 10).map((farmer) => [
+              farmer.name,
+              farmer.phone,
+              farmer.county,
+              String(farmer.flocks),
+              String(farmer.totalOrders),
+            ])
+          )}
+        </div>
+        <div class="card">
+          <h2>Notifications</h2>
+          ${tableRows(
+            ['Title', 'Body'],
+            (report.notifications.slice(0, 8).map((item) => [item.title, item.body]).length
+              ? report.notifications.slice(0, 8).map((item) => [item.title, item.body])
+              : [['No notifications recorded.', '']])
+          )}
+        </div>
+        <div class="card">
+          <h2>Audit Trail</h2>
+          ${tableRows(
+            ['Entity', 'Action', 'Summary'],
+            (report.auditTrail.slice(0, 8).map((item) => [item.entity, item.action, item.summary]).length
+              ? report.auditTrail.slice(0, 8).map((item) => [item.entity, item.action, item.summary])
+              : [['No audit entries recorded.', '', '']])
+          )}
+        </div>
       </div>
       <div class="card">
         <h2>Recent Items</h2>
         <p class="muted">Orders: ${report.orders.length} | Products: ${report.products.length} | Farmers: ${report.farmers.length} | Stories: ${report.stories.length} | Videos: ${report.videos.length} | Activity logs: ${report.activities.length}</p>
+      </div>
+    </body>
+  </html>`;
+}
+
+function escapePdfText(value: string) {
+  return value
+    .replaceAll('\\', '\\\\')
+    .replaceAll('(', '\\(')
+    .replaceAll(')', '\\)')
+    .replace(/[^\x20-\x7E]/g, ' ');
+}
+
+function wrapPdfText(value: string, maxLength = 92) {
+  const words = value.split(/\s+/).filter(Boolean);
+  if (!words.length) return [''];
+  const lines: string[] = [];
+  let current = words[0];
+  for (let i = 1; i < words.length; i += 1) {
+    const next = words[i];
+    if ((current + ' ' + next).length <= maxLength) {
+      current += ` ${next}`;
+    } else {
+      lines.push(current);
+      current = next;
+    }
+  }
+  lines.push(current);
+  return lines;
+}
+
+function buildPdfLines(report: AdminReport) {
+  const lines: string[] = [
+    'Cucu Mutugi Admin Report',
+    `Generated: ${new Date(report.generatedAt).toLocaleString()}`,
+    `Section: ${report.activeTab}`,
+    '',
+    'Overview',
+  ];
+
+  Object.entries(report.overview).forEach(([key, value]) => {
+    lines.push(`${key}: ${formatReportValue(value)}`);
+  });
+
+  lines.push('', 'Commerce');
+  lines.push(`Income: KES ${report.commerce.income.toLocaleString()}`);
+  lines.push(`Expense: KES ${report.commerce.expense.toLocaleString()}`);
+  lines.push(`Profit: KES ${report.commerce.profit.toLocaleString()}`);
+  lines.push(`Margin: ${report.commerce.margin.toFixed(1)}%`);
+
+  lines.push('', 'Departments');
+  report.departments.forEach((department) => {
+    lines.push(`${department.name} - ${department.owner} - ${department.status}`);
+    wrapPdfText(department.purpose).forEach((line) => lines.push(`  ${line}`));
+    lines.push(`  Metrics: ${department.metrics.join(', ')}`);
+  });
+
+  lines.push('', 'Recent Orders');
+  report.orders.slice(0, 8).forEach((order) => {
+    lines.push(`${order.id} | ${order.farmer} | ${order.breed} | ${order.qty} | KES ${order.totalKES.toLocaleString()} | ${order.status}`);
+  });
+
+  lines.push('', 'Recent Notifications');
+  report.notifications.slice(0, 6).forEach((notification) => {
+    lines.push(`${notification.title} - ${notification.body}`);
+  });
+
+  lines.push('', 'Recent Audit Trail');
+  report.auditTrail.slice(0, 6).forEach((entry) => {
+    lines.push(`${entry.entity} ${entry.action} - ${entry.summary}`);
+  });
+
+  return lines.flatMap((line) => wrapPdfText(line));
+}
+
+function createPdfBytes(lines: string[], title: string) {
+  const pageWidth = 595;
+  const pageHeight = 842;
+  const margin = 48;
+  const headerGap = 28;
+  const lineHeight = 13;
+  const usableHeight = pageHeight - margin * 2 - headerGap;
+  const linesPerPage = Math.max(1, Math.floor(usableHeight / lineHeight));
+  const pages: string[][] = [];
+
+  for (let i = 0; i < lines.length; i += linesPerPage) {
+    pages.push(lines.slice(i, i + linesPerPage));
+  }
+
+  const objectCount = 3 + pages.length * 2;
+  const objects: string[] = new Array(objectCount + 1);
+  const pageObjectIds: number[] = [];
+  const contentObjectIds: number[] = [];
+
+  objects[1] = `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj`;
+  objects[3] = `3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj`;
+
+  pages.forEach((pageLines, index) => {
+    const contentId = 4 + index;
+    const pageId = 4 + pages.length + index;
+    contentObjectIds.push(contentId);
+    pageObjectIds.push(pageId);
+
+    const streamLines = [
+      'BT',
+      '/F1 12 Tf',
+      `1 0 0 1 ${margin} ${pageHeight - margin - 10} Tm`,
+      `(${escapePdfText(title)}) Tj`,
+      '/F1 10 Tf',
+      `0 -${headerGap} Td`,
+      ...pageLines.map((line, lineIndex) => {
+        const safeLine = escapePdfText(line);
+        return lineIndex === 0 ? `(${safeLine}) Tj` : `0 -${lineHeight} Td\n(${safeLine}) Tj`;
+      }),
+      'ET',
+    ].join('\n');
+    objects[contentId] = `${contentId} 0 obj\n<< /Length ${streamLines.length} >>\nstream\n${streamLines}\nendstream\nendobj`;
+  });
+
+  objects[2] = `2 0 obj\n<< /Type /Pages /Kids [${pageObjectIds.map((id) => `${id} 0 R`).join(' ')}] /Count ${pages.length} >>\nendobj`;
+
+  pages.forEach((_, index) => {
+    const pageId = pageObjectIds[index];
+    const contentId = contentObjectIds[index];
+    objects[pageId] = `${pageId} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentId} 0 R >>\nendobj`;
+  });
+
+  let pdf = '%PDF-1.4\n';
+  const offsets: string[] = ['0000000000 65535 f \n'];
+  for (let i = 1; i <= objectCount; i += 1) {
+    offsets.push(`${String(pdf.length).padStart(10, '0')} 00000 n \n`);
+    pdf += `${objects[i]}\n`;
+  }
+  const xrefStart = pdf.length;
+  pdf += `xref\n0 ${objectCount + 1}\n${offsets.join('')}`;
+  pdf += `trailer\n<< /Size ${objectCount + 1} /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
+  return new TextEncoder().encode(pdf);
+}
+
+function buildOfficeHtml(title: string, report: AdminReport) {
+  const tables: Array<{ sectionTitle: string; headers: string[]; rows: string[][] }> = [
+    { sectionTitle: 'Overview', headers: ['Metric', 'Value'], rows: Object.entries(report.overview).map(([key, value]) => [key, formatReportValue(value)]) },
+    { sectionTitle: 'Departments', headers: ['Name', 'Owner', 'Status', 'Purpose', 'Metrics'], rows: report.departments.map((department) => [
+      department.name,
+      department.owner,
+      department.status,
+      department.purpose,
+      department.metrics.join(', '),
+    ]) },
+    { sectionTitle: 'Commerce', headers: ['Metric', 'Value'], rows: [
+      ['Income', `KES ${report.commerce.income.toLocaleString()}`],
+      ['Expense', `KES ${report.commerce.expense.toLocaleString()}`],
+      ['Profit', `KES ${report.commerce.profit.toLocaleString()}`],
+      ['Margin', `${report.commerce.margin.toFixed(1)}%`],
+    ] },
+    { sectionTitle: 'Orders', headers: ['ID', 'Farmer', 'Breed', 'Qty', 'KES', 'Status'], rows: report.orders.slice(0, 10).map((order) => [
+      order.id,
+      order.farmer,
+      order.breed,
+      String(order.qty),
+      order.totalKES.toLocaleString(),
+      order.status,
+    ]) },
+    { sectionTitle: 'Products', headers: ['Name', 'Category', 'Price', 'Stock', 'Active'], rows: report.products.slice(0, 10).map((product) => [
+      product.name,
+      product.category,
+      `KES ${product.price.toLocaleString()}`,
+      String(product.stock),
+      String(product.active),
+    ]) },
+    { sectionTitle: 'Farmers', headers: ['Name', 'Phone', 'County', 'Flocks', 'Orders'], rows: report.farmers.slice(0, 10).map((farmer) => [
+      farmer.name,
+      farmer.phone,
+      farmer.county,
+      String(farmer.flocks),
+      String(farmer.totalOrders),
+    ]) },
+    { sectionTitle: 'Notifications', headers: ['Title', 'Body'], rows: report.notifications.slice(0, 8).map((item) => [item.title, item.body]) },
+    { sectionTitle: 'Audit Trail', headers: ['Entity', 'Action', 'Summary'], rows: report.auditTrail.slice(0, 8).map((item) => [item.entity, item.action, item.summary]) },
+  ];
+
+  const renderTable = (titleText: string, headers: string[], rows: string[][]) => `
+    <section class="card">
+      <h2>${escapeHtml(titleText)}</h2>
+      <table>
+        <thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead>
+        <tbody>
+          ${(rows.length ? rows : [['No data', '', '', '', '', '']].slice(0, headers.length)).map((row) => (
+            `<tr>${headers.map((_, index) => `<td>${escapeHtml(row[index] || '')}</td>`).join('')}</tr>`
+          )).join('')}
+        </tbody>
+      </table>
+    </section>`;
+
+  return `<!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <title>${escapeHtml(title)}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 24px; color: #0f172a; }
+        h1 { font-size: 28px; margin: 0 0 8px; }
+        h2 { font-size: 18px; margin: 0 0 10px; }
+        p, td, th { font-size: 12px; line-height: 1.45; }
+        .meta { color: #64748b; margin-bottom: 18px; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px; break-inside: avoid; background: #fff; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px; vertical-align: top; text-align: left; }
+        th { background: #f8fafc; }
+      </style>
+    </head>
+    <body>
+      <h1>${escapeHtml(title)}</h1>
+      <p class="meta">Generated ${new Date(report.generatedAt).toLocaleString()} | Section: ${escapeHtml(report.activeTab)}</p>
+      <div class="grid">
+        ${tables.map(({ sectionTitle, headers, rows }) => renderTable(sectionTitle, headers, rows)).join('')}
       </div>
     </body>
   </html>`;
@@ -1507,14 +1792,14 @@ function ExportBar({ activeTab }: { activeTab: string }) {
 
   const report = useMemo(() => buildAdminReportData(db, activeTab), [db, activeTab]);
 
-  const download = (filename: string, content: string, type: string) => {
+  const download = (filename: string, content: BlobPart, type: string) => {
     const blob = new Blob([content], { type });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
     link.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   const handlePrint = () => {
@@ -1526,29 +1811,30 @@ function ExportBar({ activeTab }: { activeTab: string }) {
     win.print();
   };
 
-  const handleDownloadJson = () => {
+  const handleDownloadExcel = () => {
+    const html = buildOfficeHtml('Cucu Mutugi Admin Report', report);
     download(
-      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.json`,
-      JSON.stringify(report, null, 2),
-      'application/json'
+      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.xls`,
+      html,
+      'application/vnd.ms-excel'
     );
   };
 
-  const handleDownloadCsv = () => {
-    const csvSections = [
-      ['transactions', report.commerce.transactions],
-      ['orders', report.orders],
-      ['products', report.products],
-      ['farmers', report.farmers],
-      ['activities', report.activities],
-    ];
-    const content = csvSections
-      .map(([name, rows]) => `# ${name}\n${toCsv(rows as unknown as Record<string, unknown>[])}\n`)
-      .join('\n');
+  const handleDownloadWord = () => {
+    const html = buildOfficeHtml('Cucu Mutugi Admin Report', report);
     download(
-      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.csv`,
-      content,
-      'text/csv'
+      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.doc`,
+      html,
+      'application/msword'
+    );
+  };
+
+  const handleDownloadPdf = () => {
+    const pdfBytes = createPdfBytes(buildPdfLines(report), 'Cucu Mutugi Admin Report');
+    download(
+      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.pdf`,
+      pdfBytes,
+      'application/pdf'
     );
   };
 
@@ -1570,19 +1856,27 @@ function ExportBar({ activeTab }: { activeTab: string }) {
           </button>
           <button
             type="button"
-            onClick={handleDownloadJson}
+            onClick={handleDownloadExcel}
             className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-black text-white transition hover:bg-emerald-500"
           >
-            <Download className="h-4 w-4" />
-            Download JSON
+            <FileSpreadsheet className="h-4 w-4" />
+            Download Excel
           </button>
           <button
             type="button"
-            onClick={handleDownloadCsv}
+            onClick={handleDownloadWord}
+            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-black text-white transition hover:bg-blue-500"
+          >
+            <FileText className="h-4 w-4" />
+            Download Word
+          </button>
+          <button
+            type="button"
+            onClick={handleDownloadPdf}
             className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-amber-300"
           >
             <FileDown className="h-4 w-4" />
-            Download CSV
+            Download PDF
           </button>
         </div>
       </div>
