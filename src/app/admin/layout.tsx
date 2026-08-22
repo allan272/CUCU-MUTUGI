@@ -62,14 +62,19 @@ function AdminUI() {
           <form
             action="javascript:void(0)"
             onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); handleSubmit(e); }}
-            className="space-y-6"
+            className="space-y-5"
           >
             <div>
-              <label className="block text-white/60 text-xs font-bold uppercase tracking-wider mb-2" htmlFor="admin-password">
-                Administrative Password
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-white/40">
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-white/80 text-xs font-bold uppercase tracking-wider" htmlFor="admin-password">
+                  Administrative Password
+                </label>
+                <span className="text-[11px] text-amber-300 font-bold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                  Default: admin87654321
+                </span>
+              </div>
+              <div className="relative flex items-center">
+                <span className="absolute left-3.5 text-white/40 pointer-events-none">
                   <Lock className="h-4 w-4" />
                 </span>
                 <input
@@ -78,21 +83,27 @@ function AdminUI() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter admin password"
-                  className="w-full text-white bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-400/50 transition-all placeholder:text-white/30"
+                  placeholder="Enter admin password (admin87654321)"
+                  className="w-full text-white bg-white/10 border border-white/20 rounded-xl pl-10 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all placeholder:text-white/40 font-medium"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/40 hover:text-white/60 transition-colors"
+                  tabIndex={-1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPassword(prev => !prev);
+                  }}
+                  className="absolute right-3 p-1.5 text-amber-300 hover:text-white rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer z-20 flex items-center justify-center"
+                  title={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4 text-amber-400" />}
                 </button>
               </div>
             </div>
 
             {authError && (
-              <div className="text-red-400 bg-red-950/20 border border-red-500/20 px-4 py-2.5 rounded-xl text-xs text-center font-medium">
+              <div className="text-red-300 bg-red-950/60 border border-red-500/40 px-4 py-2.5 rounded-xl text-xs text-center font-bold shadow-md">
                 {authError}
               </div>
             )}
@@ -101,7 +112,7 @@ function AdminUI() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-900 font-extrabold text-sm uppercase tracking-wider shadow-lg active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-600 hover:to-amber-500 text-slate-950 font-black text-sm uppercase tracking-wider shadow-xl active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer border border-amber-300"
               >
                 {submitting ? (
                   <>
@@ -123,6 +134,10 @@ function AdminUI() {
   return (
     <div className="flex min-h-screen" style={{ background: '#F0F8FF' }}>
       <AdminSidebar />
+
+      {/* AI Assistant — inline left panel between sidebar and content */}
+      <AdminAIAssistant />
+
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
         <div className="glass-white border-b border-blue-100 px-6 py-3 flex items-center gap-4 shadow-sm">
@@ -160,8 +175,6 @@ function AdminUI() {
           <AdminTabContent />
         </div>
       </div>
-      {/* Gemini-powered AI Assistant — only visible when admin is authenticated */}
-      <AdminAIAssistant />
     </div>
   );
 }

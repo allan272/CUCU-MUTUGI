@@ -1,9 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Order, useAdmin } from '@/context/AdminContext';
 import CommerceTab from './CommerceTab';
 import CustomerActivityTab from './CustomerActivityTab';
 import CommunityAdminTab from './CommunityAdminTab';
+import DepartmentsTab from './DepartmentsTab';
 import {
   Egg,
   Package,
@@ -33,7 +34,10 @@ import {
   Video as VideoIcon,
   Heart,
   Eye,
-  Play
+  Play,
+  Printer,
+  Download,
+  FileDown,
 } from 'lucide-react';
 
 // Image compression helper to support large uploads and restrict size stored in DB
@@ -183,6 +187,18 @@ function DatabaseTab() {
     blog_posts: {
       columns: ['id', 'title', 'author', 'category', 'published', 'createdAt'],
       rows: db.blogPosts as unknown as Record<string, unknown>[],
+    },
+    transactions: {
+      columns: ['id', 'date', 'type', 'category', 'amount', 'paymentMethod', 'customerOrVendor', 'reference', 'createdAt'],
+      rows: (db.transactions || []) as unknown as Record<string, unknown>[],
+    },
+    notifications: {
+      columns: ['id', 'title', 'type', 'body', 'read', 'url', 'createdAt'],
+      rows: (db.notifications || []) as unknown as Record<string, unknown>[],
+    },
+    audit_trail: {
+      columns: ['id', 'entity', 'action', 'summary', 'actor', 'createdAt'],
+      rows: (db.auditTrail || []) as unknown as Record<string, unknown>[],
     },
   };
 
@@ -1361,6 +1377,219 @@ function SettingsTab() {
   );
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function toCsv(rows: Record<string, unknown>[]) {
+  if (!rows.length) return '';
+  const headers = Array.from(
+    rows.reduce((set, row) => {
+      Object.keys(row).forEach((key) => set.add(key));
+      return set;
+    }, new Set<string>())
+  );
+  const serialize = (value: unknown) => {
+    const text = value == null ? '' : typeof value === 'string' ? value : JSON.stringify(value);
+    return `"${String(text).replaceAll('"', '""')}"`;
+  };
+  return [headers.join(','), ...rows.map((row) => headers.map((header) => serialize(row[header])).join(','))].join('\n');
+}
+
+function buildAdminReportData(db: ReturnType<typeof useAdmin>['db'], activeTab: string) {
+  const transactions = db.transactions || [];
+  const activities = db.activities || [];
+  const auditTrail = db.auditTrail || [];
+  const notifications = db.notifications || [];
+  const income = transactions.filter((t) => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+  const expense = transactions.filter((t) => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+  const profit = income - expense;
+
+  return {
+    generatedAt: new Date().toISOString(),
+    activeTab,
+    overview: {
+      products: db.products.length,
+      orders: db.orders.length,
+      farmers: db.farmers.length,
+      stories: db.stories?.length || 0,
+      videos: db.videos?.length || 0,
+      transactions: transactions.length,
+      notifications: notifications.length,
+      auditTrail: auditTrail.length,
+      customerActivities: activities.length,
+    },
+    departments: [
+      'Hatchery',
+      'Brooding',
+      'Feed & Nutrition',
+      'Health & Vaccination',
+      'Sales & Orders',
+      'Delivery & Logistics',
+      'Customer Care',
+      'Finance & Records',
+      'Community & Training',
+      'Content & Media',
+      'Office & Admin',
+      'Digital Store',
+    ],
+    commerce: {
+      income,
+      expense,
+      profit,
+      margin: income > 0 ? (profit / income) * 100 : 0,
+      transactions,
+    },
+    orders: db.orders,
+    products: db.products,
+    farmers: db.farmers,
+    stories: db.stories || [],
+    videos: db.videos || [],
+    activities,
+    auditTrail,
+    notifications,
+    blogPosts: db.blogPosts,
+  };
+}
+
+function buildPrintableHtml(title: string, report: ReturnType<typeof buildAdminReportData>) {
+  const sections = [
+    { title: 'Overview', items: Object.entries(report.overview).map(([k, v]) => `<li><strong>${escapeHtml(k)}</strong>: ${escapeHtml(String(v))}</li>`).join('') },
+    { title: 'Departments', items: report.departments.map((item) => `<li>${escapeHtml(item)}</li>`).join('') },
+    { title: 'Commerce', items: [
+      `<li><strong>Income</strong>: KES ${report.commerce.income.toLocaleString()}</li>`,
+      `<li><strong>Expense</strong>: KES ${report.commerce.expense.toLocaleString()}</li>`,
+      `<li><strong>Profit</strong>: KES ${report.commerce.profit.toLocaleString()}</li>`,
+      `<li><strong>Margin</strong>: ${report.commerce.margin.toFixed(1)}%</li>`,
+    ].join('') },
+    { title: 'Notifications', items: report.notifications.slice(0, 10).map((n) => `<li><strong>${escapeHtml(n.title)}</strong> - ${escapeHtml(n.body)}</li>`).join('') || '<li>No notifications recorded.</li>' },
+    { title: 'Audit Trail', items: report.auditTrail.slice(0, 10).map((a) => `<li><strong>${escapeHtml(a.entity)}</strong> ${escapeHtml(a.action)} - ${escapeHtml(a.summary)}</li>`).join('') || '<li>No audit entries recorded.</li>' },
+  ];
+
+  return `<!doctype html>
+  <html>
+    <head>
+      <title>${escapeHtml(title)}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 32px; color: #0f172a; }
+        h1 { font-size: 28px; margin: 0 0 8px; }
+        h2 { font-size: 18px; margin: 24px 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
+        p, li { font-size: 13px; line-height: 1.5; }
+        .meta { color: #64748b; margin-bottom: 18px; }
+        ul { margin: 0; padding-left: 18px; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+        .muted { color: #475569; }
+        @media print { body { margin: 18px; } }
+      </style>
+    </head>
+    <body>
+      <h1>${escapeHtml(title)}</h1>
+      <p class="meta">Generated ${new Date(report.generatedAt).toLocaleString()} | Section: ${escapeHtml(report.activeTab)}</p>
+      <div class="grid">
+        ${sections.map((section) => `<div class="card"><h2>${escapeHtml(section.title)}</h2><ul>${section.items}</ul></div>`).join('')}
+      </div>
+      <div class="card">
+        <h2>Recent Items</h2>
+        <p class="muted">Orders: ${report.orders.length} | Products: ${report.products.length} | Farmers: ${report.farmers.length} | Stories: ${report.stories.length} | Videos: ${report.videos.length} | Activity logs: ${report.activities.length}</p>
+      </div>
+    </body>
+  </html>`;
+}
+
+function ExportBar({ activeTab }: { activeTab: string }) {
+  const { db } = useAdmin();
+
+  const report = useMemo(() => buildAdminReportData(db, activeTab), [db, activeTab]);
+
+  const download = (filename: string, content: string, type: string) => {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handlePrint = () => {
+    const win = window.open('', '_blank', 'noopener,noreferrer,width=1200,height=900');
+    if (!win) return;
+    win.document.write(buildPrintableHtml('Cucu Mutugi Admin Report', report));
+    win.document.close();
+    win.focus();
+    win.print();
+  };
+
+  const handleDownloadJson = () => {
+    download(
+      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.json`,
+      JSON.stringify(report, null, 2),
+      'application/json'
+    );
+  };
+
+  const handleDownloadCsv = () => {
+    const csvSections = [
+      ['transactions', report.commerce.transactions],
+      ['orders', report.orders],
+      ['products', report.products],
+      ['farmers', report.farmers],
+      ['activities', report.activities],
+    ];
+    const content = csvSections
+      .map(([name, rows]) => `# ${name}\n${toCsv(rows as unknown as Record<string, unknown>[])}\n`)
+      .join('\n');
+    download(
+      `cucu-admin-report-${activeTab}-${new Date().toISOString().slice(0, 10)}.csv`,
+      content,
+      'text/csv'
+    );
+  };
+
+  return (
+    <div className="sticky bottom-0 z-20 mt-8 border-t border-slate-200 bg-white/90 backdrop-blur-md">
+      <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-700">Exports</p>
+          <p className="text-sm text-slate-600">Print or download a categorized admin report for the current section or the full farm record.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-800"
+          >
+            <Printer className="h-4 w-4" />
+            Print report
+          </button>
+          <button
+            type="button"
+            onClick={handleDownloadJson}
+            className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-black text-white transition hover:bg-emerald-500"
+          >
+            <Download className="h-4 w-4" />
+            Download JSON
+          </button>
+          <button
+            type="button"
+            onClick={handleDownloadCsv}
+            className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-amber-300"
+          >
+            <FileDown className="h-4 w-4" />
+            Download CSV
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Main Tab Router
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1368,6 +1597,7 @@ export default function AdminTabContent() {
   const { activeTab } = useAdmin();
   const tabMap: Record<string, React.ReactNode> = {
     dashboard: <DashboardTab />,
+    departments: <DepartmentsTab />,
     commerce: <CommerceTab />,
     community: <CommunityAdminTab />,
     activity: <CustomerActivityTab />,
@@ -1382,5 +1612,10 @@ export default function AdminTabContent() {
     blog: <BlogTab />,
     settings: <SettingsTab />,
   };
-  return <>{tabMap[activeTab] || <DashboardTab />}</>;
+  return (
+    <div className="space-y-6">
+      <div>{tabMap[activeTab] || <DashboardTab />}</div>
+      <ExportBar activeTab={activeTab} />
+    </div>
+  );
 }

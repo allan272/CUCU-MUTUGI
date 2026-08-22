@@ -7,6 +7,8 @@ import {
   likeStory,
   viewStory,
   voteStory,
+  addNotification,
+  addAuditEntry,
 } from '@/lib/serverStorage';
 import { Story } from '@/lib/seeds';
 
@@ -62,6 +64,19 @@ export async function POST(request: Request) {
 
       // Save to disk
       await addOrUpdateStory(storyToSave);
+      await addNotification({
+        title: storyToSave.title,
+        body: storyToSave.description || 'A new farm update is now live.',
+        type: 'story',
+        url: '/poultry-updates',
+      });
+      await addAuditEntry({
+        entity: 'story',
+        action: 'publish',
+        summary: `Published story "${storyToSave.title}"`,
+        actor: 'Admin',
+        metadata: { storyId: storyToSave.id, featured: storyToSave.featured, category: storyToSave.category },
+      });
 
       // Save to MongoDB if available
       try {
@@ -86,6 +101,13 @@ export async function POST(request: Request) {
       const id = storyId || body.id;
       if (id) {
         await removeStoryFromDisk(id);
+        await addAuditEntry({
+          entity: 'story',
+          action: 'delete',
+          summary: `Deleted story ${id}`,
+          actor: 'Admin',
+          metadata: { storyId: id },
+        });
         try {
           const client = await clientPromise;
           if (client) {

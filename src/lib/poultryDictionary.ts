@@ -92,15 +92,21 @@ export const POULTRY_DICTIONARY: DictionaryEntry[] = [
     keywords: ['price', 'cost', 'how much', 'bei', 'kuroiler', 'sasso', 'kenbro', 'isa brown', 'cobb 500', 'broiler', 'layer', 'rainbow rooster', 'kienyeji'],
     patterns: [/how much (is|are) (the )?chicks/i, /chick(s)? price(s)?/i, /bei ya vifaranga/i, /order chicks/i],
     category: 'Products & Pricing',
-    response: `🐣 **Cucu Mutugi Pre-Vaccinated Chicks Price List:**
-- **Kuroiler Day-Old**: KES 120 / chick (Fast growing, heavy meat & dual purpose).
-- **Sasso Day-Old**: KES 130 / chick (Hardy, disease resistant, rich organic taste).
-- **Kenbro Day-Old**: KES 115 / chick (Excellent feed conversion, heavy egg production).
-- **ISA Brown Layers Day-Old**: KES 110 / chick (Up to 320+ eggs/year commercial layer).
-- **Broiler Cobb 500 Day-Old**: KES 100 / chick (Ready for market in 4–6 weeks).
-- **Rainbow Rooster**: KES 125 / chick.
+    response: `IMPROVED KIENYEJI Chicks (Kuroiler, Sasso, Kenbro, Rainbow Rooster, KARI):
+- Day old chick: KES 120
+- One week old: KES 160
+- Two weeks old: KES 200
+- Three weeks old: KES 250
+- One month old: KES 300
 
-🚚 **Free Countrywide Delivery** on Wednesdays & Thursdays across all major towns!`,
+LAYERS (ISA Brown):
+- Day old chick: KES 160
+
+BROILER (Cobb 500):
+- Day old chick: KES 105
+
+All chicks are fully pre-vaccinated before delivery.
+Free Countrywide Delivery on Wednesdays & Thursdays!`,
     actionLabel: 'Order Chicks Online',
     actionUrl: '/products',
     followUps: ['Delivery Routes & Days', 'Payment Method M-Pesa', 'Book Chick Batch']
@@ -253,7 +259,8 @@ export function findAssistantReply(userQuery: string): {
 For specific farm diagnosis or customized orders:
 - **Brooding Care**: Maintain 32°C–35°C during week 1 and give glucose water.
 - **Vaccines**: Day 7 Gumboro, Day 14 Newcastle, Day 28 Fowl Pox.
-- **Orders & Pricing**: We supply pre-vaccinated Kuroiler (KES 120), ISA Brown (KES 110), Sasso (KES 130), and Broilers (KES 100) with free nationwide delivery.
+- **Kienyeji Pricing**: Day old KES 120, 1 week KES 160, 2 weeks KES 200, 3 weeks KES 250, 1 month KES 300.
+- **Layers**: Day old KES 160. **Broilers**: Day old KES 105. Free nationwide delivery.
 
 You can also speak directly with our Senior Poultry Officer on WhatsApp for instant assistance!`,
     actionLabel: 'Chat with Senior Poultry Officer',

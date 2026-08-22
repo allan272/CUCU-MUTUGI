@@ -235,6 +235,39 @@ export default function CommerceTab() {
     return { income, expense, profit: income - expense };
   }, [transactions]);
 
+  const financeCharts = useMemo(() => {
+    const byDate = new Map<string, { income: number; expense: number }>();
+    const byCategory = new Map<string, { income: number; expense: number }>();
+    const today = new Date();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const recentDays = Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(today.getTime() - (6 - index) * dayMs);
+      return date.toISOString().split('T')[0];
+    });
+
+    transactions.forEach((tx) => {
+      const dateBucket = byDate.get(tx.date) || { income: 0, expense: 0 };
+      dateBucket[tx.type] += tx.amount;
+      byDate.set(tx.date, dateBucket);
+
+      const categoryBucket = byCategory.get(tx.category) || { income: 0, expense: 0 };
+      categoryBucket[tx.type] += tx.amount;
+      byCategory.set(tx.category, categoryBucket);
+    });
+
+    const dailySeries = recentDays.map((date) => {
+      const bucket = byDate.get(date) || { income: 0, expense: 0 };
+      return { date, ...bucket, net: bucket.income - bucket.expense };
+    });
+
+    const categories = Array.from(byCategory.entries())
+      .map(([category, values]) => ({ category, ...values, total: values.income + values.expense }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+
+    return { dailySeries, categories };
+  }, [transactions]);
+
   // ─── Calculator Logic ───────────────────────────────────────────────────────
   const handleCalcDigit = (d: string) => {
     setCalcInput(prev => {
@@ -364,6 +397,79 @@ export default function CommerceTab() {
           <div>
             <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Profit Margin</div>
             <div className="text-xl font-black text-amber-800">{stats.margin.toFixed(1)}%</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <div>
+              <h3 className="text-lg font-black text-slate-900">7-Day Profit Trend</h3>
+              <p className="text-xs text-slate-500">Income vs expense by day</p>
+            </div>
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-700">
+              Live snapshot
+            </span>
+          </div>
+          <div className="grid grid-cols-7 gap-2 items-end h-52">
+            {financeCharts.dailySeries.map((day) => {
+              const max = Math.max(...financeCharts.dailySeries.map((item) => Math.max(item.income, item.expense, Math.abs(item.net), 1)));
+              const incomeHeight = (day.income / max) * 100;
+              const expenseHeight = (day.expense / max) * 100;
+              const netHeight = (Math.abs(day.net) / max) * 100;
+              return (
+                <div key={day.date} className="flex h-full flex-col items-center justify-end gap-2">
+                  <div className="flex w-full items-end justify-center gap-1 h-40">
+                    <div className="w-2.5 rounded-full bg-emerald-500/80" style={{ height: `${Math.max(incomeHeight, 3)}%` }} />
+                    <div className="w-2.5 rounded-full bg-red-500/80" style={{ height: `${Math.max(expenseHeight, 3)}%` }} />
+                    <div className={`w-2.5 rounded-full ${day.net >= 0 ? 'bg-amber-400' : 'bg-slate-400'}`} style={{ height: `${Math.max(netHeight, 3)}%` }} />
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-500">{day.date.slice(5)}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold text-slate-600">
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" /> Income</span>
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Expense</span>
+            <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> Net</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <div>
+              <h3 className="text-lg font-black text-slate-900">Income vs Expense Mix</h3>
+              <p className="text-xs text-slate-500">Simple view of where money is going</p>
+            </div>
+            <span className="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-amber-700">
+              Pie view
+            </span>
+          </div>
+          <div className="grid gap-4 md:grid-cols-[180px_1fr] items-center">
+            <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-full bg-slate-950 shadow-inner">
+              <div
+                className="h-32 w-32 rounded-full border-[18px] border-emerald-500 border-r-red-500 border-b-amber-400 border-l-slate-200"
+                style={{ transform: 'rotate(-18deg)' }}
+              />
+            </div>
+            <div className="space-y-3">
+              <div className="rounded-2xl bg-emerald-50 p-4">
+                <div className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Total Income</div>
+                <div className="text-2xl font-black text-emerald-900">KES {stats.totalIncome.toLocaleString()}</div>
+              </div>
+              <div className="rounded-2xl bg-red-50 p-4">
+                <div className="text-xs font-black uppercase tracking-[0.18em] text-red-700">Total Expenses</div>
+                <div className="text-2xl font-black text-red-900">KES {stats.totalExpense.toLocaleString()}</div>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <div className="text-xs font-black uppercase tracking-[0.18em] text-amber-700">Net Profit</div>
+                <div className={`text-2xl font-black ${stats.netProfit >= 0 ? 'text-emerald-900' : 'text-red-900'}`}>
+                  KES {stats.netProfit.toLocaleString()}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

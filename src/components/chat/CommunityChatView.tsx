@@ -37,6 +37,10 @@ import { ChatUser, ChatChannel, ChatMessage, DEFAULT_CHAT_CHANNELS, DEFAULT_CHAT
 
 const EMOJI_LIST = ['🐔', '🐣', '👍', '❤️', '🔥', '👏', '💰', '🌾', '😂', '🙏', '💯', '👌'];
 
+function isStrongPassword(password: string) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+}
+
 export default function CommunityChatView() {
   const [channels, setChannels] = useState<ChatChannel[]>(DEFAULT_CHAT_CHANNELS);
   const [activeChannelId, setActiveChannelId] = useState('general-lounge');
@@ -94,6 +98,34 @@ export default function CommunityChatView() {
     } catch {}
   }, []);
 
+  useEffect(() => {
+    if (!currentUser?.email) return;
+
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/chat/members');
+        if (!res.ok) return;
+        const data = await res.json();
+        const latest = (data.members || []).find((member: ChatUser) => member.email.toLowerCase() === currentUser.email.toLowerCase());
+        if (!alive) return;
+
+        if (!latest || latest.status !== 'approved') {
+          setCurrentUser(null);
+          localStorage.removeItem('cucu_chat_user');
+          setAuthMode('login');
+        } else {
+          setCurrentUser(latest);
+          localStorage.setItem('cucu_chat_user', JSON.stringify(latest));
+        }
+      } catch {}
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [currentUser?.email]);
+
   // Fetch Messages & Channels
   const fetchChatData = async () => {
     setLoading(true);
@@ -118,10 +150,21 @@ export default function CommunityChatView() {
     return () => clearInterval(interval);
   }, [activeChannelId]);
 
-  // Scroll to bottom on message change
+  // Scroll to bottom ONLY when active channel changes or when current user sends a message
+  const prevChannelRef = useRef(activeChannelId);
+  const prevMsgCountRef = useRef(messages.length);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, activeChannelId]);
+    const isChannelChange = prevChannelRef.current !== activeChannelId;
+    const isNewMessageAdded = messages.length > prevMsgCountRef.current;
+
+    prevChannelRef.current = activeChannelId;
+    prevMsgCountRef.current = messages.length;
+
+    if (isChannelChange || isNewMessageAdded) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length, activeChannelId]);
 
   const activeChannel = useMemo(() => {
     return channels.find(c => c.id === activeChannelId) || channels[0];
@@ -261,6 +304,11 @@ export default function CommunityChatView() {
 
     try {
       if (authMode === 'register') {
+        if (!isStrongPassword(regPassword.trim())) {
+          setAuthError('Password must be at least 8 characters and include an uppercase letter, lowercase letter, number, and special character.');
+          return;
+        }
+
         const res = await fetch('/api/chat/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -278,7 +326,7 @@ export default function CommunityChatView() {
         const data = await res.json();
         if (res.ok && data.success) {
           setAuthSuccess(
-            '🎉 Account created successfully! Your profile has been submitted to the Cucu Mutugi admin for verification. Once approved, you can log in to chat.'
+            '🎉 Account created successfully! Your profile has been submitted for admin verification using your email address. Once approved, you can log in to chat.'
           );
         } else {
           setAuthError(data.error || 'Registration failed');
@@ -302,8 +350,9 @@ export default function CommunityChatView() {
           setAuthError(data.error || 'Login failed');
         }
       }
-    } catch (err: any) {
-      setAuthError(err.message || 'Network error occurred');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Network error occurred';
+      setAuthError(message);
     } finally {
       setAuthSubmitting(false);
     }
@@ -313,6 +362,192 @@ export default function CommunityChatView() {
     setCurrentUser(null);
     localStorage.removeItem('cucu_chat_user');
   };
+
+  const canAccessChat = Boolean(currentUser && (currentUser.status === 'approved' || currentUser.role === 'admin' || currentUser.role === 'moderator'));
+
+  if (!canAccessChat) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          <div className="rounded-[2rem] overflow-hidden shadow-2xl border border-emerald-800/30 bg-slate-950 text-white relative min-h-[560px]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(251,191,36,0.16),_transparent_25%),radial-gradient(circle_at_bottom_left,_rgba(16,185,129,0.16),_transparent_35%)]" />
+            <div className="relative z-10 p-7 md:p-10 flex flex-col justify-between h-full">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-amber-400 text-slate-950 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-[0.24em] mb-5">
+                  <ShieldCheck className="h-3.5 w-3.5" /> Verified Lounge
+                </div>
+                <h1 className="text-3xl md:text-5xl font-black leading-tight">Join the Farmers Lounge after admin verification</h1>
+                <p className="mt-4 text-emerald-100 text-sm md:text-base max-w-xl">
+                  Register with your email, set a strong password, and wait for approval. Once the admin verifies your account, you can log in and access the community chat.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
+                <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                  <div className="text-xs font-black uppercase tracking-wider text-amber-300">Step 1</div>
+                  <div className="font-bold mt-1">Register</div>
+                  <p className="text-xs text-slate-300 mt-1">Create your farm profile with your email and phone.</p>
+                </div>
+                <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                  <div className="text-xs font-black uppercase tracking-wider text-amber-300">Step 2</div>
+                  <div className="font-bold mt-1">Verify</div>
+                  <p className="text-xs text-slate-300 mt-1">Admin approves your account from the admin panel using your email.</p>
+                </div>
+                <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                  <div className="text-xs font-black uppercase tracking-wider text-amber-300">Step 3</div>
+                  <div className="font-bold mt-1">Chat</div>
+                  <p className="text-xs text-slate-300 mt-1">Only verified farmers can view and post messages.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-[2rem] p-6 md:p-8 shadow-2xl border border-emerald-100">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900">
+                  {authMode === 'register' ? 'Register your farm' : 'Log in to continue'}
+                </h2>
+                <p className="text-sm text-gray-500">Use the email that the admin will verify.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAuthModal(true)}
+                className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition-colors"
+              >
+                Open form
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 mt-5 bg-slate-100 p-1 rounded-2xl">
+              <button
+                type="button"
+                onClick={() => { setAuthMode('register'); setAuthError(null); setAuthSuccess(null); }}
+                className={`py-2 rounded-xl font-black text-sm transition-all ${authMode === 'register' ? 'bg-emerald-700 text-white shadow' : 'text-slate-600'}`}
+              >
+                Register
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAuthMode('login'); setAuthError(null); setAuthSuccess(null); }}
+                className={`py-2 rounded-xl font-black text-sm transition-all ${authMode === 'login' ? 'bg-emerald-700 text-white shadow' : 'text-slate-600'}`}
+              >
+                Login
+              </button>
+            </div>
+
+            <form onSubmit={handleAuthSubmit} className="space-y-3 mt-5">
+              {authMode === 'register' && (
+                <div>
+                  <label className="block text-xs font-black text-slate-700 mb-1">Full Name / Farm Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Farmer Joseph Maina"
+                    value={regName}
+                    onChange={(e) => setRegName(e.target.value)}
+                    className="w-full text-sm p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-black text-slate-700 mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. joseph.maina@gmail.com"
+                  value={regEmail}
+                  onChange={(e) => setRegEmail(e.target.value)}
+                  className="w-full text-sm p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-700 mb-1">Password *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="At least 8 chars, caps, special character"
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                  className="w-full text-sm p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                />
+                {authMode === 'register' && (
+                  <p className="mt-1 text-[11px] text-gray-500">
+                    Must include uppercase, lowercase, number, special character, and be at least 8 characters.
+                  </p>
+                )}
+              </div>
+
+              {authMode === 'register' && (
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-xs font-black text-slate-700 mb-1">Phone / WhatsApp</label>
+                      <input
+                        type="tel"
+                        placeholder="e.g. 0712 345 678"
+                        value={regPhone}
+                        onChange={(e) => setRegPhone(e.target.value)}
+                        className="w-full text-sm p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black text-slate-700 mb-1">County / Location</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Embu / Nakuru"
+                        value={regCounty}
+                        onChange={(e) => setRegCounty(e.target.value)}
+                        className="w-full text-sm p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black text-slate-700 mb-1">Poultry Breed or Farm Activity</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 300 Kuroiler layers, Broilers, Incubator"
+                      value={regFarmFocus}
+                      onChange={(e) => setRegFarmFocus(e.target.value)}
+                      className="w-full text-sm p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div className="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 text-sm text-emerald-900 font-medium flex items-start gap-2">
+                    <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>Your account will stay locked until the admin verifies your email in the admin panel.</span>
+                  </div>
+                </>
+              )}
+
+              {authError && (
+                <div className="text-rose-700 bg-rose-50 border border-rose-200 px-4 py-3 rounded-xl text-sm font-semibold">
+                  {authError}
+                </div>
+              )}
+
+              {authSuccess && (
+                <div className="text-emerald-900 bg-emerald-50 border border-emerald-200 px-4 py-3 rounded-xl text-sm font-semibold">
+                  {authSuccess}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={authSubmitting}
+                className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-sm rounded-xl shadow-md transition-all disabled:opacity-50"
+              >
+                {authSubmitting ? 'Processing...' : authMode === 'register' ? 'Create Account & Request Verification' : 'Log In'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6">

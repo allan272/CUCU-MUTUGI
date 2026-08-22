@@ -7,6 +7,9 @@ export interface MediaItem {
   thumbnail?: string;
   description: string;
   date?: string;
+  tiktokUrl?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
 }
 
 export const GALLERY_ITEMS: MediaItem[] = [

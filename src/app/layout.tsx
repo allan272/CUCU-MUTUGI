@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import ServiceWorkerRegister from "./sw-register";
 import ClientAdminProvider from "@/components/ClientAdminProvider";
 import PoultryAssistantBot from "@/components/chat/PoultryAssistantBot";
+import AppNotifications from "@/components/AppNotifications";
 
 export const metadata: Metadata = {
   title: "CUCU MUTUGI POULTRY | Growing Farmers, Building Prosperity",
@@ -15,8 +16,12 @@ export const metadata: Metadata = {
     title: "Cucu Mutugi Poultry",
   },
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: [
+      { url: '/logo.png', type: 'image/png' },
+      { url: '/favicon.ico' }
+    ],
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
 };
 
@@ -46,6 +51,7 @@ export default function RootLayout({
             {children}
           </main>
           <PoultryAssistantBot />
+          <AppNotifications />
           <Footer />
         </ClientAdminProvider>
       </body>

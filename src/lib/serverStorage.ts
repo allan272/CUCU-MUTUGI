@@ -4,6 +4,8 @@ import {
   DBTable,
   Story,
   Transaction,
+  AppNotification,
+  AuditEntry,
   CustomerActivity,
   ChatUser,
   ChatMessage,
@@ -34,6 +36,8 @@ const INITIAL_DB: DBTable = {
   videos: DEFAULT_VIDEOS,
   settings: DEFAULT_SETTINGS,
   transactions: DEFAULT_TRANSACTIONS,
+  auditTrail: [],
+  notifications: [],
   activities: DEFAULT_ACTIVITIES,
   chatUsers: DEFAULT_CHAT_USERS,
   chatChannels: DEFAULT_CHAT_CHANNELS,
@@ -59,6 +63,8 @@ export async function getStoredDB(): Promise<DBTable> {
       videos: parsed.videos || DEFAULT_VIDEOS,
       settings: parsed.settings || DEFAULT_SETTINGS,
       transactions: parsed.transactions || DEFAULT_TRANSACTIONS,
+      auditTrail: parsed.auditTrail || [],
+      notifications: parsed.notifications || [],
       activities: parsed.activities || DEFAULT_ACTIVITIES,
       chatUsers: parsed.chatUsers || DEFAULT_CHAT_USERS,
       chatChannels: parsed.chatChannels || DEFAULT_CHAT_CHANNELS,
@@ -94,6 +100,10 @@ export async function saveStoredDB(updates: Partial<DBTable>): Promise<DBTable> 
   }
 
   return updated;
+}
+
+function makeId(prefix: string) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
 }
 
 // ─── Stories ─────────────────────────────────────────────────────────────────
@@ -181,25 +191,83 @@ export async function addTransaction(tx: Omit<Transaction, 'id' | 'createdAt'>):
   const db = await getStoredDB();
   const newTx: Transaction = {
     ...tx,
-    id: `tx-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    id: makeId('tx'),
     createdAt: new Date().toISOString(),
   };
   const updated = [newTx, ...(db.transactions || [])];
-  await saveStoredDB({ transactions: updated });
+  await saveStoredDB({
+    transactions: updated,
+    auditTrail: appendAudit(db.auditTrail || [], {
+      entity: 'transaction',
+      action: 'create',
+      summary: `${newTx.type === 'income' ? 'Income' : 'Expense'} recorded for ${newTx.category} worth KES ${newTx.amount.toLocaleString()}`,
+      actor: newTx.customerOrVendor || 'Finance Desk',
+      metadata: { transactionId: newTx.id, amount: newTx.amount, category: newTx.category },
+    }),
+  });
   return updated;
 }
 
 export async function updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction[]> {
   const db = await getStoredDB();
   const updated = (db.transactions || []).map(t => (t.id === id ? { ...t, ...updates } : t));
-  await saveStoredDB({ transactions: updated });
+  await saveStoredDB({
+    transactions: updated,
+    auditTrail: appendAudit(db.auditTrail || [], {
+      entity: 'transaction',
+      action: 'update',
+      summary: `Transaction ${id} updated`,
+      actor: 'Admin',
+      metadata: { transactionId: id, updates },
+    }),
+  });
   return updated;
 }
 
 export async function deleteTransaction(id: string): Promise<Transaction[]> {
   const db = await getStoredDB();
   const updated = (db.transactions || []).filter(t => t.id !== id);
-  await saveStoredDB({ transactions: updated });
+  await saveStoredDB({
+    transactions: updated,
+    auditTrail: appendAudit(db.auditTrail || [], {
+      entity: 'transaction',
+      action: 'delete',
+      summary: `Transaction ${id} deleted`,
+      actor: 'Admin',
+      metadata: { transactionId: id },
+    }),
+  });
+  return updated;
+}
+
+export async function getNotifications(): Promise<AppNotification[]> {
+  const db = await getStoredDB();
+  return db.notifications || [];
+}
+
+export async function addNotification(notification: Omit<AppNotification, 'id' | 'createdAt'>): Promise<AppNotification[]> {
+  const db = await getStoredDB();
+  const newNotification: AppNotification = {
+    ...notification,
+    id: makeId('ntf'),
+    createdAt: new Date().toISOString(),
+  };
+  const updated = [newNotification, ...(db.notifications || [])].slice(0, 100);
+  await saveStoredDB({ notifications: updated });
+  return updated;
+}
+
+export async function markNotificationRead(id: string): Promise<AppNotification[]> {
+  const db = await getStoredDB();
+  const updated = (db.notifications || []).map(n => (n.id === id ? { ...n, read: true } : n));
+  await saveStoredDB({ notifications: updated });
+  return updated;
+}
+
+export async function addAuditEntry(entry: Omit<AuditEntry, 'id' | 'createdAt'>): Promise<AuditEntry[]> {
+  const db = await getStoredDB();
+  const updated = appendAudit(db.auditTrail || [], entry);
+  await saveStoredDB({ auditTrail: updated });
   return updated;
 }
 
@@ -224,6 +292,15 @@ export async function logActivity(act: Omit<CustomerActivity, 'id' | 'timestamp'
 
 export async function clearActivities(): Promise<void> {
   await saveStoredDB({ activities: [] });
+}
+
+function appendAudit(current: AuditEntry[], entry: Omit<AuditEntry, 'id' | 'createdAt'>): AuditEntry[] {
+  const newEntry: AuditEntry = {
+    ...entry,
+    id: makeId('aud'),
+    createdAt: new Date().toISOString(),
+  };
+  return [newEntry, ...(current || [])].slice(0, 500);
 }
 
 // ─── Community Chat & Farmer Members ─────────────────────────────────────────

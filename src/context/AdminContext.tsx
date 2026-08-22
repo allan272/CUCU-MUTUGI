@@ -25,17 +25,20 @@ export type { Product, Order, Farmer, BlogPost, Story, Video, SiteSettings, DBTa
 async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongodb' | 'local' }> {
   if (typeof window === 'undefined') {
     return {
-      data: {
-        products: DEFAULT_PRODUCTS,
-        orders: DEFAULT_ORDERS,
-        farmers: DEFAULT_FARMERS,
-        blogPosts: DEFAULT_BLOGS,
-        stories: DEFAULT_STORIES,
-        videos: DEFAULT_VIDEOS,
-        settings: DEFAULT_SETTINGS
-      },
-      source: 'local'
-    };
+        data: {
+          products: DEFAULT_PRODUCTS,
+          orders: DEFAULT_ORDERS,
+          farmers: DEFAULT_FARMERS,
+          blogPosts: DEFAULT_BLOGS,
+          stories: DEFAULT_STORIES,
+          videos: DEFAULT_VIDEOS,
+          settings: DEFAULT_SETTINGS,
+          transactions: [],
+          auditTrail: [],
+          notifications: [],
+        },
+        source: 'local'
+      };
   }
 
   // Attempt to load from MongoDB Atlas backend API
@@ -58,7 +61,10 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
               blogPosts: data.blogPosts || DEFAULT_BLOGS,
               stories: data.stories || DEFAULT_STORIES,
               videos: data.videos || DEFAULT_VIDEOS,
-              settings: data.settings || DEFAULT_SETTINGS
+              settings: data.settings || DEFAULT_SETTINGS,
+              transactions: data.transactions || [],
+              auditTrail: data.auditTrail || [],
+              notifications: data.notifications || [],
             },
             source: 'mongodb'
           };
@@ -86,7 +92,10 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
           blogPosts: parsed.blogPosts || DEFAULT_BLOGS,
           stories: parsed.stories || DEFAULT_STORIES,
           videos: parsed.videos || DEFAULT_VIDEOS,
-          settings: parsed.settings || DEFAULT_SETTINGS
+          settings: parsed.settings || DEFAULT_SETTINGS,
+          transactions: parsed.transactions || [],
+          auditTrail: parsed.auditTrail || [],
+          notifications: parsed.notifications || [],
         },
         source: 'local'
       };
@@ -103,7 +112,10 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
       blogPosts: DEFAULT_BLOGS,
       stories: DEFAULT_STORIES,
       videos: DEFAULT_VIDEOS,
-      settings: DEFAULT_SETTINGS
+      settings: DEFAULT_SETTINGS,
+      transactions: [],
+      auditTrail: [],
+      notifications: [],
     },
     source: 'local'
   };
@@ -163,7 +175,10 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     blogPosts: DEFAULT_BLOGS,
     stories: DEFAULT_STORIES,
     videos: DEFAULT_VIDEOS,
-    settings: DEFAULT_SETTINGS
+    settings: DEFAULT_SETTINGS,
+    transactions: [],
+    auditTrail: [],
+    notifications: [],
   });
   const [dbSource, setDBSource] = useState<'mongodb' | 'local'>('local');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -531,7 +546,10 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       blogPosts: DEFAULT_BLOGS,
       stories: DEFAULT_STORIES,
       videos: DEFAULT_VIDEOS,
-      settings: DEFAULT_SETTINGS
+      settings: DEFAULT_SETTINGS,
+      transactions: [],
+      auditTrail: [],
+      notifications: [],
     });
     await syncToMongoDB('reset', null);
   };

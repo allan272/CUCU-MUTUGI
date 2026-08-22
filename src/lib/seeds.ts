@@ -120,6 +120,26 @@ export interface Transaction {
   createdAt: string;
 }
 
+export interface AppNotification {
+  id: string;
+  title: string;
+  body: string;
+  type: 'story' | 'order' | 'system' | 'finance';
+  url?: string;
+  read?: boolean;
+  createdAt: string;
+}
+
+export interface AuditEntry {
+  id: string;
+  entity: 'transaction' | 'order' | 'story' | 'product' | 'chat' | 'settings';
+  action: 'create' | 'update' | 'delete' | 'publish' | 'sync';
+  summary: string;
+  actor: string;
+  createdAt: string;
+  metadata?: Record<string, any>;
+}
+
 export interface CustomerActivity {
   id: string;
   type: 'search' | 'button_click' | 'email_captured' | 'page_view';
@@ -191,6 +211,8 @@ export interface DBTable {
   videos: Video[];
   settings: SiteSettings;
   transactions?: Transaction[];
+  auditTrail?: AuditEntry[];
+  notifications?: AppNotification[];
   activities?: CustomerActivity[];
   chatUsers?: ChatUser[];
   chatMessages?: ChatMessage[];
@@ -334,12 +356,12 @@ export const DEFAULT_ACTIVITIES: CustomerActivity[] = [
 ];
 
 export const DEFAULT_PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Kuroiler Chicks', category: 'Kienyeji', breed: 'Kuroiler', price: 120, stock: 500, image: '', description: 'Fast-growing dual-purpose breed. Excellent for both eggs and meat.', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
-  { id: 'p2', name: 'Sasso Chicks', category: 'Kienyeji', breed: 'Sasso', price: 130, stock: 300, image: '', description: 'Hardy breed with rich flavour, high demand in the local market.', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
-  { id: 'p3', name: 'Kenbro Chicks', category: 'Kienyeji', breed: 'Kenbro', price: 115, stock: 400, image: '', description: 'Adaptable dual-purpose breed, excellent feed conversion ratio.', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
-  { id: 'p4', name: 'Broiler Chicks (Cobb 500)', category: 'Broilers', breed: 'Cobb 500', price: 100, stock: 800, image: '', description: 'Top commercial broiler. Ready for market in 6 weeks.', ageRange: '1 day old', vaccinated: true, active: true, createdAt: '2026-06-02' },
-  { id: 'p5', name: 'Layer Chicks (ISA Brown)', category: 'Layers', breed: 'ISA Brown', price: 110, stock: 600, image: '', description: 'High-producing layer breed, up to 320 eggs per year.', ageRange: '1 day old', vaccinated: true, active: true, createdAt: '2026-06-02' },
-  { id: 'p6', name: 'Rainbow Rooster', category: 'Kienyeji', breed: 'Rainbow Rooster', price: 125, stock: 200, image: '', description: 'Colourful, hardy, and popular in local markets.', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-03' },
+  { id: 'p1', name: 'Kuroiler Chicks', category: 'Kienyeji', breed: 'Kuroiler', price: 120, stock: 500, image: '', description: 'Fast-growing dual-purpose breed. Excellent for both eggs and meat. Day old: KES 120 | 1 week: KES 160 | 2 weeks: KES 200 | 3 weeks: KES 250 | 1 month: KES 300', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
+  { id: 'p2', name: 'Sasso Chicks', category: 'Kienyeji', breed: 'Sasso', price: 120, stock: 300, image: '', description: 'Hardy breed with rich flavour, high demand in the local market. Day old: KES 120 | 1 week: KES 160 | 2 weeks: KES 200 | 3 weeks: KES 250 | 1 month: KES 300', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
+  { id: 'p3', name: 'Kenbro Chicks', category: 'Kienyeji', breed: 'Kenbro', price: 120, stock: 400, image: '', description: 'Adaptable dual-purpose breed, excellent feed conversion ratio. Day old: KES 120 | 1 week: KES 160 | 2 weeks: KES 200 | 3 weeks: KES 250 | 1 month: KES 300', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-01' },
+  { id: 'p4', name: 'Broiler Chicks (Cobb 500)', category: 'Broilers', breed: 'Cobb 500', price: 105, stock: 800, image: '', description: 'Top commercial broiler. Ready for market in 6 weeks. Day old chick: KES 105.', ageRange: '1 day old', vaccinated: true, active: true, createdAt: '2026-06-02' },
+  { id: 'p5', name: 'Layer Chicks (ISA Brown)', category: 'Layers', breed: 'ISA Brown', price: 160, stock: 600, image: '', description: 'High-producing layer breed, up to 320 eggs per year. Day old chick: KES 160.', ageRange: '1 day old', vaccinated: true, active: true, createdAt: '2026-06-02' },
+  { id: 'p6', name: 'Rainbow Rooster', category: 'Kienyeji', breed: 'Rainbow Rooster', price: 120, stock: 200, image: '', description: 'Colourful, hardy, and popular in local markets. Day old: KES 120 | 1 week: KES 160 | 2 weeks: KES 200 | 3 weeks: KES 250 | 1 month: KES 300', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-03' },
 ];
 
 export const DEFAULT_ORDERS: Order[] = [
@@ -365,86 +387,41 @@ export const DEFAULT_BLOGS: BlogPost[] = [
 export const DEFAULT_STORIES: Story[] = [
   {
     id: 's1',
-    title: '🐣 New Chicks — Ready for Dispatch!',
+    title: 'New Chicks — Ready for Dispatch!',
     mediaUrl: '/media/owner-with-chicks-2.jpg',
     mediaType: 'image',
     category: 'New Chicks',
-    description: '5,000 ISA Brown Layer Chicks are ready for dispatch this week. Fully vaccinated!',
+    description: 'ISA Brown Layer Chicks ready for dispatch this week. Fully vaccinated!',
     actionText: 'Order Now',
     actionUrl: '/products',
     poll: {
       question: 'Are you stocking layers or broilers this month?',
       options: [
-        { text: 'ISA Brown Layers 🥚', votes: 42 },
-        { text: 'Cobb 500 Broilers 🍗', votes: 28 },
-        { text: 'Kuroiler Kienyeji 🐔', votes: 35 }
+        { text: 'ISA Brown Layers', votes: 12 },
+        { text: 'Cobb 500 Broilers', votes: 8 },
+        { text: 'Kuroiler Kienyeji', votes: 15 }
       ]
     },
-    likes: 124,
-    views: 450,
+    likes: 0,
+    views: 0,
     createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    featured: true,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    featured: false,
   },
   {
     id: 's2',
-    title: '💉 Pre-Vaccinated Chicks — Team at Work',
+    title: 'Pre-Vaccinated Chicks — Team at Work',
     mediaUrl: '/media/team-delivery-1.jpg',
     mediaType: 'image',
     category: 'Vaccination',
     description: 'Every chick from Cucu Mutugi Poultry undergoes strict veterinary vaccination protocol.',
     actionText: 'Vaccination Schedule',
     actionUrl: '/resources',
-    likes: 89,
-    views: 310,
+    likes: 0,
+    views: 0,
     createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    featured: true,
-  },
-  {
-    id: 's3',
-    title: '🚚 Kitui Delivery — Chicks on the Road!',
-    mediaUrl: '/media/team-delivery-2.jpg',
-    mediaType: 'image',
-    category: 'Egg Collection',
-    description: 'High fertility hatchable eggs ready for incubation. Order yours today!',
-    actionText: 'Contact Sales',
-    actionUrl: '/contact',
-    likes: 67,
-    views: 285,
-    createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     featured: false,
-  },
-  {
-    id: 's4',
-    title: '🏡 Meet the Cucu Mutugi Team',
-    mediaUrl: '/media/team-farm-2.jpg',
-    mediaType: 'image',
-    category: 'Farm Tour',
-    description: 'Take a virtual walk inside our climate-controlled brooding units.',
-    actionText: 'Watch Videos',
-    actionUrl: '/videos',
-    likes: 156,
-    views: 520,
-    createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    featured: true,
-  },
-  {
-    id: 's5',
-    title: '🐥 Baby Chicks Lineup — 5 Breeds',
-    mediaUrl: '/media/chicks-lineup.jpg',
-    mediaType: 'image',
-    category: 'Delivery',
-    description: 'Free delivery dispatch leaves Embu HQ on Wednesday morning at 5:00 AM.',
-    actionText: 'Book Delivery',
-    actionUrl: '/products',
-    likes: 98,
-    views: 390,
-    createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    featured: true,
   }
 ];
 
@@ -456,11 +433,11 @@ export const DEFAULT_VIDEOS: Video[] = [
     videoUrl: '/media/gallery/CHICK%202.mp4',
     thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.20%20PM.jpeg',
     category: 'Farm Tours',
-    views: 1250,
-    likes: 230,
+    views: 0,
+    likes: 0,
     duration: '00:30',
     createdAt: '2026-08-02',
-    featured: true,
+    featured: false,
   },
   {
     id: 'v2',
@@ -469,11 +446,11 @@ export const DEFAULT_VIDEOS: Video[] = [
     videoUrl: '/media/gallery/FLY%20LOGO.mp4',
     thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.38.27%20PM.jpeg',
     category: 'Daily Activities',
-    views: 2100,
-    likes: 410,
+    views: 0,
+    likes: 0,
     duration: '00:25',
     createdAt: '2026-08-02',
-    featured: true,
+    featured: false,
   },
   {
     id: 'v3',
@@ -482,11 +459,11 @@ export const DEFAULT_VIDEOS: Video[] = [
     videoUrl: '/media/gallery/KITUI%20DELIVERY.mp4',
     thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.44.53%20PM.jpeg',
     category: 'Customer Visits',
-    views: 890,
-    likes: 175,
+    views: 0,
+    likes: 0,
     duration: '00:28',
     createdAt: '2026-08-02',
-    featured: true,
+    featured: false,
   },
   {
     id: 'v4',
@@ -495,8 +472,8 @@ export const DEFAULT_VIDEOS: Video[] = [
     videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.06.13%20PM.mp4',
     thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.44.58%20PM.jpeg',
     category: 'Chicken Feeding',
-    views: 940,
-    likes: 190,
+    views: 0,
+    likes: 0,
     duration: '00:35',
     createdAt: '2026-08-02',
   },
@@ -507,8 +484,8 @@ export const DEFAULT_VIDEOS: Video[] = [
     videoUrl: '/media/gallery/WhatsApp%20Video%202026-08-02%20at%203.06.59%20PM.mp4',
     thumbnailUrl: '/media/gallery/WhatsApp%20Image%202026-01-20%20at%208.51.20%20PM%20(1).jpeg',
     category: 'Farm Tours',
-    views: 1120,
-    likes: 215,
+    views: 0,
+    likes: 0,
     duration: '00:40',
     createdAt: '2026-08-02',
   },

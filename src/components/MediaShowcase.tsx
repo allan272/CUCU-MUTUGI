@@ -16,7 +16,8 @@ import {
   SlidersHorizontal,
   Calendar,
   Tag,
-  CheckCircle2
+  Share2,
+  ExternalLink
 } from 'lucide-react';
 import { GALLERY_ITEMS, MediaItem } from '@/lib/mediaData';
 
@@ -30,7 +31,7 @@ interface MediaShowcaseProps {
 
 export default function MediaShowcase({
   title = "Media & Video Resource Hub",
-  subtitle = "Browse, scroll, or search our collection of farm walkthroughs, chick brooding guides, delivery dispatches, and photos.",
+  subtitle = "Browse, scroll, or search our collection of farm walkthroughs, chick brooding guides, delivery dispatches, and photos. Watch & like on official TikTok & Facebook!",
   initialType = 'all',
   defaultViewMode = 'carousel',
   showFilters = true
@@ -39,7 +40,7 @@ export default function MediaShowcase({
   const [mediaTypeFilter, setMediaTypeFilter] = useState<'all' | 'video' | 'image'>(initialType);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'carousel' | 'grid'>(defaultViewMode);
-  
+
   // Lightbox / Modal state
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
 
@@ -301,13 +302,32 @@ export default function MediaShowcase({
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-amber-100 flex items-center justify-between text-xs text-slate-500">
-                    <span className="flex items-center gap-1 font-bold text-amber-700">
-                      <Maximize2 className="w-3.5 h-3.5" /> Click to view full
-                    </span>
-                    {item.date && (
-                      <span className="flex items-center gap-1 text-[11px] font-medium">
-                        <Calendar className="w-3 h-3 text-slate-400" /> {item.date}
+                  {/* Direct Social Actions instead of fake views/likes */}
+                  <div className="pt-3 border-t border-amber-100 flex items-center justify-between gap-2 text-xs">
+                    {item.type === 'video' ? (
+                      <div className="flex items-center gap-1.5 w-full">
+                        <a
+                          href={item.tiktokUrl || "https://www.tiktok.com/@cucumutugipoultry"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex-1 bg-slate-950 hover:bg-slate-800 text-amber-300 font-extrabold text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all"
+                        >
+                          <Share2 className="w-3 h-3 text-pink-500" /> TikTok
+                        </a>
+                        <a
+                          href={item.facebookUrl || "https://www.facebook.com/cucumutugipoultry"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all"
+                        >
+                          <Share2 className="w-3 h-3" /> Facebook
+                        </a>
+                      </div>
+                    ) : (
+                      <span className="flex items-center gap-1 font-bold text-amber-700">
+                        <Maximize2 className="w-3.5 h-3.5" /> Click to view
                       </span>
                     )}
                   </div>
@@ -373,8 +393,33 @@ export default function MediaShowcase({
                   </p>
                 </div>
                 <div className="mt-3 pt-2 border-t border-amber-100 flex items-center justify-between text-xs text-amber-700 font-bold">
-                  <span>View Details</span>
-                  <Maximize2 className="w-3.5 h-3.5" />
+                  {item.type === 'video' ? (
+                    <div className="flex items-center gap-1.5 w-full">
+                      <a
+                        href={item.tiktokUrl || "https://www.tiktok.com/@cucumutugipoultry"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 bg-slate-950 hover:bg-slate-800 text-amber-300 font-extrabold text-[11px] py-1 px-2 rounded flex items-center justify-center gap-1 shadow-sm"
+                      >
+                        <Share2 className="w-3 h-3 text-pink-500" /> TikTok
+                      </a>
+                      <a
+                        href={item.facebookUrl || "https://www.facebook.com/cucumutugipoultry"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[11px] py-1 px-2 rounded flex items-center justify-center gap-1 shadow-sm"
+                      >
+                        <Share2 className="w-3 h-3" /> Facebook
+                      </a>
+                    </div>
+                  ) : (
+                    <>
+                      <span>View Details</span>
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -447,8 +492,8 @@ export default function MediaShowcase({
               </button>
             </div>
 
-            {/* Modal Footer / Description */}
-            <div className="p-5 md:p-6 bg-slate-950 border-t border-slate-800 space-y-3 text-white">
+            {/* Modal Footer / Description & Social Links */}
+            <div className="p-5 md:p-6 bg-slate-950 border-t border-slate-800 space-y-4 text-white">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-xs text-amber-400 font-extrabold uppercase">
@@ -456,18 +501,37 @@ export default function MediaShowcase({
                   </div>
                   <h4 className="text-xl font-black text-white">{selectedItem.title}</h4>
                 </div>
-                <div className="flex items-center gap-3">
+
+                {/* Direct Social Media Action Links */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <a
+                    href={selectedItem.tiktokUrl || "https://www.tiktok.com/@cucumutugipoultry"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-amber-300 text-xs font-black transition-all shadow-md flex items-center gap-1.5 border border-amber-400/40"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-pink-500" /> Watch &amp; Like on TikTok
+                  </a>
+                  <a
+                    href={selectedItem.facebookUrl || "https://www.facebook.com/cucumutugipoultry"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition-all shadow-md flex items-center gap-1.5"
+                  >
+                    <Share2 className="w-3.5 h-3.5" /> Watch on Facebook
+                  </a>
                   <a
                     href={selectedItem.url}
                     download
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all shadow-md flex items-center gap-1.5"
+                    className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all shadow-md flex items-center gap-1"
                   >
-                    Open Original File
+                    <ExternalLink className="w-3.5 h-3.5" /> Download
                   </a>
                 </div>
               </div>
+
               <p className="text-slate-300 text-sm leading-relaxed font-medium">
                 {selectedItem.description}
               </p>

@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { getChatUsers, saveChatUser } from '@/lib/serverStorage';
 import { ChatUser } from '@/lib/seeds';
 
+function isStrongPassword(password: string): boolean {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -13,6 +17,12 @@ export async function POST(request: Request) {
     if (action === 'register') {
       if (!email || !name || !password) {
         return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
+      }
+
+      if (!isStrongPassword(password.trim())) {
+        return NextResponse.json({
+          error: 'Password must be at least 8 characters and include an uppercase letter, lowercase letter, number, and special character.',
+        }, { status: 400 });
       }
 
       const cleanEmail = email.trim().toLowerCase();
@@ -116,8 +126,9 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-  } catch (error: any) {
-    console.error('Chat auth error:', error);
-    return NextResponse.json({ error: error.message || 'Authentication error' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Authentication error';
+    console.error('Chat auth error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
