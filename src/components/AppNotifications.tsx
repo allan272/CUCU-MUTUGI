@@ -89,7 +89,7 @@ export default function AppNotifications() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-[70] w-[calc(100vw-2rem)] max-w-sm">
+    <div className="fixed bottom-4 left-4 right-auto z-40 w-[calc(100vw-2rem)] max-w-sm sm:left-6 sm:w-[22rem]">
       <div className="rounded-3xl border border-white/10 bg-slate-950/95 text-white shadow-2xl backdrop-blur-xl overflow-hidden">
         <button
           type="button"

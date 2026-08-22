@@ -23,6 +23,7 @@ import {
   DEFAULT_CHAT_CHANNELS,
   DEFAULT_CHAT_MESSAGES
 } from './seeds';
+import { broadcastAdminMessage } from './outboundMessaging';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'cucu_db.json');
@@ -205,6 +206,12 @@ export async function addTransaction(tx: Omit<Transaction, 'id' | 'createdAt'>):
       metadata: { transactionId: newTx.id, amount: newTx.amount, category: newTx.category },
     }),
   });
+  await addNotification({
+    title: `${newTx.type === 'income' ? 'Income' : 'Expense'} recorded`,
+    body: `${newTx.category} for KES ${newTx.amount.toLocaleString()} has been saved to the ledger.`,
+    type: 'finance',
+    url: '/admin?tab=commerce',
+  });
   return updated;
 }
 
@@ -221,6 +228,12 @@ export async function updateTransaction(id: string, updates: Partial<Transaction
       metadata: { transactionId: id, updates },
     }),
   });
+  await addNotification({
+    title: 'Transaction updated',
+    body: `Transaction ${id} was edited in the finance ledger.`,
+    type: 'finance',
+    url: '/admin?tab=commerce',
+  });
   return updated;
 }
 
@@ -236,6 +249,12 @@ export async function deleteTransaction(id: string): Promise<Transaction[]> {
       actor: 'Admin',
       metadata: { transactionId: id },
     }),
+  });
+  await addNotification({
+    title: 'Transaction deleted',
+    body: `Transaction ${id} was removed from the finance ledger.`,
+    type: 'finance',
+    url: '/admin?tab=commerce',
   });
   return updated;
 }
@@ -254,6 +273,14 @@ export async function addNotification(notification: Omit<AppNotification, 'id' |
   };
   const updated = [newNotification, ...(db.notifications || [])].slice(0, 100);
   await saveStoredDB({ notifications: updated });
+  try {
+    const broadcast = `${newNotification.title}\n${newNotification.body}`.trim();
+    if (broadcast) {
+      await broadcastAdminMessage(broadcast);
+    }
+  } catch (error) {
+    console.warn('Admin broadcast could not be queued:', error);
+  }
   return updated;
 }
 

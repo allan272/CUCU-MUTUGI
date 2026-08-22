@@ -85,14 +85,7 @@ export async function POST(request: Request) {
       actor: customerName,
       metadata: { orderId: order.id, productId: product.id, qty: requestedQty, totalKES },
     });
-    await addNotification({
-      title: 'New chick order received',
-      body: `${customerName} ordered ${requestedQty} ${product.name} for KES ${totalKES.toLocaleString()}.`,
-      type: 'order',
-      url: '/admin?tab=orders',
-    });
 
-    const adminPhone = process.env.ADMIN_PHONE_NUMBER || '+254706972161';
     const adminMessage =
       `🛒 NEW CHICK ORDER\n` +
       `Customer: ${customerName}\n` +
@@ -104,33 +97,31 @@ export async function POST(request: Request) {
       `Total: KES ${totalKES.toLocaleString()}\n` +
       `Order ID: ${order.id}`;
 
-    const smsResults = await Promise.all([
-      sendBrevoSms({
-        recipient: adminPhone,
-        content: adminMessage,
-      }),
-      phone
-        ? sendBrevoSms({
-            recipient: phone,
-            content:
-              `✅ Your Cucu Mutugi order was received.\n` +
-              `Order: ${order.id}\n` +
-              `Product: ${product.name}\n` +
-              `Qty: ${requestedQty}\n` +
-              `Total: KES ${totalKES.toLocaleString()}\n` +
-              `We will contact you shortly to confirm delivery.`,
-          })
-        : Promise.resolve({ success: false, error: 'Customer phone not provided.' }),
-    ]);
+    await addNotification({
+      title: 'New chick order received',
+      body: adminMessage,
+      type: 'order',
+      url: '/admin?tab=orders',
+    });
+
+    const customerSms = phone
+      ? await sendBrevoSms({
+          recipient: phone,
+          content:
+            `✅ Your Cucu Mutugi order was received.\n` +
+            `Order: ${order.id}\n` +
+            `Product: ${product.name}\n` +
+            `Qty: ${requestedQty}\n` +
+            `Total: KES ${totalKES.toLocaleString()}\n` +
+            `We will contact you shortly to confirm delivery.`,
+        })
+      : { success: false, error: 'Customer phone not provided.' };
 
     return NextResponse.json({
       success: true,
       order,
       remainingStock: updatedProducts.find((item) => item.id === product.id)?.stock ?? product.stock,
-      sms: {
-        admin: smsResults[0],
-        customer: smsResults[1],
-      },
+      sms: { customer: customerSms },
       message: 'Order submitted successfully.',
     });
   } catch (error: unknown) {

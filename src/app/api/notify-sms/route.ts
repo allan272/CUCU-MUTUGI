@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendBrevoSms } from '@/lib/brevoSms';
-
-const ADMIN_PHONE = process.env.ADMIN_PHONE_NUMBER || '+254706972161';
+import { broadcastAdminMessage } from '@/lib/outboundMessaging';
 
 export async function POST(request: Request) {
   try {
@@ -22,15 +20,12 @@ export async function POST(request: Request) {
         `${notes ? `Notes: ${notes}\n` : ''}` +
         `Reply or call to confirm. — Cucu Mutugi App`;
 
-      const result = await sendBrevoSms({
-        recipient: ADMIN_PHONE,
-        content: msg,
-      });
+      const result = await broadcastAdminMessage(msg);
 
       return NextResponse.json({
-        success: result.success,
-        message: result.success ? 'Order alert sent to admin.' : 'Order alert could not be sent.',
-        error: result.success ? undefined : result.error,
+        success: result.sms.some((item) => item.success) || result.whatsapp.some((item) => item.success),
+        message: 'Order alert broadcast queued.',
+        results: result,
       });
     }
 
@@ -43,21 +38,21 @@ export async function POST(request: Request) {
         `"${inquiryMsg?.slice(0, 120) || 'No message'}"\n` +
         `— Cucu Mutugi App`;
 
-      const result = await sendBrevoSms({
-        recipient: ADMIN_PHONE,
-        content: msg,
-      });
+      const result = await broadcastAdminMessage(msg);
 
-      return NextResponse.json({ success: result.success, error: result.success ? undefined : result.error });
+      return NextResponse.json({
+        success: result.sms.some((item) => item.success) || result.whatsapp.some((item) => item.success),
+        results: result,
+      });
     }
 
     if (type === 'test') {
-      const result = await sendBrevoSms({
-        recipient: ADMIN_PHONE,
-        content: `✅ Cucu Mutugi SMS Test OK — ${new Date().toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' })}`,
-      });
+      const result = await broadcastAdminMessage(`✅ Cucu Mutugi broadcast test OK — ${new Date().toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' })}`);
 
-      return NextResponse.json({ success: result.success, error: result.success ? undefined : result.error });
+      return NextResponse.json({
+        success: result.sms.some((item) => item.success) || result.whatsapp.some((item) => item.success),
+        results: result,
+      });
     }
 
     return NextResponse.json({ error: 'Unknown notification type.' }, { status: 400 });
