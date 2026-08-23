@@ -62,7 +62,9 @@ export async function POST(request: Request) {
       totalKES,
       status: 'Pending',
       date: new Date().toISOString().split('T')[0],
+      source: 'website',
       notes: [
+        'Ordered through website',
         notes,
         `Product: ${product.name}`,
         product.ageRange ? `Age/Stage: ${product.ageRange}` : '',

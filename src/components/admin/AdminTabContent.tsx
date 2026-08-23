@@ -442,8 +442,8 @@ function OrdersTab() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-extrabold text-primary">Orders Management</h2>
-        <p className="text-gray-500 text-sm">Manage and update all customer orders</p>
+        <h2 className="text-2xl font-extrabold text-primary">Website Orders Inbox</h2>
+        <p className="text-gray-500 text-sm">Live customer orders from the site appear here first, with admin SMS and WhatsApp alerts beside them.</p>
       </div>
       <div className="flex gap-2 flex-wrap">
         {statuses.map(s => (
@@ -456,7 +456,7 @@ function OrdersTab() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead><tr className="bg-blue-50 border-b border-blue-100">
-              {['Order ID', 'Farmer', 'Phone', 'County', 'Breed', 'Qty', 'KES', 'Status', 'Date', 'Change Status'].map(h => (
+              {['Order ID', 'Farmer', 'Phone', 'County', 'Breed', 'Qty', 'KES', 'Source', 'Status', 'Date', 'Change Status'].map(h => (
                 <th key={h} className="text-left py-3 px-3 text-xs uppercase font-semibold text-gray-400">{h}</th>
               ))}
             </tr></thead>
@@ -470,6 +470,13 @@ function OrdersTab() {
                   <td className="py-2 px-3">{o.breed}</td>
                   <td className="py-2 px-3 font-semibold">{o.qty}</td>
                   <td className="py-2 px-3 font-semibold text-green-700 text-xs">{o.totalKES.toLocaleString()}</td>
+                  <td className="py-2 px-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                      o.source === 'website' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'
+                    }`}>
+                      {o.source === 'website' ? 'Website' : 'Manual'}
+                    </span>
+                  </td>
                   <td className="py-2 px-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${statusColor[o.status]}`}>{o.status}</span></td>
                   <td className="py-2 px-3 text-gray-400 text-xs">{o.date}</td>
                   <td className="py-2 px-3">

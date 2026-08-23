@@ -33,7 +33,7 @@ const TABS = [
   { id: 'videos', icon: Video, label: 'Videos & Shorts' },
   { id: 'database', icon: Database, label: 'Database Viewer' },
   { id: 'products', icon: Egg, label: 'Products' },
-  { id: 'orders', icon: Package, label: 'Orders' },
+  { id: 'orders', icon: Package, label: 'Website Orders' },
   { id: 'farmers', icon: Users, label: 'Farmers' },
   { id: 'media', icon: ImageIcon, label: 'Media & Images' },
   { id: 'content', icon: FileEdit, label: 'Site Content' },

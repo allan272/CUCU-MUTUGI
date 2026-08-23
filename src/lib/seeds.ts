@@ -24,6 +24,7 @@ export interface Order {
   status: 'Pending' | 'Confirmed' | 'In Transit' | 'Delivered' | 'Cancelled';
   date: string;
   notes?: string;
+  source?: 'website' | 'manual';
 }
 
 export interface Farmer {
@@ -386,12 +387,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
 
 export const DEFAULT_ORDERS: Order[] = [];
 
-export const DEFAULT_FARMERS: Farmer[] = [
-  { id: 'f1', name: 'James Mwangi', phone: '0712345678', email: 'james@email.com', county: 'Embu', flocks: 3, totalOrders: 5, joinedAt: '2026-01-15' },
-  { id: 'f2', name: 'Mary Wanjiru', phone: '0723456789', county: 'Nairobi', flocks: 2, totalOrders: 3, joinedAt: '2026-02-20' },
-  { id: 'f3', name: 'Peter Kamau', phone: '0734567890', county: 'Nakuru', flocks: 1, totalOrders: 2, joinedAt: '2026-03-10' },
-  { id: 'f4', name: 'Grace Achieng', phone: '0745678901', county: 'Eldoret', flocks: 4, totalOrders: 7, joinedAt: '2026-01-05' },
-];
+export const DEFAULT_FARMERS: Farmer[] = [];
 
 export const DEFAULT_BLOGS: BlogPost[] = [
   { id: 'b1', title: 'How to Start Broiler Farming in Kenya', slug: 'how-to-start-broiler-farming', content: 'Broiler farming is one of the most profitable agricultural ventures in Kenya...', author: 'Cucu Mutugi', published: true, createdAt: '2026-05-20', category: 'Farming Guide' },
