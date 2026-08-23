@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Sparkles, Video as VideoIcon, Clock, Share2, PlusCircle, ArrowRight } from 'lucide-react';
+import { Sparkles, Video as VideoIcon, Clock, ArrowRight } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
 import StoryViewerModal from './StoryViewerModal';
 
@@ -58,37 +57,9 @@ export default function PoultryUpdatesBar() {
               </p>
               <h3 className="text-lg font-black text-white">No active 24-hour updates right now</h3>
               <p className="max-w-2xl text-sm text-slate-300">
-                Updates expire automatically after 24 hours. Post a fresh status anytime, or check the social channels for live clips.
+                Updates expire automatically after 24 hours. Only the admin can post new updates, and they appear here until they expire.
               </p>
             </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <a
-              href="https://www.tiktok.com/@cucumutugipoultry"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <Share2 className="h-4 w-4 text-pink-400" />
-              TikTok
-            </a>
-            <a
-              href="https://www.facebook.com/cucumutugipoultry"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <Share2 className="h-4 w-4 text-blue-400" />
-              Facebook
-            </a>
-            <Link
-              href="/admin"
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400"
-            >
-              <PlusCircle className="h-4 w-4" />
-              Post update
-            </Link>
           </div>
         </div>
       </section>

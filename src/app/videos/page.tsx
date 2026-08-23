@@ -19,7 +19,7 @@ export default function VideosPage() {
           </h1>
 
           <p className="text-slate-950 text-lg md:text-xl font-bold max-w-2xl mx-auto leading-relaxed">
-            Watch real farm walkthroughs, chick vaccination guides, feeding practices, and delivery dispatches across Kenya.
+            Watch real farm walkthroughs, chick vaccination guides, feeding practices, and delivery dispatches directly on the page.
           </p>
         </div>
       </section>
@@ -28,7 +28,7 @@ export default function VideosPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full space-y-12">
         <MediaShowcase
           title="Explore Our Complete Media Collection"
-          subtitle="Scroll horizontally through our interactive carousel or switch to grid view to search and inspect any video or photo."
+          subtitle="Scroll horizontally through our interactive carousel or switch to grid view to search and play any video directly on the page."
           defaultViewMode="carousel"
           showFilters={true}
         />

@@ -16,8 +16,7 @@ import {
   SlidersHorizontal,
   Calendar,
   Tag,
-  Share2,
-  ExternalLink
+  Download
 } from 'lucide-react';
 import { GALLERY_ITEMS, MediaItem } from '@/lib/mediaData';
 
@@ -31,7 +30,7 @@ interface MediaShowcaseProps {
 
 export default function MediaShowcase({
   title = "Media & Video Resource Hub",
-  subtitle = "Browse, scroll, or search our collection of farm walkthroughs, chick brooding guides, delivery dispatches, and photos. Watch & like on official TikTok & Facebook!",
+  subtitle = "Browse, scroll, or search our collection of farm walkthroughs, chick brooding guides, delivery dispatches, and photos. Videos play directly on the page.",
   initialType = 'all',
   defaultViewMode = 'carousel',
   showFilters = true
@@ -243,8 +242,12 @@ export default function MediaShowcase({
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                onClick={() => setSelectedItem(item)}
-                className="flex-shrink-0 w-80 md:w-96 bg-white rounded-3xl overflow-hidden border-2 border-amber-200 shadow-lg hover:shadow-2xl hover:border-amber-400 transition-all duration-300 group/card cursor-pointer flex flex-col transform hover:-translate-y-1.5"
+                onClick={() => item.type === 'image' && setSelectedItem(item)}
+                className={`flex-shrink-0 w-80 md:w-96 bg-white rounded-3xl overflow-hidden border-2 shadow-lg hover:shadow-2xl transition-all duration-300 group/card flex flex-col transform hover:-translate-y-1.5 ${
+                  item.type === 'video'
+                    ? 'border-emerald-300 cursor-default'
+                    : 'border-amber-200 hover:border-amber-400 cursor-pointer'
+                }`}
                 style={{ scrollSnapAlign: 'start' }}
               >
                 {/* Thumbnail Container */}
@@ -257,24 +260,14 @@ export default function MediaShowcase({
                       className="object-cover group-hover/card:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <>
-                      {item.thumbnail ? (
-                        <Image
-                          src={item.thumbnail}
-                          alt={item.title}
-                          fill
-                          className="object-cover group-hover/card:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <video src={item.url} className="w-full h-full object-cover" muted />
-                      )}
-                      {/* Play overlay button */}
-                      <div className="absolute inset-0 bg-slate-950/30 flex items-center justify-center group-hover/card:bg-slate-950/20 transition-all">
-                        <div className="w-14 h-14 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-2xl group-hover/card:scale-110 group-hover/card:bg-amber-300 transition-all border-2 border-slate-950">
-                          <Play className="w-7 h-7 fill-slate-950 ml-1" />
-                        </div>
-                      </div>
-                    </>
+                    <video
+                      src={item.url}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={item.thumbnail}
+                      className="w-full h-full object-cover bg-black"
+                    />
                   )}
 
                   {/* Top Left Badge */}
@@ -302,29 +295,11 @@ export default function MediaShowcase({
                     </p>
                   </div>
 
-                  {/* Direct Social Actions instead of fake views/likes */}
                   <div className="pt-3 border-t border-amber-100 flex items-center justify-between gap-2 text-xs">
                     {item.type === 'video' ? (
-                      <div className="flex items-center gap-1.5 w-full">
-                        <a
-                          href={item.tiktokUrl || "https://www.tiktok.com/@cucumutugipoultry"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex-1 bg-slate-950 hover:bg-slate-800 text-amber-300 font-extrabold text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all"
-                        >
-                          <Share2 className="w-3 h-3 text-pink-500" /> TikTok
-                        </a>
-                        <a
-                          href={item.facebookUrl || "https://www.facebook.com/cucumutugipoultry"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm transition-all"
-                        >
-                          <Share2 className="w-3 h-3" /> Facebook
-                        </a>
-                      </div>
+                      <span className="flex items-center gap-1 font-bold text-emerald-700">
+                        <Play className="w-3.5 h-3.5" /> Play in place
+                      </span>
                     ) : (
                       <span className="flex items-center gap-1 font-bold text-amber-700">
                         <Maximize2 className="w-3.5 h-3.5" /> Click to view
@@ -342,8 +317,12 @@ export default function MediaShowcase({
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              onClick={() => setSelectedItem(item)}
-              className="bg-white rounded-3xl overflow-hidden border-2 border-amber-200 shadow-md hover:shadow-xl hover:border-amber-400 transition-all duration-300 group/card cursor-pointer flex flex-col transform hover:-translate-y-1"
+              onClick={() => item.type === 'image' && setSelectedItem(item)}
+              className={`bg-white rounded-3xl overflow-hidden border-2 shadow-md hover:shadow-xl transition-all duration-300 group/card flex flex-col transform hover:-translate-y-1 ${
+                item.type === 'video'
+                  ? 'border-emerald-300 cursor-default hover:border-emerald-400'
+                  : 'border-amber-200 hover:border-amber-400 cursor-pointer'
+              }`}
             >
               <div className="relative aspect-video w-full bg-slate-950 overflow-hidden">
                 {item.type === 'image' ? (
@@ -354,23 +333,14 @@ export default function MediaShowcase({
                     className="object-cover group-hover/card:scale-105 transition-transform duration-500"
                   />
                 ) : (
-                  <>
-                    {item.thumbnail ? (
-                      <Image
-                        src={item.thumbnail}
-                        alt={item.title}
-                        fill
-                        className="object-cover group-hover/card:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <video src={item.url} className="w-full h-full object-cover" muted />
-                    )}
-                    <div className="absolute inset-0 bg-slate-950/30 flex items-center justify-center group-hover/card:bg-slate-950/20 transition-all">
-                      <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-xl group-hover/card:scale-110 transition-all border-2 border-slate-950">
-                        <Play className="w-6 h-6 fill-slate-950 ml-0.5" />
-                      </div>
-                    </div>
-                  </>
+                  <video
+                    src={item.url}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster={item.thumbnail}
+                    className="w-full h-full object-cover bg-black"
+                  />
                 )}
 
                 <span className={`absolute top-3 left-3 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-md ${
@@ -394,26 +364,9 @@ export default function MediaShowcase({
                 </div>
                 <div className="mt-3 pt-2 border-t border-amber-100 flex items-center justify-between text-xs text-amber-700 font-bold">
                   {item.type === 'video' ? (
-                    <div className="flex items-center gap-1.5 w-full">
-                      <a
-                        href={item.tiktokUrl || "https://www.tiktok.com/@cucumutugipoultry"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-1 bg-slate-950 hover:bg-slate-800 text-amber-300 font-extrabold text-[11px] py-1 px-2 rounded flex items-center justify-center gap-1 shadow-sm"
-                      >
-                        <Share2 className="w-3 h-3 text-pink-500" /> TikTok
-                      </a>
-                      <a
-                        href={item.facebookUrl || "https://www.facebook.com/cucumutugipoultry"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[11px] py-1 px-2 rounded flex items-center justify-center gap-1 shadow-sm"
-                      >
-                        <Share2 className="w-3 h-3" /> Facebook
-                      </a>
-                    </div>
+                    <span className="flex items-center gap-1 font-bold text-emerald-700">
+                      <Play className="w-3.5 h-3.5" /> Play in place
+                    </span>
                   ) : (
                     <>
                       <span>View Details</span>
@@ -502,34 +455,15 @@ export default function MediaShowcase({
                   <h4 className="text-xl font-black text-white">{selectedItem.title}</h4>
                 </div>
 
-                {/* Direct Social Media Action Links */}
-                <div className="flex items-center gap-2 flex-wrap">
-                  <a
-                    href={selectedItem.tiktokUrl || "https://www.tiktok.com/@cucumutugipoultry"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-amber-300 text-xs font-black transition-all shadow-md flex items-center gap-1.5 border border-amber-400/40"
-                  >
-                    <Share2 className="w-3.5 h-3.5 text-pink-500" /> Watch &amp; Like on TikTok
-                  </a>
-                  <a
-                    href={selectedItem.facebookUrl || "https://www.facebook.com/cucumutugipoultry"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition-all shadow-md flex items-center gap-1.5"
-                  >
-                    <Share2 className="w-3.5 h-3.5" /> Watch on Facebook
-                  </a>
-                  <a
-                    href={selectedItem.url}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all shadow-md flex items-center gap-1"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" /> Download
-                  </a>
-                </div>
+                <a
+                  href={selectedItem.url}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all shadow-md flex items-center gap-1 w-fit"
+                >
+                  <Download className="w-3.5 h-3.5" /> Download
+                </a>
               </div>
 
               <p className="text-slate-300 text-sm leading-relaxed font-medium">
