@@ -21,12 +21,40 @@ You help with:
 
 When explaining actions, give simple step-by-step guidance. If a user asks about money, records, or approvals, be careful and precise. Reply in the same language the user uses, mainly English or Swahili.`;
 
+function fallbackReply(text: string) {
+  const input = text.toLowerCase();
+  if (input.includes('order')) {
+    return 'Open the Orders tab, check the latest website order, then confirm the status, quantity, and phone number before you save changes.';
+  }
+  if (input.includes('ledger') || input.includes('expense') || input.includes('income')) {
+    return 'Go to Commerce & Ledger, add the transaction, choose income or expense, then save it so the records update immediately.';
+  }
+  if (input.includes('community') || input.includes('approve')) {
+    return 'Open Community Approvals, review the pending member, then mark the farmer as approved if their details look correct.';
+  }
+  if (input.includes('video') || input.includes('upload')) {
+    return 'Open the Videos section, upload the file or paste the media link, then save it so it appears in the gallery.';
+  }
+  if (input.includes('update') || input.includes('story') || input.includes('status')) {
+    return 'Open 24-Hour Updates, create a new story, add the media, and publish it so it appears on the public updates bar.';
+  }
+  return 'I am ready to help with orders, ledger entries, approvals, stories, videos, and site settings. Tell me the section you want to edit and I will guide you step by step.';
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { action, text, voice, history } = body;
 
     if (!GEMINI_API_KEY) {
+      if (action === 'chat') {
+        return NextResponse.json({ success: true, reply: fallbackReply(String(text || '')) });
+      }
+
+      if (action === 'tts') {
+        return NextResponse.json({ success: false, textOnly: true });
+      }
+
       return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 });
     }
 
@@ -69,7 +97,7 @@ export async function POST(request: Request) {
       if (!res.ok) {
         const errorText = await res.text();
         console.error('Gemini chat error:', errorText);
-        return NextResponse.json({ error: `Gemini API error: ${res.status}` }, { status: 500 });
+        return NextResponse.json({ success: true, reply: fallbackReply(String(text || '')) });
       }
 
       const data = await res.json();

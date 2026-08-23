@@ -349,13 +349,7 @@ export const DEFAULT_CHAT_MESSAGES: ChatMessage[] = [
   }
 ];
 
-export const DEFAULT_TRANSACTIONS: Transaction[] = [
-  { id: 'tx-1', date: '2026-06-10', type: 'income', category: 'Chicks Sale', amount: 36000, paymentMethod: 'M-Pesa', customerOrVendor: 'James Mwangi', reference: 'MPX987123', notes: '300 Kuroiler chicks', createdAt: '2026-06-10T08:30:00Z' },
-  { id: 'tx-2', date: '2026-06-10', type: 'expense', category: 'Feed Purchase', amount: 14500, paymentMethod: 'M-Pesa', customerOrVendor: 'Unga Feeds Embu', reference: 'RCP-5421', notes: '5 bags chick mash', createdAt: '2026-06-10T10:15:00Z' },
-  { id: 'tx-3', date: '2026-06-09', type: 'income', category: 'Egg Sales', amount: 8400, paymentMethod: 'Cash', customerOrVendor: 'Wanjiku Hotel', reference: 'CSH-09', notes: '24 trays kienyeji eggs', createdAt: '2026-06-09T14:20:00Z' },
-  { id: 'tx-4', date: '2026-06-09', type: 'expense', category: 'Vaccines & Meds', amount: 3200, paymentMethod: 'M-Pesa', customerOrVendor: 'Agrovet Supplies', reference: 'AGR-771', notes: 'Gumboro & Newcastle vaccines', createdAt: '2026-06-09T16:00:00Z' },
-  { id: 'tx-5', date: '2026-06-08', type: 'income', category: 'Chicks Sale', amount: 22000, paymentMethod: 'Bank Transfer', customerOrVendor: 'Peter Kamau', reference: 'BNK-3341', notes: '200 ISA Brown layers', createdAt: '2026-06-08T11:00:00Z' },
-];
+export const DEFAULT_TRANSACTIONS: Transaction[] = [];
 
 export const DEFAULT_ACTIVITIES: CustomerActivity[] = [
   { id: 'act-1', type: 'search', query: 'ISA Brown day old chicks price', page: '/products', timestamp: '2026-06-10T09:12:00Z' },
@@ -390,13 +384,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
   { id: 'p6', name: 'Rainbow Rooster', category: 'Kienyeji', breed: 'Rainbow Rooster', price: 120, stock: 200, image: '', description: 'Colourful, hardy, and popular in local markets. Day old: KES 120 | 1 week: KES 160 | 2 weeks: KES 200 | 3 weeks: KES 250 | 1 month: KES 300', ageRange: '1 day – 1 month', vaccinated: true, active: true, createdAt: '2026-06-03' },
 ];
 
-export const DEFAULT_ORDERS: Order[] = [
-  { id: 'ORD-001', farmer: 'James Mwangi', phone: '0712345678', county: 'Embu', breed: 'Kuroiler', qty: 100, totalKES: 12000, status: 'Delivered', date: '2026-06-01', notes: 'Delivered on time' },
-  { id: 'ORD-002', farmer: 'Mary Wanjiru', phone: '0723456789', county: 'Nairobi', breed: 'Broilers', qty: 200, totalKES: 20000, status: 'In Transit', date: '2026-06-05', notes: '' },
-  { id: 'ORD-003', farmer: 'Peter Kamau', phone: '0734567890', county: 'Nakuru', breed: 'Layers', qty: 150, totalKES: 16500, status: 'Pending', date: '2026-06-06', notes: '' },
-  { id: 'ORD-004', farmer: 'Grace Achieng', phone: '0745678901', county: 'Eldoret', breed: 'Sasso', qty: 80, totalKES: 10400, status: 'Delivered', date: '2026-06-02', notes: '' },
-  { id: 'ORD-005', farmer: 'David Njoroge', phone: '0756789012', county: 'Kirinyaga', breed: 'Kenbro', qty: 120, totalKES: 13800, status: 'Confirmed', date: '2026-06-07', notes: 'Needs morning delivery' },
-];
+export const DEFAULT_ORDERS: Order[] = [];
 
 export const DEFAULT_FARMERS: Farmer[] = [
   { id: 'f1', name: 'James Mwangi', phone: '0712345678', email: 'james@email.com', county: 'Embu', flocks: 3, totalOrders: 5, joinedAt: '2026-01-15' },

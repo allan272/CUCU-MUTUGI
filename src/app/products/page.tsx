@@ -69,7 +69,7 @@ export default function ProductsPage() {
     customerName: '',
     phone: '',
     county: '',
-    qty: '25',
+    qty: '1',
     notes: '',
   });
 
@@ -145,9 +145,17 @@ export default function ProductsPage() {
         throw new Error(data.error || 'Order submission failed.');
       }
 
+      const adminSmsSuccess = Array.isArray(data.adminBroadcast?.sms)
+        ? data.adminBroadcast.sms.some((item: { success?: boolean }) => item.success)
+        : false;
+      const adminWhatsappSuccess = Array.isArray(data.adminBroadcast?.whatsapp)
+        ? data.adminBroadcast.whatsapp.some((item: { success?: boolean }) => item.success)
+        : false;
+      const customerSmsSuccess = Boolean(data.sms?.customer?.success);
+
       setMessage({
         type: 'success',
-        text: `Order received. Reference ${data.order?.id || 'pending'} has been created and the admin has been notified by SMS.`,
+        text: `Order received. Reference ${data.order?.id || 'pending'} was created. Admin SMS: ${adminSmsSuccess ? 'sent' : 'not sent'} | WhatsApp: ${adminWhatsappSuccess ? 'sent' : 'not sent'} | Customer SMS: ${customerSmsSuccess ? 'sent' : 'not sent'}.`,
       });
 
       setProducts((current) =>
@@ -160,7 +168,7 @@ export default function ProductsPage() {
 
       setOrder((prev) => ({
         ...prev,
-        qty: '25',
+        qty: '1',
         notes: '',
       }));
     } catch (error: unknown) {

@@ -6,9 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "mobile:sync": "npx cap sync android",
+    "mobile:open": "npx cap open android",
+    "mobile:doctor": "npx cap doctor"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
     "@supabase/supabase-js": "^2.108.1",
     "lucide-react": "^1.21.0",
     "mongodb": "^7.3.0",
