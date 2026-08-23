@@ -166,6 +166,15 @@ export default function ProductsPage() {
         )
       );
 
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('cucu-db-updated'));
+        if ('BroadcastChannel' in window) {
+          const channel = new BroadcastChannel('cucu-db-updates');
+          channel.postMessage({ type: 'order-created', orderId: data.order?.id });
+          channel.close();
+        }
+      }
+
       setOrder((prev) => ({
         ...prev,
         qty: '1',

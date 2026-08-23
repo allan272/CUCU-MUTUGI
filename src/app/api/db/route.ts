@@ -73,13 +73,13 @@ export async function GET(request: Request) {
         ]);
 
         return NextResponse.json({
-          products: diskDB.products?.length ? diskDB.products : products.map(p => formatDoc<Product>(p)),
-          orders: diskDB.orders?.length ? diskDB.orders : orders.map(o => formatDoc<Order>(o)),
-          farmers: diskDB.farmers?.length ? diskDB.farmers : farmers.map(f => formatDoc<Farmer>(f)),
-          blogPosts: diskDB.blogPosts?.length ? diskDB.blogPosts : blogs.map(b => formatDoc<BlogPost>(b)),
-          stories: diskDB.stories?.length ? diskDB.stories : stories.map(s => formatDoc<Story>(s)),
-          videos: diskDB.videos?.length ? diskDB.videos : videos.map(v => formatDoc<Video>(v)),
-          settings: diskDB.settings || formatDoc<SiteSettings>(settingsDoc) || DEFAULT_SETTINGS,
+          products: diskDB.products ?? products.map(p => formatDoc<Product>(p)),
+          orders: diskDB.orders ?? orders.map(o => formatDoc<Order>(o)),
+          farmers: diskDB.farmers ?? farmers.map(f => formatDoc<Farmer>(f)),
+          blogPosts: diskDB.blogPosts ?? blogs.map(b => formatDoc<BlogPost>(b)),
+          stories: diskDB.stories ?? stories.map(s => formatDoc<Story>(s)),
+          videos: diskDB.videos ?? videos.map(v => formatDoc<Video>(v)),
+          settings: diskDB.settings ?? formatDoc<SiteSettings>(settingsDoc) ?? DEFAULT_SETTINGS,
           transactions: diskDB.transactions || [],
           auditTrail: diskDB.auditTrail || [],
           notifications: diskDB.notifications || [],

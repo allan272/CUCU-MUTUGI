@@ -6,7 +6,7 @@
       "category": "Kienyeji",
       "breed": "Kuroiler",
       "price": 120,
-      "stock": 500,
+      "stock": 499,
       "image": "",
       "description": "Fast-growing dual-purpose breed. Excellent for both eggs and meat.",
       "ageRange": "1 day – 1 month",
@@ -85,7 +85,21 @@
       "createdAt": "2026-06-03"
     }
   ],
-  "orders": [],
+  "orders": [
+    {
+      "id": "ORD-1787498536923-XIKI",
+      "farmer": "SMS Test Order",
+      "phone": "254719303786",
+      "county": "Embu",
+      "breed": "Kuroiler",
+      "qty": 1,
+      "totalKES": 120,
+      "status": "Pending",
+      "date": "2026-08-23",
+      "source": "website",
+      "notes": "Ordered through website | Admin SMS test order | Product: Kuroiler Chicks | Age/Stage: 1 day – 1 month | Unit price: KES 120"
+    }
+  ],
   "farmers": [],
   "blogPosts": [
     {
@@ -387,6 +401,18 @@
   },
   "transactions": [
     {
+      "date": "2026-08-23",
+      "type": "income",
+      "category": "Website chick order",
+      "amount": 120,
+      "paymentMethod": "Other",
+      "customerOrVendor": "SMS Test Order",
+      "reference": "ORD-1787498536923-XIKI",
+      "notes": "Kuroiler Chicks x 1 | Embu",
+      "id": "tx-1787498536946-ymix",
+      "createdAt": "2026-08-23T15:22:16.946Z"
+    },
+    {
       "date": "2026-08-20",
       "type": "income",
       "category": "Chicks Sale (Kuroiler)",
@@ -454,6 +480,53 @@
       "reference": "BNK-3341",
       "notes": "200 ISA Brown layers",
       "createdAt": "2026-06-08T11:00:00Z"
+    }
+  ],
+  "auditTrail": [
+    {
+      "entity": "transaction",
+      "action": "create",
+      "summary": "Income recorded for Website chick order worth KES 120",
+      "actor": "SMS Test Order",
+      "metadata": {
+        "transactionId": "tx-1787498536946-ymix",
+        "amount": 120,
+        "category": "Website chick order"
+      },
+      "id": "aud-1787498536946-hi3h",
+      "createdAt": "2026-08-23T15:22:16.946Z"
+    },
+    {
+      "entity": "order",
+      "action": "create",
+      "summary": "Order ORD-1787498536923-XIKI created for SMS Test Order",
+      "actor": "SMS Test Order",
+      "metadata": {
+        "orderId": "ORD-1787498536923-XIKI",
+        "productId": "p1",
+        "qty": 1,
+        "totalKES": 120
+      },
+      "id": "aud-1787498536929-tw4t",
+      "createdAt": "2026-08-23T15:22:16.929Z"
+    }
+  ],
+  "notifications": [
+    {
+      "title": "New chick order received",
+      "body": "🛒 NEW CHICK ORDER\nCustomer: SMS Test Order\nPhone: 254719303786\nCounty: Embu\nProduct: Kuroiler Chicks\nBreed: Kuroiler\nQty: 1\nTotal: KES 120\nOrder ID: ORD-1787498536923-XIKI",
+      "type": "order",
+      "url": "/admin?tab=orders",
+      "id": "ntf-1787498537733-iybh",
+      "createdAt": "2026-08-23T15:22:17.733Z"
+    },
+    {
+      "title": "Income recorded",
+      "body": "Website chick order for KES 120 has been saved to the ledger.",
+      "type": "finance",
+      "url": "/admin?tab=commerce",
+      "id": "ntf-1787498536957-e67z",
+      "createdAt": "2026-08-23T15:22:16.957Z"
     }
   ],
   "activities": [

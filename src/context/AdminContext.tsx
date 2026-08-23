@@ -372,13 +372,27 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
+    const handleDbUpdate = () => {
+      refreshLiveData();
+    };
+
+    let channel: BroadcastChannel | null = null;
+    if ('BroadcastChannel' in window) {
+      channel = new BroadcastChannel('cucu-db-updates');
+      channel.addEventListener('message', handleDbUpdate);
+    }
+
     window.addEventListener('focus', handleFocus);
     document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('cucu-db-updated', handleDbUpdate as EventListener);
 
     return () => {
       window.clearInterval(timer);
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('cucu-db-updated', handleDbUpdate as EventListener);
+      channel?.removeEventListener('message', handleDbUpdate);
+      channel?.close();
     };
   }, [refreshLiveData]);
 
