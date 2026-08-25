@@ -68,6 +68,7 @@ export async function POST(request: Request) {
         title: storyToSave.title,
         body: storyToSave.description || 'A new farm update is now live.',
         type: 'story',
+        scope: 'customer',
         url: '/poultry-updates',
       });
       await addAuditEntry({

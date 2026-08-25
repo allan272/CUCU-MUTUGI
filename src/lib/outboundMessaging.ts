@@ -5,6 +5,8 @@ export type OutboundChannelResult = {
   channel: 'sms' | 'whatsapp';
   recipient: string;
   error?: string;
+  errorType?: string;
+  statusCode?: number;
   messageId?: string | number;
 };
 
@@ -15,9 +17,7 @@ export type BroadcastResult = {
 
 const DEFAULT_ADMIN_RECIPIENTS = [
   '+254706972161',
-  '+254740662799',
   '+254719303786',
-  '+254755803918',
 ];
 
 function uniquePhones(phones: string[]): string[] {
@@ -32,14 +32,23 @@ function uniquePhones(phones: string[]): string[] {
 }
 
 export function getAdminRecipients(): string[] {
-  const raw = process.env.ADMIN_REPORT_RECIPIENTS || process.env.ADMIN_PHONE_NUMBERS || '';
-  const configured = raw
-    .split(',')
+  const envNumbers = [
+    process.env.ADMIN_SMS_NUMBER,
+    process.env.SECONDARY_ADMIN_SMS_NUMBER,
+    process.env.ADMIN_PHONE_NUMBER,
+    process.env.ADMIN_PHONE_NUMBERS,
+    process.env.ADMIN_REPORT_RECIPIENTS,
+  ];
+
+  const configured = envNumbers
+    .filter(Boolean)
+    .flatMap((val) => (val ? val.split(',') : []))
     .map((phone) => phone.trim())
     .filter(Boolean);
 
-  return uniquePhones(configured.length ? configured : DEFAULT_ADMIN_RECIPIENTS);
+  return uniquePhones(configured.length > 0 ? configured : DEFAULT_ADMIN_RECIPIENTS);
 }
+
 
 export async function sendWhatsAppMessage(params: {
   recipient: string;
@@ -71,6 +80,36 @@ export async function sendWhatsAppMessage(params: {
         : { success: false, channel: 'whatsapp', recipient, error: raw || `WhatsApp webhook failed (${res.status}).` };
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'WhatsApp webhook request failed.';
+      return { success: false, channel: 'whatsapp', recipient, error: message };
+    }
+  }
+
+  // Check CallMeBot Free WhatsApp API Keys (Per-phone or global)
+  const callMeBotKey =
+    recipient === normalizePhoneNumber(process.env.ADMIN_SMS_NUMBER || '+254706972161')
+      ? process.env.CALLMEBOT_API_KEY_ADMIN1 || process.env.CALLMEBOT_API_KEY
+      : recipient === normalizePhoneNumber(process.env.SECONDARY_ADMIN_SMS_NUMBER || '+254719303786')
+      ? process.env.CALLMEBOT_API_KEY_ADMIN2 || process.env.CALLMEBOT_API_KEY
+      : process.env.CALLMEBOT_API_KEY;
+
+  if (callMeBotKey) {
+    try {
+      const url = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(
+        recipient
+      )}&text=${encodeURIComponent(params.content)}&apikey=${encodeURIComponent(callMeBotKey)}`;
+      const res = await fetch(url);
+      const raw = await res.text();
+      if (res.ok && (raw.includes('Message queued') || raw.includes('OK') || raw.includes('success'))) {
+        return { success: true, channel: 'whatsapp', recipient, messageId: 'callmebot-queued' };
+      }
+      return {
+        success: false,
+        channel: 'whatsapp',
+        recipient,
+        error: raw || `CallMeBot WhatsApp send failed (${res.status}).`,
+      };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'CallMeBot WhatsApp send failed.';
       return { success: false, channel: 'whatsapp', recipient, error: message };
     }
   }
@@ -118,11 +157,15 @@ export async function sendWhatsAppMessage(params: {
     success: false,
     channel: 'whatsapp',
     recipient,
-    error: 'WhatsApp is not configured. Set WHATSAPP_WEBHOOK_URL or WhatsApp Cloud API env vars.',
+    error: 'WhatsApp is not configured. Set CALLMEBOT_API_KEY, WHATSAPP_WEBHOOK_URL, or Meta WhatsApp Cloud API env vars.',
   };
+
 }
 
-export async function broadcastAdminMessage(content: string): Promise<BroadcastResult> {
+export async function broadcastAdminMessage(
+  content: string,
+  meta?: { orderId?: string; customerName?: string }
+): Promise<BroadcastResult> {
   const recipients = getAdminRecipients();
 
   const sms = await Promise.all(
@@ -130,11 +173,15 @@ export async function broadcastAdminMessage(content: string): Promise<BroadcastR
       const result = await sendBrevoSms({
         recipient,
         content,
+        orderId: meta?.orderId,
+        customerName: meta?.customerName,
       });
       return {
         success: result.success,
         channel: 'sms' as const,
         recipient,
+        statusCode: result.statusCode,
+        errorType: result.errorType,
         error: result.error,
         messageId: result.messageId,
       };
@@ -147,6 +194,7 @@ export async function broadcastAdminMessage(content: string): Promise<BroadcastR
 
   return { sms, whatsapp };
 }
+
 
 function safeJsonParse(value: string): Record<string, unknown> | null {
   try {

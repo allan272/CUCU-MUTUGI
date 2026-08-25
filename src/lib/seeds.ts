@@ -137,6 +137,7 @@ export interface AppNotification {
   title: string;
   body: string;
   type: 'story' | 'order' | 'system' | 'finance';
+  scope?: 'admin' | 'customer';
   url?: string;
   read?: boolean;
   createdAt: string;

@@ -210,6 +210,7 @@ export async function addTransaction(tx: Omit<Transaction, 'id' | 'createdAt'>):
     title: `${newTx.type === 'income' ? 'Income' : 'Expense'} recorded`,
     body: `${newTx.category} for KES ${newTx.amount.toLocaleString()} has been saved to the ledger.`,
     type: 'finance',
+    scope: 'admin',
     url: '/admin?tab=commerce',
   });
   return updated;
@@ -232,6 +233,7 @@ export async function updateTransaction(id: string, updates: Partial<Transaction
     title: 'Transaction updated',
     body: `Transaction ${id} was edited in the finance ledger.`,
     type: 'finance',
+    scope: 'admin',
     url: '/admin?tab=commerce',
   });
   return updated;
@@ -254,14 +256,17 @@ export async function deleteTransaction(id: string): Promise<Transaction[]> {
     title: 'Transaction deleted',
     body: `Transaction ${id} was removed from the finance ledger.`,
     type: 'finance',
+    scope: 'admin',
     url: '/admin?tab=commerce',
   });
   return updated;
 }
 
-export async function getNotifications(): Promise<AppNotification[]> {
+export async function getNotifications(scope?: 'admin' | 'customer'): Promise<AppNotification[]> {
   const db = await getStoredDB();
-  return db.notifications || [];
+  const notifications = db.notifications || [];
+  if (!scope) return notifications;
+  return notifications.filter((notification) => (notification.scope || 'customer') === scope);
 }
 
 export async function addNotification(
@@ -271,6 +276,7 @@ export async function addNotification(
   const db = await getStoredDB();
   const newNotification: AppNotification = {
     ...notification,
+    scope: notification.scope || 'customer',
     id: makeId('ntf'),
     createdAt: new Date().toISOString(),
   };

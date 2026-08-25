@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import { addNotification, getNotifications, markNotificationRead } from '@/lib/serverStorage';
 import type { AppNotification } from '@/lib/seeds';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const notifications = await getNotifications();
+    const { searchParams } = new URL(request.url);
+    const scope = searchParams.get('scope') as 'admin' | 'customer' | null;
+    const notifications = await getNotifications(scope || undefined);
     return NextResponse.json({ notifications });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Failed to fetch notifications' }, { status: 500 });
@@ -26,6 +28,7 @@ export async function POST(request: Request) {
         title: String(body.title),
         body: String(body.body),
         type: (body.type || 'system') as AppNotification['type'],
+        scope: (body.scope || 'customer') as AppNotification['scope'],
         url: body.url ? String(body.url) : undefined,
         read: false,
       } : null);

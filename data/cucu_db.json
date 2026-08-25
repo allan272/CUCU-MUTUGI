@@ -6,7 +6,7 @@
       "category": "Kienyeji",
       "breed": "Kuroiler",
       "price": 120,
-      "stock": 499,
+      "stock": 449,
       "image": "",
       "description": "Fast-growing dual-purpose breed. Excellent for both eggs and meat.",
       "ageRange": "1 day – 1 month",
@@ -86,6 +86,58 @@
     }
   ],
   "orders": [
+    {
+      "id": "ORD-TEST-2077",
+      "farmer": "Mary Wanjiku (Farmer)",
+      "phone": "+254755803918",
+      "county": "Kirinyaga",
+      "breed": "Kuroiler",
+      "qty": 25,
+      "totalKES": 3000,
+      "status": "Pending",
+      "date": "2026-08-25",
+      "source": "website",
+      "notes": "Ordered through website | Please deliver on Saturday morning. | Product: Kuroiler Chicks | Age/Stage: 1 day – 1 month | Unit price: KES 120"
+    },
+    {
+      "id": "ORD-TEST-3664",
+      "farmer": "Mary Wanjiku (Farmer)",
+      "phone": "+254755803918",
+      "county": "Kirinyaga",
+      "breed": "Kuroiler",
+      "qty": 25,
+      "totalKES": 3000,
+      "status": "Pending",
+      "date": "2026-08-25",
+      "source": "website",
+      "notes": "Ordered through website | Please deliver on Saturday morning. | Product: Kuroiler Chicks | Age/Stage: 1 day – 1 month | Unit price: KES 120"
+    },
+    {
+      "id": "SMS-TEST-001",
+      "farmer": "SMS TEST CUSTOMER",
+      "phone": "+254755803918",
+      "county": "Embu",
+      "breed": "Test Chicks",
+      "qty": 10,
+      "totalKES": 1200,
+      "status": "Pending",
+      "date": "2026-08-25",
+      "source": "website",
+      "notes": "Ordered through website | Brevo SMS integration end-to-end test | Product: Test Chicks | Age/Stage: 1 day old | Unit price: KES 120"
+    },
+    {
+      "id": "SMS-TEST-001",
+      "farmer": "SMS TEST CUSTOMER",
+      "phone": "+254755803918",
+      "county": "Embu",
+      "breed": "Test Chicks",
+      "qty": 10,
+      "totalKES": 1200,
+      "status": "Pending",
+      "date": "2026-08-25",
+      "source": "website",
+      "notes": "Ordered through website | Brevo SMS integration end-to-end test | Product: Test Chicks | Age/Stage: 1 day old | Unit price: KES 120"
+    },
     {
       "id": "ORD-1787498536923-XIKI",
       "farmer": "SMS Test Order",
@@ -401,6 +453,54 @@
   },
   "transactions": [
     {
+      "date": "2026-08-25",
+      "type": "income",
+      "category": "Website chick order",
+      "amount": 3000,
+      "paymentMethod": "Other",
+      "customerOrVendor": "Mary Wanjiku (Farmer)",
+      "reference": "ORD-TEST-2077",
+      "notes": "Kuroiler Chicks x 25 | Kirinyaga",
+      "id": "tx-1787637542169-bh6i",
+      "createdAt": "2026-08-25T05:59:02.169Z"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "income",
+      "category": "Website chick order",
+      "amount": 3000,
+      "paymentMethod": "Other",
+      "customerOrVendor": "Mary Wanjiku (Farmer)",
+      "reference": "ORD-TEST-3664",
+      "notes": "Kuroiler Chicks x 25 | Kirinyaga",
+      "id": "tx-1787637403734-ubuy",
+      "createdAt": "2026-08-25T05:56:43.734Z"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "income",
+      "category": "Website chick order",
+      "amount": 1200,
+      "paymentMethod": "Other",
+      "customerOrVendor": "SMS TEST CUSTOMER",
+      "reference": "SMS-TEST-001",
+      "notes": "Test Chicks x 10 | Embu",
+      "id": "tx-1787634811577-6lnq",
+      "createdAt": "2026-08-25T05:13:31.577Z"
+    },
+    {
+      "date": "2026-08-25",
+      "type": "income",
+      "category": "Website chick order",
+      "amount": 1200,
+      "paymentMethod": "Other",
+      "customerOrVendor": "SMS TEST CUSTOMER",
+      "reference": "SMS-TEST-001",
+      "notes": "Test Chicks x 10 | Embu",
+      "id": "tx-1787634791589-k5u7",
+      "createdAt": "2026-08-25T05:13:11.589Z"
+    },
+    {
       "date": "2026-08-23",
       "type": "income",
       "category": "Website chick order",
@@ -486,6 +586,114 @@
     {
       "entity": "transaction",
       "action": "create",
+      "summary": "Income recorded for Website chick order worth KES 3,000",
+      "actor": "Mary Wanjiku (Farmer)",
+      "metadata": {
+        "transactionId": "tx-1787637542169-bh6i",
+        "amount": 3000,
+        "category": "Website chick order"
+      },
+      "id": "aud-1787637542169-7ojs",
+      "createdAt": "2026-08-25T05:59:02.169Z"
+    },
+    {
+      "entity": "order",
+      "action": "create",
+      "summary": "Order ORD-TEST-2077 created for Mary Wanjiku (Farmer)",
+      "actor": "Mary Wanjiku (Farmer)",
+      "metadata": {
+        "orderId": "ORD-TEST-2077",
+        "productId": "p1",
+        "qty": 25,
+        "totalKES": 3000
+      },
+      "id": "aud-1787637542106-tc6x",
+      "createdAt": "2026-08-25T05:59:02.106Z"
+    },
+    {
+      "entity": "transaction",
+      "action": "create",
+      "summary": "Income recorded for Website chick order worth KES 3,000",
+      "actor": "Mary Wanjiku (Farmer)",
+      "metadata": {
+        "transactionId": "tx-1787637403734-ubuy",
+        "amount": 3000,
+        "category": "Website chick order"
+      },
+      "id": "aud-1787637403735-mzf5",
+      "createdAt": "2026-08-25T05:56:43.735Z"
+    },
+    {
+      "entity": "order",
+      "action": "create",
+      "summary": "Order ORD-TEST-3664 created for Mary Wanjiku (Farmer)",
+      "actor": "Mary Wanjiku (Farmer)",
+      "metadata": {
+        "orderId": "ORD-TEST-3664",
+        "productId": "p1",
+        "qty": 25,
+        "totalKES": 3000
+      },
+      "id": "aud-1787637403689-bpun",
+      "createdAt": "2026-08-25T05:56:43.690Z"
+    },
+    {
+      "entity": "transaction",
+      "action": "create",
+      "summary": "Income recorded for Website chick order worth KES 1,200",
+      "actor": "SMS TEST CUSTOMER",
+      "metadata": {
+        "transactionId": "tx-1787634811577-6lnq",
+        "amount": 1200,
+        "category": "Website chick order"
+      },
+      "id": "aud-1787634811577-g47p",
+      "createdAt": "2026-08-25T05:13:31.577Z"
+    },
+    {
+      "entity": "order",
+      "action": "create",
+      "summary": "Order SMS-TEST-001 created for SMS TEST CUSTOMER",
+      "actor": "SMS TEST CUSTOMER",
+      "metadata": {
+        "orderId": "SMS-TEST-001",
+        "productId": "test-chicks",
+        "qty": 10,
+        "totalKES": 1200
+      },
+      "id": "aud-1787634811543-cdvf",
+      "createdAt": "2026-08-25T05:13:31.543Z"
+    },
+    {
+      "entity": "transaction",
+      "action": "create",
+      "summary": "Income recorded for Website chick order worth KES 1,200",
+      "actor": "SMS TEST CUSTOMER",
+      "metadata": {
+        "transactionId": "tx-1787634791589-k5u7",
+        "amount": 1200,
+        "category": "Website chick order"
+      },
+      "id": "aud-1787634791589-g3w7",
+      "createdAt": "2026-08-25T05:13:11.589Z"
+    },
+    {
+      "entity": "order",
+      "action": "create",
+      "summary": "Order SMS-TEST-001 created for SMS TEST CUSTOMER",
+      "actor": "SMS TEST CUSTOMER",
+      "metadata": {
+        "orderId": "SMS-TEST-001",
+        "productId": "test-chicks",
+        "qty": 10,
+        "totalKES": 1200
+      },
+      "id": "aud-1787634791563-5r4h",
+      "createdAt": "2026-08-25T05:13:11.563Z"
+    },
+    {
+      "entity": "transaction",
+      "action": "create",
       "summary": "Income recorded for Website chick order worth KES 120",
       "actor": "SMS Test Order",
       "metadata": {
@@ -512,6 +720,78 @@
     }
   ],
   "notifications": [
+    {
+      "title": "New chick order received",
+      "body": "CUCU MUTUGI POULTRY\n\nNEW CHICKS ORDER\nOrder: ORD-TEST-2077\nCustomer: Mary Wanjiku (Farmer)\nPhone: +254755803918\nProduct: Kuroiler Chicks\nQuantity: 25\nTotal: KES 3,000",
+      "type": "order",
+      "scope": "admin",
+      "url": "/admin?tab=orders",
+      "id": "ntf-1787637542988-5ijh",
+      "createdAt": "2026-08-25T05:59:02.988Z"
+    },
+    {
+      "title": "Income recorded",
+      "body": "Website chick order for KES 3,000 has been saved to the ledger.",
+      "type": "finance",
+      "scope": "admin",
+      "url": "/admin?tab=commerce",
+      "id": "ntf-1787637542173-fk2p",
+      "createdAt": "2026-08-25T05:59:02.173Z"
+    },
+    {
+      "title": "New chick order received",
+      "body": "CUCU MUTUGI POULTRY\n\nNEW CHICKS ORDER\nOrder: ORD-TEST-3664\nCustomer: Mary Wanjiku (Farmer)\nPhone: +254755803918\nProduct: Kuroiler Chicks\nQuantity: 25\nTotal: KES 3,000",
+      "type": "order",
+      "scope": "admin",
+      "url": "/admin?tab=orders",
+      "id": "ntf-1787637404964-j6oy",
+      "createdAt": "2026-08-25T05:56:44.964Z"
+    },
+    {
+      "title": "Income recorded",
+      "body": "Website chick order for KES 3,000 has been saved to the ledger.",
+      "type": "finance",
+      "scope": "admin",
+      "url": "/admin?tab=commerce",
+      "id": "ntf-1787637403738-5qcm",
+      "createdAt": "2026-08-25T05:56:43.738Z"
+    },
+    {
+      "title": "New chick order received",
+      "body": "CUCU MUTUGI POULTRY\n\nNEW CHICKS ORDER\nOrder: SMS-TEST-001\nCustomer: SMS TEST CUSTOMER\nPhone: +254755803918\nProduct: Test Chicks\nQuantity: 10\nTotal: KES 1,200\n\nThis is a Brevo SMS integration test.",
+      "type": "order",
+      "scope": "admin",
+      "url": "/admin?tab=orders",
+      "id": "ntf-1787634812069-j1ro",
+      "createdAt": "2026-08-25T05:13:32.069Z"
+    },
+    {
+      "title": "Income recorded",
+      "body": "Website chick order for KES 1,200 has been saved to the ledger.",
+      "type": "finance",
+      "scope": "admin",
+      "url": "/admin?tab=commerce",
+      "id": "ntf-1787634811580-44gt",
+      "createdAt": "2026-08-25T05:13:31.580Z"
+    },
+    {
+      "title": "New chick order received",
+      "body": "CUCU MUTUGI POULTRY\n\nNEW CHICKS ORDER\nOrder: SMS-TEST-001\nCustomer: SMS TEST CUSTOMER\nPhone: +254755803918\nProduct: Test Chicks\nQuantity: 10\nTotal: KES 1,200\n\nThis is a Brevo SMS integration test.",
+      "type": "order",
+      "scope": "admin",
+      "url": "/admin?tab=orders",
+      "id": "ntf-1787634791594-okwz",
+      "createdAt": "2026-08-25T05:13:11.594Z"
+    },
+    {
+      "title": "Income recorded",
+      "body": "Website chick order for KES 1,200 has been saved to the ledger.",
+      "type": "finance",
+      "scope": "admin",
+      "url": "/admin?tab=commerce",
+      "id": "ntf-1787634791591-p7ui",
+      "createdAt": "2026-08-25T05:13:11.591Z"
+    },
     {
       "title": "New chick order received",
       "body": "🛒 NEW CHICK ORDER\nCustomer: SMS Test Order\nPhone: 254719303786\nCounty: Embu\nProduct: Kuroiler Chicks\nBreed: Kuroiler\nQty: 1\nTotal: KES 120\nOrder ID: ORD-1787498536923-XIKI",
