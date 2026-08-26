@@ -20,13 +20,15 @@ import {
   Video,
   Wallet,
   Activity,
-  MessageSquare
+  MessageSquare,
+  Bell
 } from 'lucide-react';
 
 const TABS = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { id: 'departments', icon: Building2, label: 'Departments', isHighlight: true },
   { id: 'commerce', icon: Wallet, label: 'Commerce & Ledger', isHighlight: true },
+  { id: 'updates', icon: Bell, label: 'Web Order Updates', isHighlight: true },
   { id: 'community', icon: MessageSquare, label: 'Community Approvals', isHighlight: true },
   { id: 'activity', icon: Activity, label: 'Customer Activity', isHighlight: true },
   { id: 'stories', icon: Clock, label: '24h Status Updates', isHighlight: true },

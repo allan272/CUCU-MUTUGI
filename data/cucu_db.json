@@ -85,73 +85,7 @@
       "createdAt": "2026-06-03"
     }
   ],
-  "orders": [
-    {
-      "id": "ORD-TEST-2077",
-      "farmer": "Mary Wanjiku (Farmer)",
-      "phone": "+254755803918",
-      "county": "Kirinyaga",
-      "breed": "Kuroiler",
-      "qty": 25,
-      "totalKES": 3000,
-      "status": "Pending",
-      "date": "2026-08-25",
-      "source": "website",
-      "notes": "Ordered through website | Please deliver on Saturday morning. | Product: Kuroiler Chicks | Age/Stage: 1 day – 1 month | Unit price: KES 120"
-    },
-    {
-      "id": "ORD-TEST-3664",
-      "farmer": "Mary Wanjiku (Farmer)",
-      "phone": "+254755803918",
-      "county": "Kirinyaga",
-      "breed": "Kuroiler",
-      "qty": 25,
-      "totalKES": 3000,
-      "status": "Pending",
-      "date": "2026-08-25",
-      "source": "website",
-      "notes": "Ordered through website | Please deliver on Saturday morning. | Product: Kuroiler Chicks | Age/Stage: 1 day – 1 month | Unit price: KES 120"
-    },
-    {
-      "id": "SMS-TEST-001",
-      "farmer": "SMS TEST CUSTOMER",
-      "phone": "+254755803918",
-      "county": "Embu",
-      "breed": "Test Chicks",
-      "qty": 10,
-      "totalKES": 1200,
-      "status": "Pending",
-      "date": "2026-08-25",
-      "source": "website",
-      "notes": "Ordered through website | Brevo SMS integration end-to-end test | Product: Test Chicks | Age/Stage: 1 day old | Unit price: KES 120"
-    },
-    {
-      "id": "SMS-TEST-001",
-      "farmer": "SMS TEST CUSTOMER",
-      "phone": "+254755803918",
-      "county": "Embu",
-      "breed": "Test Chicks",
-      "qty": 10,
-      "totalKES": 1200,
-      "status": "Pending",
-      "date": "2026-08-25",
-      "source": "website",
-      "notes": "Ordered through website | Brevo SMS integration end-to-end test | Product: Test Chicks | Age/Stage: 1 day old | Unit price: KES 120"
-    },
-    {
-      "id": "ORD-1787498536923-XIKI",
-      "farmer": "SMS Test Order",
-      "phone": "254719303786",
-      "county": "Embu",
-      "breed": "Kuroiler",
-      "qty": 1,
-      "totalKES": 120,
-      "status": "Pending",
-      "date": "2026-08-23",
-      "source": "website",
-      "notes": "Ordered through website | Admin SMS test order | Product: Kuroiler Chicks | Age/Stage: 1 day – 1 month | Unit price: KES 120"
-    }
-  ],
+  "orders": [],
   "farmers": [],
   "blogPosts": [
     {

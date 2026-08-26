@@ -206,12 +206,26 @@ export async function POST(request: Request) {
         break;
       }
 
-        case 'updateOrder': {
-          const { id, updates } = payload;
-          const orders = (diskDB.orders || []).map(o => o.id === id ? { ...o, ...updates } : o);
-          await saveStoredDB({ orders });
-          break;
+      case 'updateOrder': {
+        const { id, updates } = payload;
+        const currentDB = await getStoredDB();
+        const orders = (currentDB.orders || []).map(o => o.id === id ? { ...o, ...updates } : o);
+        await saveStoredDB({ orders });
+        break;
       }
+
+      case 'deleteOrder': {
+        const currentDB = await getStoredDB();
+        const orders = (currentDB.orders || []).filter(o => o.id !== payload.id);
+        await saveStoredDB({ orders });
+        break;
+      }
+
+      case 'clearOrders': {
+        await saveStoredDB({ orders: [] });
+        break;
+      }
+
 
       case 'deleteFarmer': {
         const farmers = (diskDB.farmers || []).filter(f => f.id !== payload.id);
@@ -389,9 +403,23 @@ export async function POST(request: Request) {
 
           case 'updateOrder': {
             const { id, updates } = payload;
-            await ordersColl.updateOne({ _id: id as any }, { $set: updates });
+            await ordersColl.updateOne(
+              { $or: [{ _id: id as any }, { id: id as any }] },
+              { $set: updates }
+            );
             break;
           }
+
+          case 'deleteOrder': {
+            await ordersColl.deleteOne({ $or: [{ _id: payload.id as any }, { id: payload.id as any }] });
+            break;
+          }
+
+          case 'clearOrders': {
+            await ordersColl.deleteMany({});
+            break;
+          }
+
 
           case 'deleteFarmer':
             await farmersColl.deleteOne({ _id: payload.id as any });

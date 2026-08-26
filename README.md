@@ -66,4 +66,17 @@ git push -u origin main
 
 5. Create Supabase tables using `supabase/schema.sql`.
 
-If you want, I can continue and use a GitHub token to create the repository automatically from here.
+## Android Mobile App Workflow
+
+### Testing New Features (Dev / Vercel Preview)
+Before testing new features against a Vercel Preview URL:
+1. Update `capacitor.config.dev.ts` with your current Vercel preview URL (replace `PASTE_PREVIEW_URL_HERE`).
+2. Run `npm run mobile:use-dev` (copies dev config into `capacitor.config.ts`).
+3. Run `npx cap sync android` to apply changes to the native project.
+4. Rebuild / launch in Android Studio.
+
+### Release Builds (Production)
+Before a release build pointing to live production (`https://www.cucumutugi.com`):
+1. Run `npm run mobile:use-prod` (copies prod config into `capacitor.config.ts`).
+2. Run `npx cap sync android`.
+3. Build release APK / AAB in Android Studio.

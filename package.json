@@ -9,7 +9,9 @@
     "lint": "eslint",
     "mobile:sync": "npx cap sync android",
     "mobile:open": "npx cap open android",
-    "mobile:doctor": "npx cap doctor"
+    "mobile:doctor": "npx cap doctor",
+    "mobile:use-dev": "node -e \"require('fs').copyFileSync('capacitor.config.dev.ts', 'capacitor.config.ts'); console.log('Switched to DEV config. Next steps: 1) Update PASTE_PREVIEW_URL_HERE in capacitor.config.dev.ts, 2) Run npx cap sync android, 3) Rebuild in Android Studio.')\"",
+    "mobile:use-prod": "node -e \"require('fs').copyFileSync('capacitor.config.prod.ts', 'capacitor.config.ts'); console.log('Switched to PROD config (https://www.cucumutugi.com). Next steps: 1) Run npx cap sync android, 2) Rebuild in Android Studio.')\""
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

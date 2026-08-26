@@ -23,10 +23,11 @@ export default function AppNotifications() {
 
     const syncNotifications = async () => {
       try {
-        const res = await fetch('/api/notifications', { cache: 'no-store' });
+        const res = await fetch('/api/notifications?scope=customer');
         if (!res.ok) return;
         const data = await res.json();
-        const incoming: AppNotification[] = Array.isArray(data.notifications) ? data.notifications : [];
+        const rawIncoming: AppNotification[] = Array.isArray(data.notifications) ? data.notifications : [];
+        const incoming = rawIncoming.filter(item => item.type !== 'finance' && item.scope !== 'admin');
 
         if (!mounted) return;
 
@@ -54,7 +55,7 @@ export default function AppNotifications() {
     };
 
     syncNotifications();
-    const timer = window.setInterval(syncNotifications, 10000);
+    const timer = window.setInterval(syncNotifications, 60000);
     const onFocus = () => {
       syncNotifications().catch(() => {});
     };

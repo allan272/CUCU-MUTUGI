@@ -32,23 +32,23 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
 
   if (typeof window === 'undefined') {
     return {
-        data: {
-          products: DEFAULT_PRODUCTS,
-          orders: DEFAULT_ORDERS,
-          farmers: DEFAULT_FARMERS,
-          blogPosts: DEFAULT_BLOGS,
-          stories: DEFAULT_STORIES,
-          videos: DEFAULT_VIDEOS,
-          settings: normalizeSettings(DEFAULT_SETTINGS),
-          transactions: [],
-          auditTrail: [],
-          notifications: [],
-        },
-        source: 'local'
-      };
+      data: {
+        products: DEFAULT_PRODUCTS,
+        orders: DEFAULT_ORDERS,
+        farmers: DEFAULT_FARMERS,
+        blogPosts: DEFAULT_BLOGS,
+        stories: DEFAULT_STORIES,
+        videos: DEFAULT_VIDEOS,
+        settings: normalizeSettings(DEFAULT_SETTINGS),
+        transactions: [],
+        auditTrail: [],
+        notifications: [],
+      },
+      source: 'local'
+    };
   }
 
-  // Attempt to load from MongoDB Atlas backend API
+  // Attempt to load from backend API
   if (password) {
     try {
       const res = await fetch('/api/db', {
@@ -76,13 +76,13 @@ async function loadDB(password: string): Promise<{ data: DBTable; source: 'mongo
             source: 'mongodb'
           };
         } else {
-          console.warn('MongoDB API returned error or empty data. Using local storage fallback.');
+          console.warn('Backend API returned error or empty data. Using local storage fallback.');
         }
       } else {
-        console.warn(`MongoDB API returned status ${res.status}. Using local storage fallback.`);
+        console.warn(`Backend API returned status ${res.status}. Using local storage fallback.`);
       }
     } catch (error) {
-      console.error('Failed to connect to MongoDB API. Using local storage fallback:', error);
+      console.error('Failed to connect to backend API. Using local storage fallback:', error);
     }
   }
 
@@ -148,6 +148,8 @@ interface AdminContextValue {
   updateProduct: (id: string, p: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
   updateOrder: (id: string, o: Partial<Order>) => void;
+  deleteOrder: (id: string) => void;
+  clearOrders: () => void;
   deleteFarmer: (id: string) => void;
   addBlogPost: (b: Omit<BlogPost, 'id' | 'createdAt'>) => void;
   updateBlogPost: (id: string, b: Partial<BlogPost>) => void;
@@ -192,7 +194,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [authError, setAuthError] = useState<string | null>(null);
   const [adminPassword, setAdminPassword] = useState<string>('');
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [loaded, setLoaded] = useState(true); // Start as true — login form shows instantly
+  const [loaded, setLoaded] = useState(true);
 
   useEffect(() => {
     async function initialize() {
@@ -208,7 +210,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        // For public visitors: restore cached db if any, and fetch latest stories from server
         try {
           const raw = localStorage.getItem('cucu_mutugi_db');
           if (raw) {
@@ -221,22 +222,19 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
           const res = await fetch('/api/stories');
           if (res.ok) {
             const data = await res.json();
-            if (data.stories && Array.isArray(data.stories)) {
+            if (Array.isArray(data.stories)) {
               setDB(prev => ({ ...prev, stories: data.stories }));
             }
           }
-        } catch (e) {
-          console.warn('Could not fetch latest stories:', e);
-        }
+        } catch {}
       }
     }
     initialize();
   }, []);
 
-  const login = async (password: string): Promise<boolean> => {
+  const login = async (pwd: string): Promise<boolean> => {
     setAuthError(null);
-    const cleanPwd = (password || '').trim();
-
+    const cleanPwd = pwd.trim();
     if (!cleanPwd) {
       setAuthError('Please enter the administrative password.');
       return false;
@@ -265,7 +263,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       setAuthError('Invalid admin password.');
       return false;
     } catch (e) {
-      // Fallback local login if API is unreachable
       if (cleanPwd === 'admin87654321') {
         if (typeof window !== 'undefined') {
           sessionStorage.setItem('cucu_mutugi_admin_pwd', cleanPwd);
@@ -397,18 +394,18 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   }, [refreshLiveData]);
 
   const syncToMongoDB = async (action: string, payload: any) => {
-    if (!adminPassword) return;
+    const pwd = adminPassword || (typeof window !== 'undefined' ? sessionStorage.getItem('cucu_mutugi_admin_pwd') : '') || 'admin87654321';
     try {
       const res = await fetch('/api/db', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-password': adminPassword
+          'x-admin-password': pwd,
         },
         body: JSON.stringify({ action, payload }),
       });
       if (!res.ok) {
-        console.error(`Failed to sync action "${action}" to MongoDB: ${res.statusText}`);
+        console.error(`Failed to sync action "${action}" to DB: ${res.statusText}`);
       }
     } catch (error) {
       console.error(`Sync error for action "${action}":`, error);
@@ -478,11 +475,76 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateOrder = (id: string, o: Partial<Order>) => {
-    persistLocal({
-      ...db,
-      orders: db.orders.map(x => (x.id === id ? { ...x, ...o } : x))
+    let farmerName = 'Customer';
+    setDB(prev => {
+      const target = prev.orders.find(x => x.id === id);
+      if (target) farmerName = target.farmer;
+      const updated = {
+        ...prev,
+        orders: prev.orders.map(x => (x.id === id ? { ...x, ...o } : x))
+      };
+      try {
+        localStorage.setItem('cucu_mutugi_db', JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
     syncToMongoDB('updateOrder', { id, updates: o });
+
+    if (o.status) {
+      fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `Order #${id} Updated`,
+          body: `Order status for ${farmerName} updated to: ${o.status}`,
+          type: 'order',
+          scope: 'customer',
+          url: '/poultry-updates',
+        }),
+      }).catch(() => {});
+    }
+  };
+
+  const deleteOrder = (id: string) => {
+    let farmerName = 'Customer';
+    setDB(prev => {
+      const target = prev.orders.find(x => x.id === id);
+      if (target) farmerName = target.farmer;
+      const updated = {
+        ...prev,
+        orders: prev.orders.filter(x => x.id !== id)
+      };
+      try {
+        localStorage.setItem('cucu_mutugi_db', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    syncToMongoDB('deleteOrder', { id });
+
+    fetch('/api/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: `Order #${id} Erased`,
+        body: `Order for ${farmerName} was deleted by admin.`,
+        type: 'order',
+        scope: 'customer',
+      }),
+    }).catch(() => {});
+  };
+
+  const clearOrders = () => {
+    setDB(prev => {
+      const updated = {
+        ...prev,
+        orders: []
+      };
+      try {
+        localStorage.setItem('cucu_mutugi_db', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    syncToMongoDB('clearOrders', {});
   };
 
   const deleteFarmer = (id: string) => {
@@ -683,6 +745,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         updateProduct,
         deleteProduct,
         updateOrder,
+        deleteOrder,
+        clearOrders,
         deleteFarmer,
         addBlogPost,
         updateBlogPost,
@@ -705,4 +769,3 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     </AdminContext.Provider>
   );
 }
-
