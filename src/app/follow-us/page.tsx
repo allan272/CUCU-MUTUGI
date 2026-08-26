@@ -50,12 +50,13 @@ export default function FollowUsPage() {
       description: "Follow our Instagram for farm updates and photos"
     },
     {
-      platform: "TikTok",
-      url: "https://www.tiktok.com/@cucumutugipoultry",
-      icon: Share2,
-      color: "bg-gray-900",
-      hoverColor: "hover:bg-black",
-      description: "Watch our videos and poultry farming tips on TikTok"
+      platform: "Farm Video Gallery",
+      url: "/videos",
+      icon: Video,
+      color: "bg-emerald-800",
+      hoverColor: "hover:bg-emerald-900",
+      description: "Watch all our poultry farming guides and videos directly on our website",
+      isInternal: true
     }
   ];
 
@@ -77,6 +78,25 @@ export default function FollowUsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {socialLinks.map((social) => {
               const Icon = social.icon;
+              if (social.isInternal) {
+                return (
+                  <Link
+                    key={social.platform}
+                    href={social.url}
+                    className={`${social.color} ${social.hoverColor} text-white p-8 rounded-xl transition-all transform hover:scale-105 shadow-lg block`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="bg-white/10 p-3 rounded-lg">
+                        <Icon className="h-8 w-8 text-amber-300" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold mb-2">{social.platform}</h3>
+                        <p className="text-sm opacity-90">{social.description}</p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              }
               return (
                 <a
                   key={social.platform}
