@@ -26,7 +26,10 @@ export async function GET() {
           const { _id, ...rest } = s;
           return { id: _id?.toString() || rest.id, ...rest };
         });
-        return NextResponse.json({ stories: formatted, mode: 'mongodb' });
+        return NextResponse.json(
+          { stories: formatted, mode: 'mongodb' },
+          { headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' } }
+        );
       }
     }
   } catch (e: any) {
@@ -36,7 +39,10 @@ export async function GET() {
   // Persistent disk storage fallback
   try {
     const stories = await getStories();
-    return NextResponse.json({ stories, mode: 'local-disk' });
+    return NextResponse.json(
+      { stories, mode: 'local-disk' },
+      { headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' } }
+    );
   } catch (err: any) {
     return NextResponse.json({ stories: [], error: err.message }, { status: 500 });
   }

@@ -145,8 +145,8 @@ export default function CommunityChatView() {
 
   useEffect(() => {
     fetchChatData();
-    // Poll for new messages every 6 seconds
-    const interval = setInterval(fetchChatData, 6000);
+    // Poll for new messages every 15 seconds
+    const interval = setInterval(fetchChatData, 15000);
     return () => clearInterval(interval);
   }, [activeChannelId]);
 

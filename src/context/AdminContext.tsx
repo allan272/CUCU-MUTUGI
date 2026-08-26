@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import {
   Product,
   Order,
@@ -292,14 +292,16 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const lastFetchRef = useRef<number>(0);
+
   const refreshLiveData = useCallback(async () => {
     if (typeof window === 'undefined') return;
+    lastFetchRef.current = Date.now();
 
     try {
       if (adminPassword) {
         const res = await fetch('/api/db', {
           headers: { 'x-admin-password': adminPassword },
-          cache: 'no-store',
         });
 
         if (res.ok) {
@@ -322,8 +324,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       }
 
       const [storiesRes, notificationsRes] = await Promise.all([
-        fetch('/api/stories', { cache: 'no-store' }),
-        fetch('/api/notifications', { cache: 'no-store' }),
+        fetch('/api/stories'),
+        fetch('/api/notifications'),
       ]);
 
       const updates: Partial<DBTable> = {};
@@ -357,14 +359,16 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
     const timer = window.setInterval(() => {
       refreshLiveData();
-    }, 10000);
+    }, 30000);
 
     const handleFocus = () => {
-      refreshLiveData();
+      if (Date.now() - lastFetchRef.current >= 10000) {
+        refreshLiveData();
+      }
     };
 
     const handleVisibility = () => {
-      if (!document.hidden) {
+      if (!document.hidden && Date.now() - lastFetchRef.current >= 10000) {
         refreshLiveData();
       }
     };

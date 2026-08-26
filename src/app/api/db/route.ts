@@ -72,28 +72,34 @@ export async function GET(request: Request) {
           settingsColl.findOne({ _id: 'site_settings' as any }),
         ]);
 
-        return NextResponse.json({
-          products: diskDB.products ?? products.map(p => formatDoc<Product>(p)),
-          orders: diskDB.orders ?? orders.map(o => formatDoc<Order>(o)),
-          farmers: diskDB.farmers ?? farmers.map(f => formatDoc<Farmer>(f)),
-          blogPosts: diskDB.blogPosts ?? blogs.map(b => formatDoc<BlogPost>(b)),
-          stories: diskDB.stories ?? stories.map(s => formatDoc<Story>(s)),
-          videos: diskDB.videos ?? videos.map(v => formatDoc<Video>(v)),
-          settings: diskDB.settings ?? formatDoc<SiteSettings>(settingsDoc) ?? DEFAULT_SETTINGS,
-          transactions: diskDB.transactions || [],
-          auditTrail: diskDB.auditTrail || [],
-          notifications: diskDB.notifications || [],
-          source: 'local-disk',
-        });
+        return NextResponse.json(
+          {
+            products: diskDB.products ?? products.map(p => formatDoc<Product>(p)),
+            orders: diskDB.orders ?? orders.map(o => formatDoc<Order>(o)),
+            farmers: diskDB.farmers ?? farmers.map(f => formatDoc<Farmer>(f)),
+            blogPosts: diskDB.blogPosts ?? blogs.map(b => formatDoc<BlogPost>(b)),
+            stories: diskDB.stories ?? stories.map(s => formatDoc<Story>(s)),
+            videos: diskDB.videos ?? videos.map(v => formatDoc<Video>(v)),
+            settings: diskDB.settings ?? formatDoc<SiteSettings>(settingsDoc) ?? DEFAULT_SETTINGS,
+            transactions: diskDB.transactions || [],
+            auditTrail: diskDB.auditTrail || [],
+            notifications: diskDB.notifications || [],
+            source: 'local-disk',
+          },
+          { headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' } }
+        );
       }
     } catch (error: any) {
       console.warn('MongoDB GET merge failed, using disk JSON DB:', error?.message || error);
     }
 
-    return NextResponse.json({
-      ...diskDB,
-      source: 'local-disk'
-    });
+    return NextResponse.json(
+      {
+        ...diskDB,
+        source: 'local-disk'
+      },
+      { headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' } }
+    );
   } catch (err: any) {
     return NextResponse.json({
       products: DEFAULT_PRODUCTS,

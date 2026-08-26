@@ -7,7 +7,10 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const scope = searchParams.get('scope') as 'admin' | 'customer' | null;
     const notifications = await getNotifications(scope || undefined);
-    return NextResponse.json({ notifications });
+    return NextResponse.json(
+      { notifications },
+      { headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' } }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Failed to fetch notifications' }, { status: 500 });
   }
