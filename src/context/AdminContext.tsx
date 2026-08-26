@@ -147,8 +147,8 @@ interface AdminContextValue {
   addProduct: (p: Omit<Product, 'id' | 'createdAt'>) => void;
   updateProduct: (id: string, p: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
-  updateOrder: (id: string, o: Partial<Order>) => void;
-  deleteOrder: (id: string) => void;
+  updateOrder: (id: string, o: Partial<Order>) => Promise<boolean>;
+  deleteOrder: (id: string) => Promise<boolean>;
   clearOrders: () => void;
   deleteFarmer: (id: string) => void;
   addBlogPost: (b: Omit<BlogPost, 'id' | 'createdAt'>) => void;
@@ -397,7 +397,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     };
   }, [refreshLiveData]);
 
-  const syncToMongoDB = async (action: string, payload: any) => {
+  const syncToMongoDB = async (action: string, payload: any): Promise<boolean> => {
     const pwd = adminPassword || (typeof window !== 'undefined' ? sessionStorage.getItem('cucu_mutugi_admin_pwd') : '') || 'admin87654321';
     try {
       const res = await fetch('/api/db', {
@@ -410,9 +410,12 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       });
       if (!res.ok) {
         console.error(`Failed to sync action "${action}" to DB: ${res.statusText}`);
+        return false;
       }
+      return true;
     } catch (error) {
       console.error(`Sync error for action "${action}":`, error);
+      return false;
     }
   };
 
@@ -447,26 +450,18 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateSettings = (s: Partial<SiteSettings>) => {
-    const updatedSettings = { ...db.settings, ...s };
-    persistLocal({ ...db, settings: updatedSettings });
+    persistLocal({ ...db, settings: { ...db.settings, ...s } });
     syncToMongoDB('updateSettings', s);
   };
 
   const addProduct = (p: Omit<Product, 'id' | 'createdAt'>) => {
-    const newP: Product = {
-      ...p,
-      id: `p${Date.now()}`,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-    persistLocal({ ...db, products: [...db.products, newP] });
+    const newP: Product = { ...p, id: 'p' + (db.products.length + 1), createdAt: new Date().toISOString().split('T')[0] };
+    persistLocal({ ...db, products: [newP, ...db.products] });
     syncToMongoDB('addProduct', newP);
   };
 
   const updateProduct = (id: string, p: Partial<Product>) => {
-    persistLocal({
-      ...db,
-      products: db.products.map(x => (x.id === id ? { ...x, ...p } : x))
-    });
+    persistLocal({ ...db, products: db.products.map(x => (x.id === id ? { ...x, ...p } : x)) });
     syncToMongoDB('updateProduct', { id, updates: p });
   };
 
@@ -478,8 +473,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     syncToMongoDB('deleteProduct', { id });
   };
 
-  const updateOrder = (id: string, o: Partial<Order>) => {
+  const updateOrder = async (id: string, o: Partial<Order>): Promise<boolean> => {
     let farmerName = 'Customer';
+    const success = await syncToMongoDB('updateOrder', { id, updates: o });
+    if (!success) return false;
+
+    lastFetchRef.current = Date.now();
+
     setDB(prev => {
       const target = prev.orders.find(x => x.id === id);
       if (target) farmerName = target.farmer;
@@ -492,7 +492,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       } catch {}
       return updated;
     });
-    syncToMongoDB('updateOrder', { id, updates: o });
 
     if (o.status) {
       fetch('/api/notifications', {
@@ -507,34 +506,47 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         }),
       }).catch(() => {});
     }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('cucu-db-updated'));
+    }
+
+    return true;
   };
 
-  const deleteOrder = (id: string) => {
+  const deleteOrder = async (id: string): Promise<boolean> => {
     let farmerName = 'Customer';
+    const softDeleteUpdates = { deleted: true, status: 'Cancelled' as const };
+    const success = await syncToMongoDB('updateOrder', { id, updates: softDeleteUpdates });
+    if (!success) return false;
+
+    lastFetchRef.current = Date.now();
+
     setDB(prev => {
       const target = prev.orders.find(x => x.id === id);
       if (target) farmerName = target.farmer;
       const updated = {
         ...prev,
-        orders: prev.orders.filter(x => x.id !== id)
+        orders: prev.orders.map(x => (x.id === id ? { ...x, ...softDeleteUpdates } : x))
       };
       try {
         localStorage.setItem('cucu_mutugi_db', JSON.stringify(updated));
       } catch {}
       return updated;
     });
-    syncToMongoDB('deleteOrder', { id });
 
     fetch('/api/notifications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        title: `Order #${id} Erased`,
-        body: `Order for ${farmerName} was deleted by admin.`,
+        title: `Order #${id} Soft Deleted`,
+        body: `Order for ${farmerName} was soft-deleted by admin.`,
         type: 'order',
-        scope: 'customer',
+        scope: 'admin',
+        url: '/admin?tab=orders',
       }),
     }).catch(() => {});
+    return true;
   };
 
   const clearOrders = () => {

@@ -47,8 +47,11 @@ export default function CustomerActivityTab() {
     fetchActivities();
   }, []);
 
+  const [clearing, setClearing] = useState(false);
+
   const handleClearActivities = async () => {
     if (!confirm('Are you sure you want to clear the customer activity logs?')) return;
+    setClearing(true);
     try {
       const res = await fetch('/api/analytics', {
         method: 'POST',
@@ -57,9 +60,14 @@ export default function CustomerActivityTab() {
       });
       if (res.ok) {
         setActivities([]);
+      } else {
+        alert('Failed to clear activity logs. Please try again.');
       }
     } catch (e) {
       console.error('Clear activities failed:', e);
+      alert('Error clearing activity logs.');
+    } finally {
+      setClearing(false);
     }
   };
 

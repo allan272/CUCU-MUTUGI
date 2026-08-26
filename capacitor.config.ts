@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'cucumutugi',
   webDir: 'public',
   server: {
-    url: 'https://cucu-mutugi-iz1p4m1yv-brandon-allan-s-projects.vercel.app',
+    url: 'https://www.cucumutugi.com',
     cleartext: false,
   },
   android: {

@@ -25,6 +25,7 @@ export interface Order {
   date: string;
   notes?: string;
   source?: 'website' | 'manual';
+  deleted?: boolean;
 }
 
 export interface Farmer {

@@ -430,14 +430,43 @@ function ProductsTab() {
 // TAB: Orders
 // ─────────────────────────────────────────────────────────────────────────────
 function OrdersTab() {
-  const { db, updateOrder } = useAdmin();
+  const { db, updateOrder, deleteOrder } = useAdmin();
   const [filter, setFilter] = useState('All');
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  const [confirmDeleteOrder, setConfirmDeleteOrder] = useState<Order | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const statuses = ['All', 'Pending', 'Confirmed', 'In Transit', 'Delivered', 'Cancelled'];
   const statusColor: Record<string, string> = {
     Delivered: 'bg-green-100 text-green-700', 'In Transit': 'bg-blue-100 text-blue-700',
     Pending: 'bg-yellow-100 text-yellow-700', Confirmed: 'bg-cyan-100 text-cyan-700', Cancelled: 'bg-red-100 text-red-700',
   };
-  const filtered = filter === 'All' ? db.orders : db.orders.filter(o => o.status === filter);
+
+  const activeOrders = db.orders.filter(o => !o.deleted && (o.status as string) !== 'deleted');
+  const filtered = filter === 'All' ? activeOrders : activeOrders.filter(o => o.status === filter);
+
+  const handleStatusChange = async (id: string, newStatus: Order['status']) => {
+    setUpdatingOrderId(id);
+    setErrorMsg(null);
+    const success = await updateOrder(id, { status: newStatus });
+    setUpdatingOrderId(null);
+    if (!success) {
+      setErrorMsg(`Failed to update status for order #${id}. Please check your connection and try again.`);
+    }
+  };
+
+  const handleConfirmSoftDelete = async () => {
+    if (!confirmDeleteOrder) return;
+    const id = confirmDeleteOrder.id;
+    setUpdatingOrderId(id);
+    setErrorMsg(null);
+    const success = await deleteOrder(id);
+    setUpdatingOrderId(null);
+    setConfirmDeleteOrder(null);
+    if (!success) {
+      setErrorMsg(`Failed to delete order #${id}.`);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -445,10 +474,18 @@ function OrdersTab() {
         <h2 className="text-2xl font-extrabold text-primary">Website Orders Inbox</h2>
         <p className="text-gray-500 text-sm">Live customer orders from the site appear here first, with admin SMS and WhatsApp alerts beside them.</p>
       </div>
+
+      {errorMsg && (
+        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between">
+          <span>{errorMsg}</span>
+          <button onClick={() => setErrorMsg(null)} className="text-red-600 font-bold ml-4">✕</button>
+        </div>
+      )}
+
       <div className="flex gap-2 flex-wrap">
         {statuses.map(s => (
           <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${filter === s ? 'bg-primary text-white' : 'bg-blue-50 text-primary hover:bg-blue-100'}`}>
-            {s} {s !== 'All' && <span className="ml-1">({db.orders.filter(o => o.status === s).length})</span>}
+            {s} {s !== 'All' && <span className="ml-1">({activeOrders.filter(o => o.status === s).length})</span>}
           </button>
         ))}
       </div>
@@ -456,7 +493,7 @@ function OrdersTab() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead><tr className="bg-blue-50 border-b border-blue-100">
-              {['Order ID', 'Farmer', 'Phone', 'County', 'Breed', 'Qty', 'KES', 'Source', 'Status', 'Date', 'Change Status'].map(h => (
+              {['Order ID', 'Farmer', 'Phone', 'County', 'Breed', 'Qty', 'KES', 'Source', 'Status', 'Date', 'Change Status', 'Actions'].map(h => (
                 <th key={h} className="text-left py-3 px-3 text-xs uppercase font-semibold text-gray-400">{h}</th>
               ))}
             </tr></thead>
@@ -477,12 +514,31 @@ function OrdersTab() {
                       {o.source === 'website' ? 'Website' : 'Manual'}
                     </span>
                   </td>
-                  <td className="py-2 px-3"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${statusColor[o.status]}`}>{o.status}</span></td>
+                  <td className="py-2 px-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${statusColor[o.status] || 'bg-gray-100 text-gray-700'}`}>
+                      {o.status}
+                    </span>
+                  </td>
                   <td className="py-2 px-3 text-gray-400 text-xs">{o.date}</td>
                   <td className="py-2 px-3">
-                    <select className="text-xs border border-blue-200 rounded px-2 py-1 focus:outline-none" value={o.status} onChange={e => updateOrder(o.id, { status: e.target.value as Order['status'] })}>
+                    <select
+                      disabled={updatingOrderId === o.id}
+                      className="text-xs border border-blue-200 rounded px-2 py-1 focus:outline-none disabled:opacity-50"
+                      value={o.status}
+                      onChange={e => handleStatusChange(o.id, e.target.value as Order['status'])}
+                    >
                       {['Pending', 'Confirmed', 'In Transit', 'Delivered', 'Cancelled'].map(s => <option key={s}>{s}</option>)}
                     </select>
+                  </td>
+                  <td className="py-2 px-3">
+                    <button
+                      type="button"
+                      disabled={updatingOrderId === o.id}
+                      onClick={() => setConfirmDeleteOrder(o)}
+                      className="text-xs text-red-600 hover:text-red-800 font-bold bg-red-50 hover:bg-red-100 border border-red-200 px-2 py-1 rounded transition-colors disabled:opacity-50"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -490,6 +546,34 @@ function OrdersTab() {
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {confirmDeleteOrder && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full border border-red-100 shadow-2xl space-y-4">
+            <h3 className="text-lg font-bold text-slate-900">Confirm Order Deletion</h3>
+            <p className="text-sm text-slate-600">
+              Are you sure you want to delete order <strong>#{confirmDeleteOrder.id}</strong> for {confirmDeleteOrder.farmer}? This order will be archived in the system ledger for accounting history.
+            </p>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteOrder(null)}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmSoftDelete}
+                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-md"
+              >
+                Yes, Delete Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

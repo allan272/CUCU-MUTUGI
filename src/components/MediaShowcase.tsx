@@ -266,6 +266,7 @@ export default function MediaShowcase({
                       playsInline
                       preload="metadata"
                       poster={item.thumbnail}
+                      onClick={(e) => e.stopPropagation()}
                       className="w-full h-full object-cover bg-black"
                     />
                   )}
@@ -339,6 +340,7 @@ export default function MediaShowcase({
                     playsInline
                     preload="metadata"
                     poster={item.thumbnail}
+                    onClick={(e) => e.stopPropagation()}
                     className="w-full h-full object-cover bg-black"
                   />
                 )}
@@ -420,11 +422,15 @@ export default function MediaShowcase({
               {/* Media element */}
               {selectedItem.type === 'video' ? (
                 <video
+                  key={selectedItem.id}
                   src={selectedItem.url}
                   controls
+                  playsInline
                   autoPlay
                   className="max-h-[65vh] w-full object-contain"
-                />
+                >
+                  <source src={selectedItem.url} type="video/mp4" />
+                </video>
               ) : (
                 <div className="relative w-full h-full max-h-[65vh] flex items-center justify-center p-2">
                   <img

@@ -50,7 +50,10 @@ export default function CommunityAdminTab() {
     fetchMembers();
   }, []);
 
+  const [actionUserId, setActionUserId] = useState<string | null>(null);
+
   const handleMemberAction = async (userId: string, action: 'approve' | 'ban' | 'delete') => {
+    setActionUserId(userId);
     try {
       const res = await fetch('/api/chat/members', {
         method: 'POST',
@@ -60,9 +63,14 @@ export default function CommunityAdminTab() {
       if (res.ok) {
         const data = await res.json();
         if (data.members) setMembers(data.members);
+      } else {
+        alert('Action failed. Please try again.');
       }
     } catch (e) {
       console.error('Member action failed:', e);
+      alert('Error updating user status.');
+    } finally {
+      setActionUserId(null);
     }
   };
 

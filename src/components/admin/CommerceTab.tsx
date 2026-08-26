@@ -145,9 +145,12 @@ export default function CommerceTab() {
         setFormCustomer('');
         setFormReference('');
         setFormNotes('');
+      } else {
+        alert('Failed to save transaction record. Please try again.');
       }
     } catch (err) {
       console.error('Failed to add transaction:', err);
+      alert('Error saving transaction.');
     } finally {
       setSubmitting(false);
     }
@@ -165,9 +168,12 @@ export default function CommerceTab() {
       if (res.ok) {
         const data = await res.json();
         if (data.transactions) setTransactions(data.transactions);
+      } else {
+        alert('Failed to delete transaction. Please try again.');
       }
     } catch (e) {
       console.error('Delete transaction failed:', e);
+      alert('Error deleting transaction.');
     }
   };
 
